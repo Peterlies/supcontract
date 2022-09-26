@@ -18,7 +18,7 @@ abstract contract Context {
 }
 
 
-contract airdrop is Context {
+ contract airdrop is Context {
   using SafeMath for uint256;
   // using Address for address;
     address public admin;

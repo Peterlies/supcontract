@@ -1,11 +1,23 @@
-// SPDX-License-Identifier: unlicensed
+// SPDX-License-Identifier: mit
 
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "../lib/SafeMath.sol";
 import "../lib/TransferHelper.sol";
-import {Context} from "./airdrop.sol";
+
+
+
+abstract contract Context {
+    function _msgSender() internal view virtual returns (address) {
+        return msg.sender;
+    }
+
+    function _msgData() internal view virtual returns (bytes calldata) {
+        this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691
+        return msg.data;
+    }
+}
 
 
 contract airdropbyowner is Context {
@@ -102,9 +114,9 @@ contract airdropbyowner is Context {
         
     }
     
-    function getnumber(address _addresses) external view returns (uint256){
+    // function getnumber(address _addresses) external view returns (uint256){
         
-        return number ;
-    }
+    //     return number ;
+    // }
  
 }
