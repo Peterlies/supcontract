@@ -1,0 +1,149 @@
+// SPDX-License-Identifier: unlicensed
+
+pragma solidity ^0.8.0;
+
+import "../@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./IERC721Enumerable.sol";
+import "../lib/SafeMath.sol";
+import "../lib/TransferHelper.sol";
+
+
+contract airdrops is Context {
+  using SafeMath for uint256;
+  // using Address for address;
+    address public admin;
+    mapping(uint8 => uint256) public creattime;
+    address public token;
+    address public nft;
+    address[] public user;
+    address[] public basiceuser;
+    uint public nfttotalSupply;
+    mapping (uint8 => mapping(address => uint256)) private allowances;
+    mapping (uint8 => mapping(address => uint256)) private basiceallowances;
+
+    event AdminChange(address indexed Admin, address indexed newAdmin);
+
+    constructor(address manager, address _token,address _nft)  {
+        
+        admin = manager;
+        token = _token;
+        nft = _nft;
+    }
+    
+    modifier  _isOwner() {
+        require(msg.sender == admin);
+        _;
+    }
+    function changeOwner(address manager) external _isOwner {
+        admin = manager;
+        emit AdminChange(msg.sender,manager);
+    }
+    function changeToken(address _token) external _isOwner {
+
+        token = _token;
+    }
+    function changeNFT(address _nft) external _isOwner {
+
+        nft = _nft; 
+    }
+
+    function adduser() external _isOwner returns(bool) {
+        address[] memory aa ;
+         user =  aa ;
+        uint256 a = IERC721Enumerable(nft).totalSupply();
+        for (uint256 i= 0; i < a; i++) {
+            address b = IERC721Enumerable(nft).ownerOf(IERC721Enumerable(nft).tokenByIndex(i));
+            if(!isContract(b)){
+                addValue(user,b);
+                nfttotalSupply++;
+            }
+
+        }
+        return true;
+    }
+    function TokenSend(uint8 number) external _isOwner returns(bool) {
+        uint256 balance =IERC20(token).balanceOf(address (this));
+        // require(balance >= 100,"money : There isn't enough money");
+        uint256 amount;
+        creattime[number] = block.timestamp;
+        require (nfttotalSupply != 0);
+        for (uint8 i; i < user.length; i++) {
+            amount = balance * IERC721Enumerable(nft).balanceOf(user[i]) / nfttotalSupply;
+            TransferHelper.safeTransfer(token,user[i], amount);
+            allowances[number][user[i]] = amount;
+        }
+        nfttotalSupply = 0;
+        return true;
+    }
+
+    function BasiceTokenSend(address[] calldata _addresses, uint8 number,uint256 _nfttotalSupply) external _isOwner returns(bool) {
+        uint256 balance =IERC20(token).balanceOf(address (this));
+        // require(balance >= 100,"money : There isn't enough money");
+        uint256 amount;
+        creattime[number] = block.timestamp;
+        nfttotalSupply = _nfttotalSupply;
+        require (nfttotalSupply != 0);
+        for (uint8 i; i < _addresses.length; i++){
+            amount = balance * IERC721Enumerable(nft).balanceOf(_addresses[i]) / nfttotalSupply;
+            TransferHelper.safeTransfer(token,_addresses[i], amount);
+            addValue(basiceuser,_addresses[i]);
+            basiceallowances[number][_addresses[i]] = amount;
+        } 
+        nfttotalSupply = 0;
+
+        return true; 
+    }
+    function getUesr() public view returns (address[] memory ){
+        return user;
+    }
+    function getBasiceUesr() public view returns (address[] memory ){
+        return basiceuser;
+    }
+
+    function getreceived(address _addresses,uint8 number) external view returns (uint256){
+        
+        return allowances[number][_addresses] ;
+        
+    }
+    function getBasiceReceived(address _addresses,uint8 number) external view returns (uint256){
+        
+        return basiceallowances[number][_addresses] ;
+        
+    }
+
+    function addValue(address[] storage array, address value) internal{
+    	uint index;
+        bool isIn;
+        (isIn, index) = firstIndexOf(array, value);
+        if(!isIn){
+        	array.push(value);
+        }
+    }
+
+    function firstIndexOf(address[] storage array, address key) internal view returns (bool, uint256) {
+
+    	if(array.length == 0){
+    		return (false, 0);
+    	}
+
+    	for(uint256 i = 0; i < array.length; i++){
+    		if(array[i] == key){
+    			return (true, i);
+    		}
+    	}
+    	return (false, 0);
+    }
+
+    function isContract(address account) internal view returns (bool) {
+        // This method relies on extcodesize, which returns 0 for contracts in
+        // construction, since the code is only stored at the end of the
+        // constructor execution.
+
+        uint256 size;
+        assembly {
+            size := extcodesize(account)
+        }
+        return size > 0;
+    }
+ 
+}
