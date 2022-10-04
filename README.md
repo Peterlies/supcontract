@@ -11,3 +11,5 @@ REPORT_GAS=true npx hardhat test
 npx hardhat node
 npx hardhat run scripts/deploy.js
 ```
+
+MinerToken Test Address : 0x708719b6B314A556A303f9dB28793450b52aC9b5
