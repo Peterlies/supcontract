@@ -3,6 +3,7 @@ pragma solidity ^0.8;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract Version1 is ERC20, Ownable {
     address version2;
@@ -25,15 +26,21 @@ contract Version1 is ERC20, Ownable {
     }
 }
 
-contract Version2 is ERC20 {
+contract Version2 is ERC721 {
+    uint256 public tokenId;
+
     Version1 version1;
 
-    constructor(Version1 _version1) ERC20("Version 2", "v2") {
+    constructor(Version1 _version1) ERC721("Version 2", "v2") {
         version1 = _version1;
     }
 
     function burnToMint(uint256 amount) external {
+        require(balanceOf(msg.sender) != 0 );
+
+
         version1.version2Burn(msg.sender, amount);
-        _mint(msg.sender, amount);
+        _mint(msg.sender, tokenId);
+        tokenId++;
     }
 }
