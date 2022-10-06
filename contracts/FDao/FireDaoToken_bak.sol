@@ -1029,6 +1029,7 @@ contract FireDaoToken is ERC20 {
     address public  uniswapV2Pair;
     address _tokenOwner;
     IERC20 public USDT;
+    IERC20 public WBNB;
     IERC20 public pair;
     GetWarp public warp;
     bool private swapping;
@@ -1042,8 +1043,22 @@ contract FireDaoToken is ERC20 {
 
     uint256 private intervalTime = 0;
     uint256 private currentTime;
-
+    uint8  _tax = 5 ;
     uint256 public _currentSupply;
+
+
+    mapping(address => bool) public isRecommender;
+    mapping(address => address) public recommender;
+    mapping(address => address[]) public recommenderInfo;
+
+    struct accountInfo {
+        bool isAccount;
+        uint256 settleTime;
+        uint256 incomeTime;
+        uint256 incomeAmount;
+        uint256 cacheAmount;
+    }
+
 
     address[] buyUser;
     mapping(address => bool) public havePush;
@@ -1069,7 +1084,7 @@ contract FireDaoToken is ERC20 {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3);
 
         address _uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
-        .createPair(address(this), address(0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684));
+        .createPair(address(this), _uniswapV2Router.WETH());
         _approve(address(this), address(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3), 10**34);
 
 
@@ -1081,7 +1096,7 @@ contract FireDaoToken is ERC20 {
         excludeFromFees(_owner, true);
         excludeFromFees(address(this), true);
         // USDT = IERC20(0x55d398326f99059fF775485246999027B3197955);//mainnet
-       USDT = IERC20(0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684);//testnet
+        WBNB = IERC20(_uniswapV2Router.WETH());
         pair = IERC20(_uniswapV2Pair);
         uint256 total = 10**28;
         swapTokensAtAmount = 5 * 10**19;
@@ -1150,6 +1165,37 @@ contract FireDaoToken is ERC20 {
     function isExcludedFromFees(address account) public view returns (bool) {
         return _isExcludedFromFees[account];
     }
+    
+    function burn(uint256 burnAmount) external {
+        _burn(msg.sender, burnAmount);
+    }
+
+    function setTax(uint8 tax) public onlyOwner {
+        require(tax <=5 , 'tax too big');
+        _tax = tax;
+    }
+
+    // function recommenderNumber(address account) external view returns (uint256) {
+    //     return recommenderInfo[account].length;
+    // }
+
+    // function _beforeTransfer(
+    //         address from,
+    //         address to
+    // ) internal {
+    //     if (recommender[to] == address(0) && !from.isContract() && !to.isContract() && recommender[from] != to && !isRecommender[to]) {
+    //         recommender[to] = from;
+    //         recommenderInfo[from].push(to);
+    //         isRecommender[to] = true;
+    //     }
+    //     accountInfo storage info = _accountAirdrop[to];
+    //     if (!info.isAccount && !to.isContract()) {
+    //         _accountList.push(to);
+    //         info.isAccount = true;
+    //     }
+    // }
+
+
 
     function _transfer(
         address from,
@@ -1213,18 +1259,15 @@ contract FireDaoToken is ERC20 {
                 //     super._transfer(from, uniswapV2Pair, amount.div(100).mul(1));//回流1%
                 // }
 
-                super._transfer(from, address(this), amount.div(100).mul(5));//fee 5%
+                super._transfer(from, address(this), amount.div(100).mul(_tax));//fee 5%
 
-                amount = amount.div(100).mul(95);//95%
+                amount = amount.div(100).mul(100-_tax);//95%
 
             // }else if(from == uniswapV2Pair){// 买入
-    
             //     super._transfer(from, uniswapV2Pair, amount.div(100).mul(1));//回流1%
             //     super._transfer(from, address(this), amount.div(100).mul(1));//分红1%
-                
             //     amount = amount.div(100).mul(98);//98%
             // }else{}
-
         }
         super._transfer(from, to, amount);
         
@@ -1243,8 +1286,10 @@ contract FireDaoToken is ERC20 {
 		address[] memory path = new address[](2);
         path[0] = address(this);
         // path[1] = address(0x55d398326f99059fF775485246999027B3197955);//mainnet
-       path[1] = address(0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684);//testnet
-        
+        // path[1] = address(0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684);//testnet
+        path[1] = uniswapV2Router.WETH();
+        _approve(address(this), address(uniswapV2Router), tokenAmount);
+
         uniswapV2Router.swapExactTokensForTokensSupportingFeeOnTransferTokens(
             tokenAmount,
             0,
