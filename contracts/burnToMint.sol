@@ -36,7 +36,7 @@ contract Version2 is ERC721 {
     }
 
     function burnToMint(uint256 amount) external {
-        require(balanceOf(msg.sender) != 0 );
+        require(version1.balanceOf(msg.sender) != 0 );
 
 
         version1.version2Burn(msg.sender, amount);
