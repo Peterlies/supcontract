@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/token/ERC1155/presets/ERC1155PresetMinterPauser.
 
 
 
-contract FireSeed is ERC1155PresetMinterPauser{
+contract FireSeed is ERC1155PresetMinterPauser {
 
     mapping(address => bool) public isRecommender;
     mapping(address => address) public recommender;
@@ -24,25 +24,40 @@ contract FireSeed is ERC1155PresetMinterPauser{
 
 
     uint8 tokenId = 1;
+    uint256 public currentMint;
+
+    
     constructor() ERC1155PresetMinterPauser("test"){
 
     }
+
+    function recommenderNumber(address account) external view returns (uint256) {
+        return recommenderInfo[account].length;
+    }
+
+
     function mintToken(uint256 amount ) public {
+        
         mint(msg.sender,tokenId, amount ,"test");
+
+        currentMint +=amount;
+
     }
     function transferToken(
             address from,
             address to
     
         ) public {
+            require(from != address(0));
+            require(to != address(0));
 
-        if (recommender[to] == address(0) && !from.isContract() && !to.isContract() && recommender[from] != to && !isRecommender[to]) {
+        if (recommender[to] == address(0) &&  recommender[from] != to && !isRecommender[to]) {
             recommender[to] = from;
             recommenderInfo[from].push(to);
             isRecommender[to] = true;
         }
         accountInfo storage info = _accountAirdrop[to];
-        if (!info.isAccount && !to.isContract()) {
+        if (!info.isAccount) {
             _accountList.push(to);
             info.isAccount = true;
         }
@@ -50,4 +65,6 @@ contract FireSeed is ERC1155PresetMinterPauser{
 
         safeTransferFrom(from, to, tokenId, tokenId ,"test");
     }
+
+    
 }
