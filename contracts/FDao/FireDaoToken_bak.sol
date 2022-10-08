@@ -14,6 +14,11 @@ abstract contract Context {
     }
 }
 
+interface IFireSeed {
+    function upclass(address usr) external view returns(address);
+}
+
+
 interface IUniswapV2Pair {
     event Approval(
         address indexed owner,
@@ -1028,6 +1033,9 @@ contract FireDaoToken is ERC20 {
     IUniswapV2Router02 public uniswapV2Router;
     address public  uniswapV2Pair;
     address _tokenOwner;
+
+    IFireSeed public fireSeed;
+
     IERC20 public USDT;
     IERC20 public WBNB;
     IERC20 public pair;
@@ -1152,6 +1160,10 @@ contract FireDaoToken is ERC20 {
 	
 	function changeSwapWarp(GetWarp _warp) public onlyOwner {
         warp = _warp;
+    }
+
+    function changesFireSeed(IFireSeed _fireSeed) public onlyOwner{
+        fireSeed = _fireSeed;
     }
 
     function warpWithdraw() public onlyOwner {

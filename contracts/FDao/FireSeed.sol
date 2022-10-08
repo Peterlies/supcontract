@@ -25,8 +25,9 @@ contract FireSeed is ERC1155PresetMinterPauser {
 
     uint8 tokenId = 1;
     uint256 public currentMint;
+    uint256 public currentSendAmount;
 
-    
+
     constructor() ERC1155PresetMinterPauser("test"){
 
     }
@@ -35,6 +36,9 @@ contract FireSeed is ERC1155PresetMinterPauser {
         return recommenderInfo[account].length;
     }
 
+    function upclass(address usr) public view returns(address) {
+        return recommender[usr];
+    }
 
     function mintToken(uint256 amount ) public {
         
@@ -64,6 +68,7 @@ contract FireSeed is ERC1155PresetMinterPauser {
 
 
         safeTransferFrom(from, to, tokenId, tokenId ,"test");
+        currentSendAmount++;
     }
 
     
