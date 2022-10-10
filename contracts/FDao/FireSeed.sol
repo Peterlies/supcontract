@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.6;
 
-import "@openzeppelin/contracts/token/ERC1155/presets/ERC1155PresetMinterPauser.sol";
+import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "./ERC2981PerTokenRoyalties.sol";
 
 
 
-
-contract FireSeed is ERC1155PresetMinterPauser ,ReentrancyGuard {
+contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties{
 
     mapping(address => bool) public isRecommender;
     mapping(address => address) public recommender;
@@ -30,9 +30,7 @@ contract FireSeed is ERC1155PresetMinterPauser ,ReentrancyGuard {
     uint256 public currentSendAmount;
 
 
-    constructor() ERC1155PresetMinterPauser("test"){
-
-    }
+   constructor(string memory uri_) ERC1155(uri_) {}
 
     function recommenderNumber(address account) external view returns (uint256) {
         return recommenderInfo[account].length;
@@ -42,30 +40,69 @@ contract FireSeed is ERC1155PresetMinterPauser ,ReentrancyGuard {
         return recommender[usr];
     }
 
- 
-    // function transferToken(
-    //         address from,
-    //         address to
-    
-    //     ) public {
-        //      require(from != address(0));
-        //      require(to != address(0));
+     function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        virtual
+        override(ERC1155, ERC2981Base)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
+    }
 
-        //  if (recommender[to] == address(0) &&  recommender[from] != to && !isRecommender[to]) {
-        //      recommender[to] = from;
-        //      recommenderInfo[from].push(to);
-        //      isRecommender[to] = true;
-        //  }
-        //  accountInfo storage info = _accountAirdrop[to];
-        //  if (!info.isAccount) {
-        //      _accountList.push(to);
-        //      info.isAccount = true;
-        //  }
+       /// @notice Mint amount token of type `id` to `to`
+    /// @param to the recipient of the token
+    /// @param id id of the token type to mint
+    /// @param amount amount of the token type to mint
+    /// @param royaltyRecipient the recipient for royalties (if royaltyValue > 0)
+    /// @param royaltyValue the royalties asked for (EIP2981)
+    function mint(
+        address to,
+        uint256 id,
+        uint256 amount,
+        address royaltyRecipient,
+        uint256 royaltyValue
+    ) external {
+        _mint(to, id, amount, '');
+
+        if (royaltyValue > 0) {
+            _setTokenRoyalty(id, royaltyRecipient, royaltyValue);
+        }
+    }
+
+    /// @notice Mint several tokens at once
+    /// @param to the recipient of the token
+    /// @param ids array of ids of the token types to mint
+    /// @param amounts array of amount to mint for each token type
+    /// @param royaltyRecipients an array of recipients for royalties (if royaltyValues[i] > 0)
+    /// @param royaltyValues an array of royalties asked for (EIP2981)
+    function mintBatch(
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        address[] memory royaltyRecipients,
+        uint256[] memory royaltyValues
+    ) external {
+        require(
+            ids.length == royaltyRecipients.length &&
+                ids.length == royaltyValues.length,
+            'ERC1155: Arrays length mismatch'
+        );
+
+        _mintBatch(to, ids, amounts, '');
+
+        for (uint256 i; i < ids.length; i++) {
+            if (royaltyValues[i] > 0) {
+                _setTokenRoyalty(
+                    ids[i],
+                    royaltyRecipients[i],
+                    royaltyValues[i]
+                );
+            }
+        }
+    }
 
 
-    //     safeTransferFrom(from, to, tokenId, tokenId ,"test");
-    //     currentSendAmount++;
-    // }
    function safeTransferFrom(
         address from,
         address to,
@@ -127,9 +164,9 @@ contract FireSeed is ERC1155PresetMinterPauser ,ReentrancyGuard {
 
 
 
-    // function burnFireSeed(address _account, uint256 _id, uint256 _value) public  {
-    //     burn(_account,_id,_value);
-    // }
+    function burnFireSeed(address _account, uint256 _id, uint256 _value) public  {
+        _burn(_account,_id,_value);
+    }
 
 
 }
@@ -151,7 +188,7 @@ contract FireSeed is ERC1155PresetMinterPauser ,ReentrancyGuard {
        }
         function burnToMint() external {
         require(fireseed.balanceOf(msg.sender,1) != 0 );
-        fireseed.burn(msg.sender, 1,1);
+        fireseed.burnFireSeed(msg.sender, 1,1);
         _mint(msg.sender, FID);
         FID++;
     }
