@@ -2,6 +2,7 @@
 pragma solidity ^0.8.6;
 
 import "@openzeppelin/contracts/token/ERC1155/presets/ERC1155PresetMinterPauser.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 
 
@@ -71,5 +72,37 @@ contract FireSeed is ERC1155PresetMinterPauser {
         currentSendAmount++;
     }
 
-    
+    function burnFireSeed(address _account, uint256 _id, uint256 _value) public  {
+        burn(_account,_id,_value);
+    }
+
+}
+   contract FireSoul is ERC721{
+
+        bytes32 public constant MINTER_ROLE = keccak256("MANAGER_ROLE");
+        // bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
+
+        uint256 public FID;
+        address[] public sbtAddress;
+        FireSeed fireseed;
+       address public _owner;
+       constructor(FireSeed _fireseed) ERC721("FireSoul", "FireSoul"){
+           _owner = msg.sender;
+           fireseed = _fireseed;
+       }
+        function burnToMint() external {
+        require(fireseed.balanceOf(msg.sender,1) != 0 );
+        fireseed.burnFireSeed(msg.sender, 1,1);
+        _mint(msg.sender, FID);
+        FID++;
+    }
+    function setSBTAddress(address sbt) public {
+        for(uint256 i = 0; i < sbtAddress.length; i++){
+            sbtAddress[i] = sbt;
+        }
+    }
+    function safeTransferFrom(address from, address to, uint256 tokenId) public override {
+        safeTransferFrom(from, to, tokenId, "");
+
+    }
 }

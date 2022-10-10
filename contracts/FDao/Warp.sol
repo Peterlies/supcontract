@@ -316,6 +316,7 @@ contract warp {
     IERC20 public WBNB;
     address public owner;
     address public MinistryOfFinance;
+    address public cityNode;
     constructor () {
         //mainnet
         // IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
@@ -335,9 +336,13 @@ contract warp {
     function setMOFinance(address to) public onlyOwner {
         MinistryOfFinance = to;
     }
+    function setCityNode(address cNode) public onlyOwner{
+        cityNode = cNode;
+    }
 
     function withdraw() public  {
-        WBNB.transfer(msg.sender, checkSAFEBalance()/10*2);
+        WBNB.transfer(msg.sender, checkSAFEBalance()/10*1);
+        WBNB.transfer(cityNode, checkSAFEBalance()/10*1);
         WBNB.transfer(MinistryOfFinance, checkSAFEBalance()/10*8);
     }
     function checkSAFEBalance() public view returns(uint256){

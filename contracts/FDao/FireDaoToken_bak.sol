@@ -1049,6 +1049,9 @@ contract FireDaoToken is ERC20 {
     bool public swapAndLiquifyEnabled = true;
     uint256 public startTime;
 
+    uint256[3] public distributeRates = [5e3, 2e3, 5e2];
+
+
     uint256 private intervalTime = 0;
     uint256 private currentTime;
     uint8  _tax = 5 ;
@@ -1187,6 +1190,10 @@ contract FireDaoToken is ERC20 {
         _tax = tax;
     }
 
+    // function setPayAble() public {
+    //     // payable(msg.sender);
+    // }
+
     // function recommenderNumber(address account) external view returns (uint256) {
     //     return recommenderInfo[account].length;
     // }
@@ -1240,7 +1247,8 @@ contract FireDaoToken is ERC20 {
         }
 
         if(from == uniswapV2Pair || to == uniswapV2Pair){
-            // _splitOtherToken();
+            _splitOtherToken();
+
         }
 
         if(startTime == 0 && balanceOf(uniswapV2Pair) == 0 && to == uniswapV2Pair){
@@ -1322,42 +1330,59 @@ contract FireDaoToken is ERC20 {
     }
 
     uint256 public ldxindex;
+
     function _splitOtherTokenSecond(uint256 thisAmount) private {
-        uint256 buySize = buyUser.length;
-        if(buySize>0){
-            address user;
-            uint256 totalAmount = pair.totalSupply();
-            uint256 rate;
-            if(buySize >20){
-                for(uint256 i=0;i<20;i++){
-                    ldxindex = ldxindex.add(1);
-                    if(ldxindex >= buySize){ldxindex = 0;}
-                    user = buyUser[ldxindex];
-                    if(balanceOf(user) >= 0){
-                        rate = pair.balanceOf(user).mul(1000000).div(totalAmount);
-                        uint256 amountUsdt = thisAmount.mul(rate).div(1000000);
-                        if(amountUsdt>10**13){
-                            USDT.transfer(user,amountUsdt);
-                        }
-                    }
-                }
-            }else{
-                for(uint256 i=0;i<buySize;i++){
-                    user = buyUser[i];
-                    if(balanceOf(user) >= 0){
-                        rate = pair.balanceOf(user).mul(1000000).div(totalAmount);
-                        uint256 amountUsdt = thisAmount.mul(rate).div(1000000);
-                        if(amountUsdt>10**13){
-                            USDT.transfer(user,amountUsdt);
-                        }
-                    }
-                }
-            }
+        // uint256 buySize = buyUser.length;
+        // if(buySize>0){
+        //     address user;
+        //     uint256 totalAmount = pair.totalSupply();
+        //     uint256 rate;
+        //     if(buySize >20){
+        //         for(uint256 i=0;i<20;i++){
+        //             ldxindex = ldxindex.add(1);
+        //             if(ldxindex >= buySize){ldxindex = 0;}
+        //             user = buyUser[ldxindex];
+        //             if(balanceOf(user) >= 0){
+        //                 rate = pair.balanceOf(user).mul(1000000).div(totalAmount);
+        //                 uint256 amountUsdt = thisAmount.mul(rate).div(1000000);
+        //                 if(amountUsdt>10**13){
+        //                     USDT.transfer(user,amountUsdt);
+        //                 }
+        //             }
+        //         }
+        //     }else{
+        //         for(uint256 i=0;i<buySize;i++){
+        //             user = buyUser[i];
+        //             if(balanceOf(user) >= 0){
+        //                 rate = pair.balanceOf(user).mul(1000000).div(totalAmount);
+        //                 uint256 amountUsdt = thisAmount.mul(rate).div(1000000);
+        //                 if(amountUsdt>10**13){
+        //                     USDT.transfer(user,amountUsdt);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+
+        // for(uint256 i = 0; i <  distributeRates.length;i++ ){
+
+        // }
+	    address[] memory user = new address[](3);
+
+        user[0] = fireSeed.upclass(msg.sender);
+        user[1] = fireSeed.upclass(user[0]);
+        user[2] = fireSeed.upclass(user[1]);
+        if(user[1] == address(0)){
+            revert();
         }
+        for(uint256 i = 0; i < distributeRates.length; i++){
+        WBNB.transfer(user[i], thisAmount.mul(distributeRates[i]).div(100));
+        }
+
     }
 
     function _splitOtherToken() public {
-        uint256 thisAmount = USDT.balanceOf(address(this));
+        uint256 thisAmount = WBNB.balanceOf(address(this));
         if(thisAmount >= 10**14){
             _splitOtherTokenSecond(thisAmount);
         }
