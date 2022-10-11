@@ -15,7 +15,7 @@ contract cityNode is Ownable {
     }
 
     function checkIsCityNode(address account) external view returns(bool) {
-        return isCityNodeUser[account];   
+        return isCityNodeUser[account]; 
     }
 
     function setPause() public onlyOwner {
