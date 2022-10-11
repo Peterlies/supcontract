@@ -22,6 +22,7 @@ contract cityNode is Ownable {
         contractStatus = !contractStatus;
     }
     function joinCityNode(address account) public {
+        require(contractStatus,"Status is false");
         isCityNodeUser[account] = true;
     }
 }
