@@ -5,10 +5,12 @@ import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./ERC2981PerTokenRoyalties.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 
 
-contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties{
+contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable{
 
     mapping(address => bool) public isRecommender;
     mapping(address => address) public recommender;
@@ -22,15 +24,24 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties{
         uint256 cacheAmount;
     }
     mapping(address => accountInfo) public _accountAirdrop;
+    mapping(uint256 => string) private _uris;
     address[] public _accountList;
 
 
 
-    uint8 tokenId = 1;
+    // uint8 tokenId = 1;
     uint256 public currentSendAmount;
 
 
-   constructor(string memory uri_) ERC1155(uri_) {}
+   constructor() ERC1155("https://bafybeiagpbpvyyk32t7n6n4pvguj75uh5hwq263b2jgamoh7bdqvf2quta.ipfs.nftstorage.link/0.json") {}
+
+
+   function uri(uint256 tokenId) override public view returns(string memory) {
+       return(_uris[tokenId]);
+   }
+    function setTokenUri(uint256 tokenId, string memory uri) public onlyOwner{
+        _uris[tokenId] = uri;
+    }
 
     function recommenderNumber(address account) external view returns (uint256) {
         return recommenderInfo[account].length;
