@@ -1633,14 +1633,16 @@ contract ERC721 is Context, ERC165, IERC721, IERC721Metadata {
 }
 
 
-contract cityNode is Ownable {
+contract cityNode is ERC721, Ownable {
     bool public contractStatus = true; 
 
+    IERC20 public FIDToken;
+    mapping(address => uint256) public reputationPoints;
     mapping(address => bool) public isCityNodeUser;
 
     mapping(uint256 => bool) public isNotLightCity;
 
-    constructor(){
+    constructor() ERC721("CityNode","CityNode"){
 
     }
 
@@ -1654,9 +1656,21 @@ contract cityNode is Ownable {
     function joinCityNode(address account) public {
         require(contractStatus,"Status is false");
         isCityNodeUser[account] = true;
+        reputationPoints[msg.sender] = FIDToken.balanceOf(msg.sender);
+
+    }
+    function setReputationPointsAddress(IERC20 _FIDToken) public onlyOwner{
+        FIDToken = _FIDToken;
+    }
+
+    function checkReputationPoints() public view returns(uint256) {
+        return FIDToken.balanceOf(msg.sender);
     }
 
     function createCityNode() public {
-
+        uint256 id;
+        require(FIDToken.balanceOf(msg.sender)> 100000*10*18,"not enough");
+        _mint(msg.sender,id);
+        id++;
     }
 }
