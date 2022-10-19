@@ -1651,13 +1651,12 @@ contract cityNode is ERC721, Ownable {
     }
 
     function setPause() public onlyOwner {
-        contractStatus = !contractStatus;
+        contractStatus = !contractStatus;   
     }
     function joinCityNode(address account) public {
         require(contractStatus,"Status is false");
         isCityNodeUser[account] = true;
-        reputationPoints[msg.sender] = FIDToken.balanceOf(msg.sender);
-
+        
     }
     function setReputationPointsAddress(IERC20 _FIDToken) public onlyOwner{
         FIDToken = _FIDToken;
