@@ -2316,15 +2316,20 @@ contract cityNode is ERC1155, Ownable {
     mapping(address => bool) public isCityNodeUser;
     mapping(uint256 => bool) public isNotLightCity;
     mapping(address => bool) public cityNodeCreater;
+    mapping(uint256 => address[]) public cityNodeMember;
     struct cityNodeInFo{
         uint256 cityNodeId;
         string cityNodeName;
         address cityNodeOwner;
         uint256 createTime;
-
+        address[] member;
+    }
+    struct joinCityNodeMemberInfo{
+        uint256 cityNodeId;
+        uint256 joinCityNodeTime;
     }
     cityNodeInFo[] public cityNodeInFos;
-
+    joinCityNodeMemberInfo[] public joinCityNodeMemberInfos;
     constructor() ERC1155("test") {
 
     }
@@ -2354,7 +2359,8 @@ contract cityNode is ERC1155, Ownable {
         require(cityNodeNum <= id, "the cityNode has been created");
         _mint(msg.sender,id,1,"test");
          cityNodeCreater[msg.sender] = true;
-         cityNodeInFo memory Info = cityNodeInFo(id, cityNodeName,msg.sender,block.timestamp);
+         cityNodeMember[cityNodeNum].push(msg.sender);
+         cityNodeInFo memory Info = cityNodeInFo(id, cityNodeName,msg.sender,block.timestamp,cityNodeMember[cityNodeNum]);
          cityNodeInFos.push(Info);
          id++;
     }
@@ -2364,7 +2370,10 @@ contract cityNode is ERC1155, Ownable {
         require(cityNodeCreater[msg.sender] == false, "you are already a creator");
         require(cityNodeNum > id, "you input error");
         _mint(msg.sender,cityNodeNum,1,"test");
+        cityNodeMember[cityNodeNum].push(msg.sender);
+        joinCityNodeMemberInfo memory Info = joinCityNodeMemberInfo( cityNodeNum,block.timestamp);
+        joinCityNodeMemberInfos.push(Info);
         isCityNodeUser[msg.sender] = true;
-
+        cityNodeMember[cityNodeNum].push(msg.sender);
     }
 }
