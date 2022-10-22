@@ -182,7 +182,9 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
 
 }
 
-
+    interface IFireSeed {
+        
+    }
    contract FireSoul is ERC721,ReentrancyGuard{
 
         // bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");

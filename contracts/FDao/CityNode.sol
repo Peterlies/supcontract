@@ -718,157 +718,157 @@ abstract contract ERC165 is IERC165 {
     }
 }
 
-// interface IERC721 is IERC165 {
-//     /**
-//      * @dev Emitted when `tokenId` token is transferred from `from` to `to`.
-//      */
-//     event Transfer(
-//         address indexed from,
-//         address indexed to,
-//         uint256 indexed tokenId
-//     );
+interface IERC721 is IERC165 {
+    /**
+     * @dev Emitted when `tokenId` token is transferred from `from` to `to`.
+     */
+    event Transfer(
+        address indexed from,
+        address indexed to,
+        uint256 indexed tokenId
+    );
 
-//     /**
-//      * @dev Emitted when `owner` enables `approved` to manage the `tokenId` token.
-//      */
-//     event Approval(
-//         address indexed owner,
-//         address indexed approved,
-//         uint256 indexed tokenId
-//     );
+    /**
+     * @dev Emitted when `owner` enables `approved` to manage the `tokenId` token.
+     */
+    event Approval(
+        address indexed owner,
+        address indexed approved,
+        uint256 indexed tokenId
+    );
 
-//     /**
-//      * @dev Emitted when `owner` enables or disables (`approved`) `operator` to manage all of its assets.
-//      */
-//     event ApprovalForAll(
-//         address indexed owner,
-//         address indexed operator,
-//         bool approved
-//     );
+    /**
+     * @dev Emitted when `owner` enables or disables (`approved`) `operator` to manage all of its assets.
+     */
+    event ApprovalForAll(
+        address indexed owner,
+        address indexed operator,
+        bool approved
+    );
 
-//     /**
-//      * @dev Returns the number of tokens in ``owner``'s account.
-//      */
-//     function balanceOf(address owner) external view returns (uint256 balance);
+    /**
+     * @dev Returns the number of tokens in ``owner``'s account.
+     */
+    function balanceOf(address owner) external view returns (uint256 balance);
 
-//     /**
-//      * @dev Returns the owner of the `tokenId` token.
-//      *
-//      * Requirements:
-//      *
-//      * - `tokenId` must exist.
-//      */
-//     function ownerOf(uint256 tokenId) external view returns (address owner);
+    /**
+     * @dev Returns the owner of the `tokenId` token.
+     *
+     * Requirements:
+     *
+     * - `tokenId` must exist.
+     */
+    function ownerOf(uint256 tokenId) external view returns (address owner);
 
-//     /**
-//      * @dev Safely transfers `tokenId` token from `from` to `to`, checking first that contract recipients
-//      * are aware of the ERC721 protocol to prevent tokens from being forever locked.
-//      *
-//      * Requirements:
-//      *
-//      * - `from` cannot be the zero address.
-//      * - `to` cannot be the zero address.
-//      * - `tokenId` token must exist and be owned by `from`.
-//      * - If the caller is not `from`, it must be have been allowed to move this token by either {approve} or {setApprovalForAll}.
-//      * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer.
-//      *
-//      * Emits a {Transfer} event.
-//      */
-//     function safeTransferFrom(
-//         address from,
-//         address to,
-//         uint256 tokenId
-//     ) external;
+    /**
+     * @dev Safely transfers `tokenId` token from `from` to `to`, checking first that contract recipients
+     * are aware of the ERC721 protocol to prevent tokens from being forever locked.
+     *
+     * Requirements:
+     *
+     * - `from` cannot be the zero address.
+     * - `to` cannot be the zero address.
+     * - `tokenId` token must exist and be owned by `from`.
+     * - If the caller is not `from`, it must be have been allowed to move this token by either {approve} or {setApprovalForAll}.
+     * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer.
+     *
+     * Emits a {Transfer} event.
+     */
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) external;
 
-//     /**
-//      * @dev Transfers `tokenId` token from `from` to `to`.
-//      *
-//      * WARNING: Usage of this method is discouraged, use {safeTransferFrom} whenever possible.
-//      *
-//      * Requirements:
-//      *
-//      * - `from` cannot be the zero address.
-//      * - `to` cannot be the zero address.
-//      * - `tokenId` token must be owned by `from`.
-//      * - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}.
-//      *
-//      * Emits a {Transfer} event.
-//      */
-//     function transferFrom(
-//         address from,
-//         address to,
-//         uint256 tokenId
-//     ) external;
+    /**
+     * @dev Transfers `tokenId` token from `from` to `to`.
+     *
+     * WARNING: Usage of this method is discouraged, use {safeTransferFrom} whenever possible.
+     *
+     * Requirements:
+     *
+     * - `from` cannot be the zero address.
+     * - `to` cannot be the zero address.
+     * - `tokenId` token must be owned by `from`.
+     * - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}.
+     *
+     * Emits a {Transfer} event.
+     */
+    function transferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) external;
 
-//     /**
-//      * @dev Gives permission to `to` to transfer `tokenId` token to another account.
-//      * The approval is cleared when the token is transferred.
-//      *
-//      * Only a single account can be approved at a time, so approving the zero address clears previous approvals.
-//      *
-//      * Requirements:
-//      *
-//      * - The caller must own the token or be an approved operator.
-//      * - `tokenId` must exist.
-//      *
-//      * Emits an {Approval} event.
-//      */
-//     function approve(address to, uint256 tokenId) external;
+    /**
+     * @dev Gives permission to `to` to transfer `tokenId` token to another account.
+     * The approval is cleared when the token is transferred.
+     *
+     * Only a single account can be approved at a time, so approving the zero address clears previous approvals.
+     *
+     * Requirements:
+     *
+     * - The caller must own the token or be an approved operator.
+     * - `tokenId` must exist.
+     *
+     * Emits an {Approval} event.
+     */
+    function approve(address to, uint256 tokenId) external;
 
-//     /**
-//      * @dev Returns the account approved for `tokenId` token.
-//      *
-//      * Requirements:
-//      *
-//      * - `tokenId` must exist.
-//      */
-//     function getApproved(uint256 tokenId)
-//         external
-//         view
-//         returns (address operator);
+    /**
+     * @dev Returns the account approved for `tokenId` token.
+     *
+     * Requirements:
+     *
+     * - `tokenId` must exist.
+     */
+    function getApproved(uint256 tokenId)
+        external
+        view
+        returns (address operator);
 
-//     /**
-//      * @dev Approve or remove `operator` as an operator for the caller.
-//      * Operators can call {transferFrom} or {safeTransferFrom} for any token owned by the caller.
-//      *
-//      * Requirements:
-//      *
-//      * - The `operator` cannot be the caller.
-//      *
-//      * Emits an {ApprovalForAll} event.
-//      */
-//     function setApprovalForAll(address operator, bool _approved) external;
+    /**
+     * @dev Approve or remove `operator` as an operator for the caller.
+     * Operators can call {transferFrom} or {safeTransferFrom} for any token owned by the caller.
+     *
+     * Requirements:
+     *
+     * - The `operator` cannot be the caller.
+     *
+     * Emits an {ApprovalForAll} event.
+     */
+    function setApprovalForAll(address operator, bool _approved) external;
 
-//     /**
-//      * @dev Returns if the `operator` is allowed to manage all of the assets of `owner`.
-//      *
-//      * See {setApprovalForAll}
-//      */
-//     function isApprovedForAll(address owner, address operator)
-//         external
-//         view
-//         returns (bool);
+    /**
+     * @dev Returns if the `operator` is allowed to manage all of the assets of `owner`.
+     *
+     * See {setApprovalForAll}
+     */
+    function isApprovedForAll(address owner, address operator)
+        external
+        view
+        returns (bool);
 
-//     /**
-//      * @dev Safely transfers `tokenId` token from `from` to `to`.
-//      *
-//      * Requirements:
-//      *
-//      * - `from` cannot be the zero address.
-//      * - `to` cannot be the zero address.
-//      * - `tokenId` token must exist and be owned by `from`.
-//      * - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}.
-//      * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer.
-//      *
-//      * Emits a {Transfer} event.
-//      */
-//     function safeTransferFrom(
-//         address from,
-//         address to,
-//         uint256 tokenId,
-//         bytes calldata data
-//     ) external;
-// }
+    /**
+     * @dev Safely transfers `tokenId` token from `from` to `to`.
+     *
+     * Requirements:
+     *
+     * - `from` cannot be the zero address.
+     * - `to` cannot be the zero address.
+     * - `tokenId` token must exist and be owned by `from`.
+     * - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}.
+     * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer.
+     *
+     * Emits a {Transfer} event.
+     */
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId,
+        bytes calldata data
+    ) external;
+}
 // interface IERC721Metadata is IERC721 {
 //     /**
 //      * @dev Returns the token collection name.
@@ -2309,20 +2309,29 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
 contract cityNode is ERC1155, Ownable {
     bool public contractStatus = true; 
 
-    IERC20 public FIDToken;
+    IERC20 public FDToken;
+    IERC20[] public SBT;
+    IERC721 public FID;
     uint256 public id;
-
+    
+    uint[] public WeightFactor = [10,15];
+    // address[] public _SBT;
     mapping(address => uint256) public reputationPoints;
     mapping(address => bool) public isCityNodeUser;
     mapping(uint256 => bool) public isNotLightCity;
     mapping(address => bool) public cityNodeCreater;
     mapping(uint256 => address[]) public cityNodeMember;
+    mapping(address => uint256) public CityNodeUserNum;
+    mapping(address => joinCityNodeMemberInfo[]) public NumberInfo;
+    mapping(address => string) public proposal;
+    mapping(uint256=> mapping(address => uint256)) public cityNodeTotalReputationPoints;
     struct cityNodeInFo{
         uint256 cityNodeId;
         string cityNodeName;
         address cityNodeOwner;
         uint256 createTime;
         address[] member;
+    
     }
     struct joinCityNodeMemberInfo{
         uint256 cityNodeId;
@@ -2338,30 +2347,71 @@ contract cityNode is ERC1155, Ownable {
         return isCityNodeUser[account]; 
     }
 
+
+    function setFIDServe() public view returns(uint256){
+        return FID.balanceOf(msg.sender);
+    }
+
+    function setSBTAddress(IERC20[] memory _SBT) public onlyOwner {
+        for ( uint i = 0; i<SBT.length;i++){
+            SBT[i] = _SBT[i];
+        }
+    }
+    function checkTotalReputationPoints()public view returns(uint256){
+        uint256 t = 0;
+        for(uint i = 0; i< SBT.length ; i++){
+            t += SBT[i].balanceOf(msg.sender);
+        }
+        return t;
+    } 
+    function _checkTotalReputationPoints(address user)public view returns(uint256){
+        uint256 t = 0;
+        for(uint i = 0; i< SBT.length ; i++){
+            t += SBT[i].balanceOf(user);
+        }
+        return t;
+    }
+
+
     function setPause() public onlyOwner {
         contractStatus = !contractStatus;   
     }
- 
-    function setReputationPointsAddress(IERC20 _FIDToken) public onlyOwner{
-        FIDToken = _FIDToken;
+    function setFIDaddress( IERC721 _FID) public onlyOwner {
+        FID = _FID;
+    }
+    function setReputationPointsAddress(IERC20 _FDToken) public onlyOwner{
+        FDToken = _FDToken;
+    }
+    function checkWeightFactorLength() public view returns(uint256){
+        return WeightFactor.length;
+    }
+    function addWeightFactor(uint _WeightFactorNum, uint _WeightFactor) public onlyOwner{
+        WeightFactor[_WeightFactorNum] = _WeightFactor;
     }
 
     function checkReputationPoints() public view returns(uint256) {
-        return FIDToken.balanceOf(msg.sender);
+        return FDToken.balanceOf(msg.sender);
     }
 
     function checkCityNodeQuantity() public view returns(uint256){
         return cityNodeInFos.length;
     }
+    function checkCityNodeId() public view returns(uint256) {
+        return CityNodeUserNum[msg.sender];
+    }
 
     function createCityNode(uint256 cityNodeNum,string memory cityNodeName) public {
-        require(FIDToken.balanceOf(msg.sender)> 100000*10*18,"not enough");
+       require(setFIDServe() == 1 , "you haven't FID,plz burn fireseed to create"); 
+        require(contractStatus,"Status is false");
+        require(checkTotalReputationPoints() > 100000*10*18,"not enough");
         require(cityNodeNum <= id, "the cityNode has been created");
         _mint(msg.sender,id,1,"test");
          cityNodeCreater[msg.sender] = true;
          cityNodeMember[cityNodeNum].push(msg.sender);
+         CityNodeUserNum[msg.sender] = cityNodeNum;
          cityNodeInFo memory Info = cityNodeInFo(id, cityNodeName,msg.sender,block.timestamp,cityNodeMember[cityNodeNum]);
          cityNodeInFos.push(Info);
+         cityNodeTotalReputationPoints[cityNodeNum][msg.sender] = checkTotalReputationPoints();
          id++;
     }
 
@@ -2371,9 +2421,35 @@ contract cityNode is ERC1155, Ownable {
         require(cityNodeNum > id, "you input error");
         _mint(msg.sender,cityNodeNum,1,"test");
         cityNodeMember[cityNodeNum].push(msg.sender);
+         CityNodeUserNum[msg.sender] = cityNodeNum;
         joinCityNodeMemberInfo memory Info = joinCityNodeMemberInfo( cityNodeNum,block.timestamp);
         joinCityNodeMemberInfos.push(Info);
         isCityNodeUser[msg.sender] = true;
         cityNodeMember[cityNodeNum].push(msg.sender);
+        NumberInfo[msg.sender] = joinCityNodeMemberInfos;
+        cityNodeTotalReputationPoints[cityNodeNum][msg.sender] = checkTotalReputationPoints();
+        
     }
+
+    function quitCityNode() public{
+        require(contractStatus,"Status is false");
+        require(isCityNodeUser[msg.sender] == true,"you haven't join any citynode");
+        _burn(msg.sender,CityNodeUserNum[msg.sender],1);
+        isCityNodeUser[msg.sender] = false;
+    }
+    function lightCityNode(address _user) public {
+        require(contractStatus,"Status is false");
+        // for(uint i = 0 ; i < )
+
+    }
+    function createCityNodeProposal(string memory _proposal) public {
+        require(contractStatus,"Status is false");
+        require(isCityNodeUser[msg.sender] == true,"you haven't join any citynode");
+        require(checkTotalReputationPoints() > 10000*10*18,"not enough");
+        require(block.timestamp - NumberInfo[msg.sender][CityNodeUserNum[msg.sender]].joinCityNodeTime > 2678400,"you haven't make a proposal" );
+        proposal[msg.sender] = _proposal;
+    }
+
+
+
 }
