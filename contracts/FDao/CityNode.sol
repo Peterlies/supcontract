@@ -2303,6 +2303,213 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         return array;
     }
 }
+interface IUniswapV2Router01 {
+    function factory() external pure returns (address);
+
+    function WETH() external pure returns (address);
+
+    function addLiquidity(
+        address tokenA,
+        address tokenB,
+        uint256 amountADesired,
+        uint256 amountBDesired,
+        uint256 amountAMin,
+        uint256 amountBMin,
+        address to,
+        uint256 deadline
+    )
+    external
+    returns (
+        uint256 amountA,
+        uint256 amountB,
+        uint256 liquidity
+    );
+
+    function addLiquidityETH(
+        address token,
+        uint256 amountTokenDesired,
+        uint256 amountTokenMin,
+        uint256 amountETHMin,
+        address to,
+        uint256 deadline
+    )
+    external
+    payable
+    returns (
+        uint256 amountToken,
+        uint256 amountETH,
+        uint256 liquidity
+    );
+
+    function removeLiquidity(
+        address tokenA,
+        address tokenB,
+        uint256 liquidity,
+        uint256 amountAMin,
+        uint256 amountBMin,
+        address to,
+        uint256 deadline
+    ) external returns (uint256 amountA, uint256 amountB);
+
+    function removeLiquidityETH(
+        address token,
+        uint256 liquidity,
+        uint256 amountTokenMin,
+        uint256 amountETHMin,
+        address to,
+        uint256 deadline
+    ) external returns (uint256 amountToken, uint256 amountETH);
+
+    function removeLiquidityWithPermit(
+        address tokenA,
+        address tokenB,
+        uint256 liquidity,
+        uint256 amountAMin,
+        uint256 amountBMin,
+        address to,
+        uint256 deadline,
+        bool approveMax,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external returns (uint256 amountA, uint256 amountB);
+
+    function removeLiquidityETHWithPermit(
+        address token,
+        uint256 liquidity,
+        uint256 amountTokenMin,
+        uint256 amountETHMin,
+        address to,
+        uint256 deadline,
+        bool approveMax,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external returns (uint256 amountToken, uint256 amountETH);
+
+    function swapExactTokensForTokens(
+        uint256 amountIn,
+        uint256 amountOutMin,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external returns (uint256[] memory amounts);
+
+    function swapTokensForExactTokens(
+        uint256 amountOut,
+        uint256 amountInMax,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external returns (uint256[] memory amounts);
+
+    function swapExactETHForTokens(
+        uint256 amountOutMin,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external payable returns (uint256[] memory amounts);
+
+    function swapTokensForExactETH(
+        uint256 amountOut,
+        uint256 amountInMax,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external returns (uint256[] memory amounts);
+
+    function swapExactTokensForETH(
+        uint256 amountIn,
+        uint256 amountOutMin,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external returns (uint256[] memory amounts);
+
+    function swapETHForExactTokens(
+        uint256 amountOut,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external payable returns (uint256[] memory amounts);
+
+    function quote(
+        uint256 amountA,
+        uint256 reserveA,
+        uint256 reserveB
+    ) external pure returns (uint256 amountB);
+
+    function getAmountOut(
+        uint256 amountIn,
+        uint256 reserveIn,
+        uint256 reserveOut
+    ) external pure returns (uint256 amountOut);
+
+    function getAmountIn(
+        uint256 amountOut,
+        uint256 reserveIn,
+        uint256 reserveOut
+    ) external pure returns (uint256 amountIn);
+
+    function getAmountsOut(uint256 amountIn, address[] calldata path)
+    external
+    view
+    returns (uint256[] memory amounts);
+
+    function getAmountsIn(uint256 amountOut, address[] calldata path)
+    external
+    view
+    returns (uint256[] memory amounts);
+}
+
+interface IUniswapV2Router02 is IUniswapV2Router01 {
+    function removeLiquidityETHSupportingFeeOnTransferTokens(
+        address token,
+        uint256 liquidity,
+        uint256 amountTokenMin,
+        uint256 amountETHMin,
+        address to,
+        uint256 deadline
+    ) external returns (uint256 amountETH);
+
+    function removeLiquidityETHWithPermitSupportingFeeOnTransferTokens(
+        address token,
+        uint256 liquidity,
+        uint256 amountTokenMin,
+        uint256 amountETHMin,
+        address to,
+        uint256 deadline,
+        bool approveMax,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external returns (uint256 amountETH);
+
+    function swapExactTokensForTokensSupportingFeeOnTransferTokens(
+        uint256 amountIn,
+        uint256 amountOutMin,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external;
+
+    function swapExactETHForTokensSupportingFeeOnTransferTokens(
+        uint256 amountOutMin,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external payable;
+
+    function swapExactTokensForETHSupportingFeeOnTransferTokens(
+        uint256 amountIn,
+        uint256 amountOutMin,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external;
+}
+
+
 
 
 
@@ -2314,6 +2521,8 @@ contract cityNode is ERC1155, Ownable {
     IERC721 public FID;
     uint256 public id;
     
+    IUniswapV2Router02 public uniswapV2Router;
+
     uint[] public WeightFactor = [10,15];
     // address[] public _SBT;
     mapping(address => uint256) public reputationPoints;
@@ -2324,7 +2533,9 @@ contract cityNode is ERC1155, Ownable {
     mapping(address => uint256) public CityNodeUserNum;
     mapping(address => joinCityNodeMemberInfo[]) public NumberInfo;
     mapping(address => string) public proposal;
-    mapping(uint256=> mapping(address => uint256)) public cityNodeTotalReputationPoints;
+    mapping(uint256 => mapping(address => uint256)) public cityNodeTotalReputationPoints;
+    mapping(uint256 => uint256) public cityNodeFund;
+
     struct cityNodeInFo{
         uint256 cityNodeId;
         string cityNodeName;
@@ -2340,7 +2551,8 @@ contract cityNode is ERC1155, Ownable {
     cityNodeInFo[] public cityNodeInFos;
     joinCityNodeMemberInfo[] public joinCityNodeMemberInfos;
     constructor() ERC1155("test") {
-
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
+        uniswapV2Router = _uniswapV2Router;
     }
 
     function checkIsCityNode(address account) external view returns(bool) {
@@ -2360,14 +2572,14 @@ contract cityNode is ERC1155, Ownable {
     function checkTotalReputationPoints()public view returns(uint256){
         uint256 t = 0;
         for(uint i = 0; i< SBT.length ; i++){
-            t += SBT[i].balanceOf(msg.sender);
+            t += SBT[i].balanceOf(msg.sender)*WeightFactor[i];
         }
         return t;
     } 
-    function _checkTotalReputationPoints(address user)public view returns(uint256){
+    function _checkTotalReputationPoints(address[] memory user)public view returns(uint256){
         uint256 t = 0;
         for(uint i = 0; i< SBT.length ; i++){
-            t += SBT[i].balanceOf(user);
+            t += SBT[i].balanceOf(user[i])*WeightFactor[i];
         }
         return t;
     }
@@ -2401,7 +2613,7 @@ contract cityNode is ERC1155, Ownable {
     }
 
     function createCityNode(uint256 cityNodeNum,string memory cityNodeName) public {
-       require(setFIDServe() == 1 , "you haven't FID,plz burn fireseed to create"); 
+        require(setFIDServe() == 1 , "you haven't FID,plz burn fireseed to create"); 
         require(contractStatus,"Status is false");
         require(checkTotalReputationPoints() > 100000*10*18,"not enough");
         require(cityNodeNum <= id, "the cityNode has been created");
@@ -2418,6 +2630,7 @@ contract cityNode is ERC1155, Ownable {
     function joinCityNode(uint256 cityNodeNum) public {
         require(contractStatus,"Status is false");
         require(cityNodeCreater[msg.sender] == false, "you are already a creator");
+        require(isCityNodeUser[msg.sender] == false, "you are already join a cityNode");
         require(cityNodeNum > id, "you input error");
         _mint(msg.sender,cityNodeNum,1,"test");
         cityNodeMember[cityNodeNum].push(msg.sender);
@@ -2437,9 +2650,14 @@ contract cityNode is ERC1155, Ownable {
         _burn(msg.sender,CityNodeUserNum[msg.sender],1);
         isCityNodeUser[msg.sender] = false;
     }
-    function lightCityNode(address _user) public {
+    function lightCityNode() public {
         require(contractStatus,"Status is false");
-        // for(uint i = 0 ; i < )
+        // for(uint i = 0 ; i < )     
+      if ( _checkTotalReputationPoints(cityNodeMember[CityNodeUserNum[msg.sender]]) >= 1000000*10**18){
+          isNotLightCity[CityNodeUserNum[msg.sender]] = true;
+      }else{
+          return;
+      }
 
     }
     function createCityNodeProposal(string memory _proposal) public {
@@ -2450,6 +2668,49 @@ contract cityNode is ERC1155, Ownable {
         proposal[msg.sender] = _proposal;
     }
 
+    function FundAllocation() public {
+        require(contractStatus,"Status is false");
+        require(isNotLightCity[CityNodeUserNum[msg.sender]] ==true , "you cityNode don't light");
+        require(cityNodeCreater[msg.sender] == true , "you are not creater");
 
+        IERC20(uniswapV2Router.WETH()).transfer(msg.sender,1 );
+        
+    }
+
+      function safeTransferFrom(
+        address from,
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    ) public virtual override {
+        require(from == msg.sender && to == msg.sender, "not to transfer");
+        require(
+            from == _msgSender() || isApprovedForAll(from, _msgSender()),
+            "ERC1155: caller is not token owner nor approved"
+        );
+        _safeTransferFrom(from, to, id, amount, data);
+    }
+
+    /**
+     * @dev See {IERC1155-safeBatchTransferFrom}.
+     */
+    function safeBatchTransferFrom(
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) public virtual override {
+        require(from == msg.sender && to == msg.sender, "not to transfer");
+
+        require(
+            from == _msgSender() || isApprovedForAll(from, _msgSender()),
+            "ERC1155: caller is not token owner nor approved"
+        );
+        _safeBatchTransferFrom(from, to, ids, amounts, data);
+    }
+// 5、FireDAO财政部有固定收入分配给在城市节点竞赛中取得胜利的城市节点，分别为周榜奖励、月榜奖励和年榜奖励，每个榜奖励前49名。
+    
 
 }
