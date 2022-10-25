@@ -1025,9 +1025,7 @@ contract guild is ERC1155,Ownable {
         require(isnotWhitelistUser[msg.sender] == true , "you not aprove");
         uint id;
         _mint(msg.sender ,id, 1,"test" );
-
         guildInFo memory info = guildInFo(_guildName,_logo,_guildDescribe,managers);
-
         guildInFos.push(info);
         guildInFoOWner[msg.sender][id] = guildInFos;
         userGuildNum[msg.sender] = id;
