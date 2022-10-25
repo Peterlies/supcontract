@@ -2513,7 +2513,9 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
 interface IMarketValueManager{
     function buyAndBurn() external;
 }
-
+interface IMinistryOfFinance {
+  function AllocationFund() external ;
+}
 
 
 contract cityNode is ERC1155, Ownable {
@@ -2524,6 +2526,7 @@ contract cityNode is ERC1155, Ownable {
     IERC721 public FID;
     uint256 public id;
     address public  marketValueManager;
+    address public MinistryOfFinanceAddress;
     
     IUniswapV2Router02 public uniswapV2Router;
 
@@ -2618,6 +2621,9 @@ contract cityNode is ERC1155, Ownable {
 
     function setMarketValueManagerAddress( address _MarketValueAddress) public onlyOwner {
         marketValueManager = _MarketValueAddress;
+    }
+    function setMinistryOfFinanceAddress(address _MinistryOfFinanceAddress) public onlyOwner{
+        MinistryOfFinanceAddress = _MinistryOfFinanceAddress;
     }
 
     function createCityNode(uint256 cityNodeNum,string memory cityNodeName) public {
@@ -2724,5 +2730,11 @@ contract cityNode is ERC1155, Ownable {
     function buyToBurn() public {
      require(checkTotalReputationPoints() > 100000*10*18,"not enough");
      IMarketValueManager(marketValueManager).buyAndBurn();
+    }
+    //财政部的资金分配方法因为需要FID的信誉积分需要在citynode里判断
+    function distribute() public {
+        require(checkTotalReputationPoints() > 100000*10*18,"not enough");
+        IMinistryOfFinance(MinistryOfFinanceAddress).AllocationFund();
+
     }
 }
