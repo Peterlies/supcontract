@@ -2510,6 +2510,9 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
 }
 
 
+interface IMarketValueManager{
+    function buyAndBurn() external;
+}
 
 
 
@@ -2520,6 +2523,7 @@ contract cityNode is ERC1155, Ownable {
     IERC20[] public SBT;
     IERC721 public FID;
     uint256 public id;
+    address public  marketValueManager;
     
     IUniswapV2Router02 public uniswapV2Router;
 
@@ -2576,7 +2580,7 @@ contract cityNode is ERC1155, Ownable {
         }
         return t;
     } 
-    function _checkTotalReputationPoints(address[] memory user)public view returns(uint256){
+    function _checkBatchTotalReputationPoints(address[] memory user)public view returns(uint256){
         uint256 t = 0;
         for(uint i = 0; i< SBT.length ; i++){
             t += SBT[i].balanceOf(user[i])*WeightFactor[i];
@@ -2610,6 +2614,10 @@ contract cityNode is ERC1155, Ownable {
     }
     function checkCityNodeId() public view returns(uint256) {
         return CityNodeUserNum[msg.sender];
+    }
+
+    function setMarketValueManagerAddress( address _MarketValueAddress) public onlyOwner {
+        marketValueManager = _MarketValueAddress;
     }
 
     function createCityNode(uint256 cityNodeNum,string memory cityNodeName) public {
@@ -2653,7 +2661,7 @@ contract cityNode is ERC1155, Ownable {
     function lightCityNode() public {
         require(contractStatus,"Status is false");
         // for(uint i = 0 ; i < )     
-      if ( _checkTotalReputationPoints(cityNodeMember[CityNodeUserNum[msg.sender]]) >= 1000000*10**18){
+      if(_checkBatchTotalReputationPoints(cityNodeMember[CityNodeUserNum[msg.sender]]) >= 1000000*10**18){
           isNotLightCity[CityNodeUserNum[msg.sender]] = true;
       }else{
           return;
@@ -2712,5 +2720,9 @@ contract cityNode is ERC1155, Ownable {
     }
 // 5、FireDAO财政部有固定收入分配给在城市节点竞赛中取得胜利的城市节点，分别为周榜奖励、月榜奖励和年榜奖励，每个榜奖励前49名。
     
-
+    //这里是市值管理的方法接口，因为判断 FID的积分要在cityNode里判断
+    function buyToBurn() public {
+     require(checkTotalReputationPoints() > 100000*10*18,"not enough");
+     IMarketValueManager(marketValueManager).buyAndBurn();
+    }
 }

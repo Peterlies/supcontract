@@ -576,8 +576,7 @@ contract Ownable is Context {
     }
 }
 
-
-contract guard is Ownable {
+contract marketValueManager is Ownable {
 
     IERC20 public BNB;
 
@@ -612,7 +611,7 @@ contract guard is Ownable {
     }
 
 
-    function buyAndBurn() public notContract {
+    function buyAndBurn() external  {
         require(BNB.balanceOf(address(this)) >= 1 *10 **14 , "BNB balance error");
         require(block.timestamp > cooldown + 15 , "is not cooldown");
         require(IERC20(token).balanceOf(msg.sender) > 1000*10**18,"u hold amount error" );
@@ -635,6 +634,7 @@ contract guard is Ownable {
     function setAimToken(address _token) public onlyOwner {
         token = _token;
     }
+    
 
 
     function swapTokensForOther(uint256 tokenAmount) private {
