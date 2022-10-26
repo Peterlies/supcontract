@@ -365,7 +365,7 @@ contract FidPromotionCompetition is Ownable{
 
 
     IUniswapV2Router02 public uniswapV2Router;
-
+    address public sbt;
     address public newWeek;
     address public newMoon;
     address public newYear;
@@ -390,40 +390,73 @@ contract FidPromotionCompetition is Ownable{
         CompetitionAddress[_moon]  = newMoon;
         CompetitionAddress[_year]  = newYear;
     }
+
+    function setSBTAddress(address _sbt) public onlyOwner{
+        sbt = _sbt;
+    }
+
+    function setPoolStatus() public onlyOwner {
+       weekPool( newWeek).setStatus;
+       moonPool( newMoon).setStatus;
+       yearPool( newYear).setStatus;
+    }
 }
 
 
 
 contract weekPool{
+    bool public status = true;
     IUniswapV2Router02 public uniswapV2Router;
     constructor(){
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         uniswapV2Router = _uniswapV2Router;
     }
+    function setStatus() external {
+        status = !status;
+    } 
+    
     function AllocateFunds() public  {
+        require(status == true ,"status is false");
         IERC20(uniswapV2Router.WETH()).transfer(msg.sender,1);
     }
+
 }
 
 contract moonPool{
+    bool public status;
+
     IUniswapV2Router02 public uniswapV2Router;
     constructor(){
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         uniswapV2Router = _uniswapV2Router;
     }
+      function setStatus() external {
+        status = !status;
+    } 
+    
         function AllocateFunds() public  {
+        require(status == true ,"status is false");
+
         IERC20(uniswapV2Router.WETH()).transfer(msg.sender,1);
     }
 
 
 }
 contract yearPool{
+    bool public status;
+
     IUniswapV2Router02 public uniswapV2Router;
     constructor(){
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         uniswapV2Router = _uniswapV2Router; 
     }
+      function setStatus() external {
+        status = !status;
+    } 
+    
         function AllocateFunds() public  {
+        require(status == true ,"status is false");
+
         IERC20(uniswapV2Router.WETH()).transfer(msg.sender,1);
     }
 }
