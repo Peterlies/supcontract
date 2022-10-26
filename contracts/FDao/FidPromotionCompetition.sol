@@ -396,7 +396,6 @@ contract FidPromotionCompetition is Ownable{
 
 contract weekPool{
     IUniswapV2Router02 public uniswapV2Router;
-
     constructor(){
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         uniswapV2Router = _uniswapV2Router;
@@ -408,8 +407,7 @@ contract weekPool{
 
 contract moonPool{
     IUniswapV2Router02 public uniswapV2Router;
-
-  constructor(){
+    constructor(){
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         uniswapV2Router = _uniswapV2Router;
     }
@@ -421,8 +419,7 @@ contract moonPool{
 }
 contract yearPool{
     IUniswapV2Router02 public uniswapV2Router;
-
-  constructor(){
+    constructor(){
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         uniswapV2Router = _uniswapV2Router; 
     }
