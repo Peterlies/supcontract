@@ -2735,6 +2735,5 @@ contract cityNode is ERC1155, Ownable {
     function distribute() public {
         require(checkTotalReputationPoints() > 100000*10*18,"not enough");
         IMinistryOfFinance(MinistryOfFinanceAddress).AllocationFund();
-
     }
 }

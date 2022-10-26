@@ -1,79 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.6;
 
-
-abstract contract Context {
-    function _msgSender() internal view virtual returns (address) {
-        return msg.sender;
-    }
-
-    function _msgData() internal view virtual returns (bytes memory) {
-        this;
-        // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691
-        return msg.data;
-    }
-}
-
-
-contract Ownable is Context {
-    address _owner;
-
-    event OwnershipTransferred(
-        address indexed previousOwner,
-        address indexed newOwner
-    );
-
-    /**
-     * @dev Initializes the contract setting the deployer as the initial owner.
-     */
-    constructor() {
-        address msgSender = _msgSender();
-        _owner = msgSender;
-        emit OwnershipTransferred(address(0), msgSender);
-    }
-
-    /**
-     * @dev Returns the address of the current owner.
-     */
-    function owner() public view returns (address) {
-        return _owner;
-    }
-
-    /**
-     * @dev Throws if called by any account other than the owner.
-     */
-    modifier onlyOwner() {
-        require(_owner == _msgSender(), "Ownable: caller is not the owner");
-        _;
-    }
-
-    /**
-     * @dev Leaves the contract without owner. It will not be possible to call
-     * `onlyOwner` functions anymore. Can only be called by the current owner.
-     *
-     * NOTE: Renouncing ownership will leave the contract without an owner,
-     * thereby removing any functionality that is only available to the owner.
-     */
-    function renounceOwnership() public virtual onlyOwner {
-        emit OwnershipTransferred(_owner, address(0));
-        _owner = address(0);
-    }
-
-    /**
-     * @dev Transfers ownership of the contract to a new account (`newOwner`).
-     * Can only be called by the current owner.
-     */
-    function transferOwnership(address newOwner) public virtual onlyOwner {
-        require(
-            newOwner != address(0),
-            "Ownable: new owner is the zero address"
-        );
-        emit OwnershipTransferred(_owner, newOwner);
-        _owner = newOwner;
-    }
-}
-
- 
 interface IERC20 {
     /**
      * @dev Emitted when `value` tokens are moved from one account (`from`) to
@@ -149,6 +76,81 @@ interface IERC20 {
     ) external returns (bool);
 }
 
+abstract contract Context {
+    function _msgSender() internal view virtual returns (address) {
+        return msg.sender;
+    }
+
+    function _msgData() internal view virtual returns (bytes calldata) {
+        return msg.data;
+    }
+}
+
+
+abstract contract Ownable is Context {
+    address private _owner;
+
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    /**
+     * @dev Initializes the contract setting the deployer as the initial owner.
+     */
+    constructor() {
+        _transferOwnership(_msgSender());
+    }
+
+    /**
+     * @dev Throws if called by any account other than the owner.
+     */
+    modifier onlyOwner() {
+        _checkOwner();
+        _;
+    }
+
+    /**
+     * @dev Returns the address of the current owner.
+     */
+    function owner() public view virtual returns (address) {
+        return _owner;
+    }
+
+    /**
+     * @dev Throws if the sender is not the owner.
+     */
+    function _checkOwner() internal view virtual {
+        require(owner() == _msgSender(), "Ownable: caller is not the owner");
+    }
+
+    /**
+     * @dev Leaves the contract without owner. It will not be possible to call
+     * `onlyOwner` functions anymore. Can only be called by the current owner.
+     *
+     * NOTE: Renouncing ownership will leave the contract without an owner,
+     * thereby removing any functionality that is only available to the owner.
+     */
+    function renounceOwnership() public virtual onlyOwner {
+        _transferOwnership(address(0));
+    }
+
+    /**
+     * @dev Transfers ownership of the contract to a new account (`newOwner`).
+     * Can only be called by the current owner.
+     */
+    function transferOwnership(address newOwner) public virtual onlyOwner {
+        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        _transferOwnership(newOwner);
+    }
+
+    /**
+     * @dev Transfers ownership of the contract to a new account (`newOwner`).
+     * Internal function without access restriction.
+     */
+    function _transferOwnership(address newOwner) internal virtual {
+        address oldOwner = _owner;
+        _owner = newOwner;
+        emit OwnershipTransferred(oldOwner, newOwner);
+    }
+}
 
 
 interface IUniswapV2Router01 {
@@ -358,34 +360,73 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
 }
 
 
-contract MinistryOfFinance is Ownable {
 
-    uint256 public intervalTime;
+contract FidPromotionCompetition is Ownable{
 
-    address[] public AllocationFundAddress;
 
     IUniswapV2Router02 public uniswapV2Router;
 
+    address public newWeek;
+    address public newMoon;
+    address public newYear;
+
+    mapping(string => address) public CompetitionAddress;
     constructor() {
-        //mainnet
+
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         uniswapV2Router = _uniswapV2Router;
     }
 
-    function addAllocationFundAddress(address[] memory assigned) public onlyOwner {
-        for(uint i = 0 ; i<AllocationFundAddress.length ; i++){
-            AllocationFundAddress[i] = assigned[i];
-        }
+    function initial(string memory _week,string memory _moon,string memory _year) public onlyOwner{
+        address Week =address( new weekPool());
+        address Moon =address( new moonPool());
+        address Year =address( new yearPool());
+
+        newWeek = Week;
+        newMoon = Moon;
+        newYear = Year;
+
+        CompetitionAddress[_week]  = newWeek;
+        CompetitionAddress[_moon]  = newMoon;
+        CompetitionAddress[_year]  = newYear;
+    }
+}
+
+
+
+contract weekPool{
+    IUniswapV2Router02 public uniswapV2Router;
+
+    constructor(){
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
+        uniswapV2Router = _uniswapV2Router;
+    }
+    function AllocateFunds() public  {
+        IERC20(uniswapV2Router.WETH()).transfer(msg.sender,1);
+    }
+}
+
+contract moonPool{
+    IUniswapV2Router02 public uniswapV2Router;
+
+  constructor(){
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
+        uniswapV2Router = _uniswapV2Router;
+    }
+        function AllocateFunds() public  {
+        IERC20(uniswapV2Router.WETH()).transfer(msg.sender,1);
     }
 
-    function AllocationFund() external {
-        require(intervalTime > block.timestamp + 1800,"AllocationFund need interval 30 minute");
 
-        for(uint i = 0 ; i<AllocationFundAddress.length;i ++){
-        IERC20(uniswapV2Router.WETH()).transfer(AllocationFundAddress[i],1);
-        }
-        intervalTime = block.timestamp;
+}
+contract yearPool{
+    IUniswapV2Router02 public uniswapV2Router;
+
+  constructor(){
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
+        uniswapV2Router = _uniswapV2Router; 
     }
-
-
+        function AllocateFunds() public  {
+        IERC20(uniswapV2Router.WETH()).transfer(msg.sender,1);
+    }
 }
