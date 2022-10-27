@@ -2527,7 +2527,7 @@ contract cityNode is ERC1155, Ownable {
     IERC20 public FDToken;
     IERC20[] public SBT;
     IERC721 public FID;
-    uint256 public id;
+    uint256 public ctiyNodeId;
     address public  marketValueManager;
     address public MinistryOfFinanceAddress;
     address public FidPromotionCompetitionAddress;
@@ -2640,22 +2640,22 @@ contract cityNode is ERC1155, Ownable {
         require(setFIDServe() == 1 , "you haven't FID,plz burn fireseed to create"); 
         require(contractStatus,"Status is false");
         require(checkTotalReputationPoints() > 100000*10*18,"not enough");
-        require(cityNodeNum <= id, "the cityNode has been created");
-        _mint(msg.sender,id,1,"test");
+        require(cityNodeNum <= ctiyNodeId, "the cityNode has been created");
+        _mint(msg.sender,ctiyNodeId,1,"test");
          cityNodeCreater[msg.sender] = true;
          cityNodeMember[cityNodeNum].push(msg.sender);
          CityNodeUserNum[msg.sender] = cityNodeNum;
-         cityNodeInFo memory Info = cityNodeInFo(id, cityNodeName,msg.sender,block.timestamp,cityNodeMember[cityNodeNum]);
+         cityNodeInFo memory Info = cityNodeInFo(ctiyNodeId, cityNodeName,msg.sender,block.timestamp,cityNodeMember[cityNodeNum]);
          cityNodeInFos.push(Info);
          cityNodeTotalReputationPoints[cityNodeNum][msg.sender] = checkTotalReputationPoints();
-         id++;
+         ctiyNodeId++;
     }
 
     function joinCityNode(uint256 cityNodeNum) public {
         require(contractStatus,"Status is false");
         require(cityNodeCreater[msg.sender] == false, "you are already a creator");
         require(isCityNodeUser[msg.sender] == false, "you are already join a cityNode");
-        require(cityNodeNum > id, "you input error");
+        require(cityNodeNum > ctiyNodeId, "you input error");
         _mint(msg.sender,cityNodeNum,1,"test");
         cityNodeMember[cityNodeNum].push(msg.sender);
          CityNodeUserNum[msg.sender] = cityNodeNum;
@@ -2761,7 +2761,7 @@ contract cityNode is ERC1155, Ownable {
     }
     //查询每个成世节点的003然后安找城市节点的序号排序
     function cableCityNode() public  {
-        for(uint i = 0 ; i < id; i++ ){
+        for(uint i = 0 ; i < ctiyNodeId; i++ ){
             if(checkSBT003(i) > checkSBT003(i+1)){
                 cable[i] = checkSBT003(i);
                 cable[i+1] = checkSBT003(i+1);
@@ -2774,4 +2774,10 @@ contract cityNode is ERC1155, Ownable {
             }
         }
     }
+    //
+    function DistributionOfBonuses() public {
+        
+    }
+
+    
 }
