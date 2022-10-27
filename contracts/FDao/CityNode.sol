@@ -2516,6 +2516,9 @@ interface IMarketValueManager{
 interface IMinistryOfFinance {
   function AllocationFund() external ;
 }
+interface IFidPromotionCompetition{
+    function distribute() external;
+}
 
 
 contract cityNode is ERC1155, Ownable {
@@ -2527,6 +2530,7 @@ contract cityNode is ERC1155, Ownable {
     uint256 public id;
     address public  marketValueManager;
     address public MinistryOfFinanceAddress;
+    address public FidPromotionCompetitionAddress;
     
     IUniswapV2Router02 public uniswapV2Router;
 
@@ -2624,6 +2628,10 @@ contract cityNode is ERC1155, Ownable {
     }
     function setMinistryOfFinanceAddress(address _MinistryOfFinanceAddress) public onlyOwner{
         MinistryOfFinanceAddress = _MinistryOfFinanceAddress;
+    }
+
+    function setFidPromotionCompetitionAddress(address _FidPromotionCompetitionAddress) public onlyOwner {
+        FidPromotionCompetitionAddress = _FidPromotionCompetitionAddress;
     }
 
     function createCityNode(uint256 cityNodeNum,string memory cityNodeName) public {
@@ -2735,5 +2743,10 @@ contract cityNode is ERC1155, Ownable {
     function distribute() public {
         require(checkTotalReputationPoints() > 100000*10*18,"not enough");
         IMinistryOfFinance(MinistryOfFinanceAddress).AllocationFund();
+    }
+    //城市节点推广竞赛合约时间周期结束后调用需要FID声誉积分达到10w 
+    function distributeFidPromotionCompetition() public {
+        require(checkTotalReputationPoints() > 100000*10*18,"not enough");
+        IFidPromotionCompetition(FidPromotionCompetitionAddress).distribute();
     }
 }

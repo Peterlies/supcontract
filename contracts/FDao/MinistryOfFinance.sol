@@ -380,7 +380,6 @@ contract MinistryOfFinance is Ownable {
 
     function AllocationFund() external {
         require(intervalTime > block.timestamp + 1800,"AllocationFund need interval 30 minute");
-
         for(uint i = 0 ; i<AllocationFundAddress.length;i ++){
         IERC20(uniswapV2Router.WETH()).transfer(AllocationFundAddress[i],1);
         }

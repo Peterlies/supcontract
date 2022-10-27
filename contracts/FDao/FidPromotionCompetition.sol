@@ -400,6 +400,11 @@ contract FidPromotionCompetition is Ownable{
        moonPool( newMoon).setStatus;
        yearPool( newYear).setStatus;
     }
+    function distribute() external {
+        weekPool( newWeek).AllocateFunds;
+       moonPool( newMoon).AllocateFunds;
+       yearPool( newYear).AllocateFunds;
+    }
 }
 
 
@@ -415,7 +420,7 @@ contract weekPool{
         status = !status;
     } 
     
-    function AllocateFunds() public  {
+    function AllocateFunds() external  {
         require(status == true ,"status is false");
         IERC20(uniswapV2Router.WETH()).transfer(msg.sender,1);
     }
@@ -434,7 +439,7 @@ contract moonPool{
         status = !status;
     } 
     
-        function AllocateFunds() public  {
+        function AllocateFunds() external  {
         require(status == true ,"status is false");
 
         IERC20(uniswapV2Router.WETH()).transfer(msg.sender,1);
@@ -450,11 +455,11 @@ contract yearPool{
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         uniswapV2Router = _uniswapV2Router; 
     }
-      function setStatus() external {
+    function setStatus() external {
         status = !status;
     } 
     
-        function AllocateFunds() public  {
+    function AllocateFunds() external  {
         require(status == true ,"status is false");
 
         IERC20(uniswapV2Router.WETH()).transfer(msg.sender,1);
