@@ -594,6 +594,4 @@ contract autoReflowLP is Ownable {
         IERC20(uniswapV2Router.WETH()).transfer(msg.sender, 10**17);
     }
 
-
-
 }

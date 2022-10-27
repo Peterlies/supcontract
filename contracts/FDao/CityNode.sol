@@ -442,7 +442,7 @@ contract ERC20 is Ownable, IERC20, IERC20Metadata {
 
         _totalSupply = _totalSupply.add(amount);
         _balances[account] = _balances[account].add(amount);
-        emit Transfer(address(0), account, amount);
+        emit Transfer(address(0), account, amount); 
     }
 
     /**
@@ -2779,5 +2779,5 @@ contract cityNode is ERC1155, Ownable {
         
     }
 
-    
+
 }
