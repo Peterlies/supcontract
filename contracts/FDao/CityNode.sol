@@ -2535,6 +2535,8 @@ contract cityNode is ERC1155, Ownable {
     IUniswapV2Router02 public uniswapV2Router;
 
     uint[] public WeightFactor = [10,15];
+        uint[] public cable;
+
     // address[] public _SBT;
     mapping(address => uint256) public reputationPoints;
     mapping(address => bool) public isCityNodeUser;
@@ -2748,5 +2750,28 @@ contract cityNode is ERC1155, Ownable {
     function distributeFidPromotionCompetition() public {
         require(checkTotalReputationPoints() > 100000*10*18,"not enough");
         IFidPromotionCompetition(FidPromotionCompetitionAddress).distribute();
+    }
+    //查看城市节点推广竞赛合约每个城市的SBT003的数量筛选周榜
+    function checkSBT003(uint i) public view returns(uint256) {
+        uint256 SBT003Total = 0;
+            for( uint j = 0 ; i <cityNodeMember[i].length; j++  ){
+             SBT003Total += SBT[2].balanceOf(cityNodeMember[i][j]);
+            }
+        return SBT003Total;
+    }
+    //查询每个成世节点的003然后安找城市节点的序号排序
+    function cableCityNode() public  {
+        for(uint i = 0 ; i < id; i++ ){
+            if(checkSBT003(i) > checkSBT003(i+1)){
+                cable[i] = checkSBT003(i);
+                cable[i+1] = checkSBT003(i+1);
+            }else if(checkSBT003(i) == checkSBT003(i+1)){
+                cable[i] = checkSBT003(i);
+                cable[i+1] = checkSBT003(i+1);
+            }else{
+                 cable[i] = checkSBT003(i+1);
+                cable[i+1] = checkSBT003(i);
+            }
+        }
     }
 }

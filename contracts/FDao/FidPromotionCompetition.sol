@@ -422,7 +422,7 @@ contract weekPool{
     
     function AllocateFunds() external  {
         require(status == true ,"status is false");
-        IERC20(uniswapV2Router.WETH()).transfer(msg.sender,1);
+        IERC20(uniswapV2Router.WETH()).transfer(msg.sender,10**17);
     }
 
 }
@@ -442,7 +442,7 @@ contract moonPool{
         function AllocateFunds() external  {
         require(status == true ,"status is false");
 
-        IERC20(uniswapV2Router.WETH()).transfer(msg.sender,1);
+        IERC20(uniswapV2Router.WETH()).transfer(msg.sender,10**17);
     }
 
 
@@ -462,6 +462,6 @@ contract yearPool{
     function AllocateFunds() external  {
         require(status == true ,"status is false");
 
-        IERC20(uniswapV2Router.WETH()).transfer(msg.sender,1);
+        IERC20(uniswapV2Router.WETH()).transfer(msg.sender,10**17);
     }
 }
