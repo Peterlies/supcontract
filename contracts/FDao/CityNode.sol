@@ -2789,6 +2789,4 @@ contract cityNode is ERC1155, Ownable {
     function DistributionOfBonusesOfCityNode() public {
         CityNodePromotionCompetition(CityNodePromotionCompetitionAddress).TotalDistributeAward();
     }
-
-
 }
