@@ -996,7 +996,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
 
 
 contract guild is ERC1155,Ownable {
-
+    uint256 public guildId;
     mapping(address => bool) public isnotWhitelistUser; 
     mapping(uint256 =>mapping(address => bool)) public isnotcreater;
     mapping(address => uint256) public userGuildNum;
@@ -1023,23 +1023,61 @@ contract guild is ERC1155,Ownable {
     }
     function createGuild(string memory _guildName , string memory _logo,string memory _guildDescribe, address[3] memory managers) public {
         require(isnotWhitelistUser[msg.sender] == true , "you not aprove");
-        uint id;
-        _mint(msg.sender ,id, 1,"test" );
+        if(guildId >10) {
+            revert();
+        }
+        _mint(msg.sender ,guildId, 1,"test" );
         guildInFo memory info = guildInFo(_guildName,_logo,_guildDescribe,managers);
         guildInFos.push(info);
-        guildInFoOWner[msg.sender][id] = guildInFos;
-        userGuildNum[msg.sender] = id;
-        isnotcreater[id][msg.sender] =true;
-        id++;
+        guildInFoOWner[msg.sender][guildId] = guildInFos;
+        userGuildNum[msg.sender] = guildId;
+        isnotcreater[guildId][msg.sender] =true;
+        guildId++;
     }
 
-    function addguildUsers() public {
+    function joinGuild(uint256 _guildId) public {
         // require();
+        require(_guildId <= 10 , "guildId is error");
+        _mint(msg.sender ,_guildId, 1 , "test");
+        userGuildNum[msg.sender] = _guildId;
     }
 
-    function addguildManagers(address[3] memory manager) public {
+    function addguildManagers(address[3] memory manager) public  {
         require(isnotcreater[userGuildNum[msg.sender]][msg.sender] == true, "you are not manager" );
         guildInFoOWner[msg.sender][userGuildNum[msg.sender]][userGuildNum[msg.sender]].guildManager = manager;
+    }
+         function safeTransferFrom(
+        address from,
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    ) public virtual override {
+        require(from == msg.sender && to == msg.sender, "not to transfer");
+        require(
+            from == _msgSender() || isApprovedForAll(from, _msgSender()),
+            "ERC1155: caller is not token owner nor approved"
+        );
+        _safeTransferFrom(from, to, id, amount, data);
+    }
+
+    /**
+     * @dev See {IERC1155-safeBatchTransferFrom}.
+     */
+    function safeBatchTransferFrom(
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) public virtual override {
+        require(from == msg.sender && to == msg.sender, "not to transfer");
+
+        require(
+            from == _msgSender() || isApprovedForAll(from, _msgSender()),
+            "ERC1155: caller is not token owner nor approved"
+        );
+        _safeBatchTransferFrom(from, to, ids, amounts, data);
     }
     
 }
