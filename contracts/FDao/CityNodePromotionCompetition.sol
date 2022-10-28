@@ -605,7 +605,6 @@ contract weekPool{
     }
 
     function distributeAward() public{
-
     IERC20(uniswapV2Router.WETH()).transfer(msg.sender, 10**17);
     }
 
@@ -619,7 +618,6 @@ contract moonPool{
         uniswapV2Router = _uniswapV2Router;
     }
     function distributeAward() public{
-
     IERC20(uniswapV2Router.WETH()).transfer(msg.sender, 10**17);
     }
 
@@ -632,7 +630,6 @@ contract yearPool{
         uniswapV2Router = _uniswapV2Router;
     }
     function distributeAward() public{
-
     IERC20(uniswapV2Router.WETH()).transfer(msg.sender, 10**17);
     }
 
