@@ -2519,6 +2519,9 @@ interface IMinistryOfFinance {
 interface IFidPromotionCompetition{
     function distribute() external;
 }
+interface CityNodePromotionCompetition{
+   function TotalDistributeAward() external;
+}
 
 
 contract cityNode is ERC1155, Ownable {
@@ -2531,6 +2534,7 @@ contract cityNode is ERC1155, Ownable {
     address public  marketValueManager;
     address public MinistryOfFinanceAddress;
     address public FidPromotionCompetitionAddress;
+    address public CityNodePromotionCompetitionAddress;
     
     IUniswapV2Router02 public uniswapV2Router;
 
@@ -2634,6 +2638,9 @@ contract cityNode is ERC1155, Ownable {
 
     function setFidPromotionCompetitionAddress(address _FidPromotionCompetitionAddress) public onlyOwner {
         FidPromotionCompetitionAddress = _FidPromotionCompetitionAddress;
+    }
+    function setCityNodePromotionCompetitionAddress(address _CityNodePromotionCompetitionAddress) public onlyOwner{
+        CityNodePromotionCompetitionAddress = _CityNodePromotionCompetitionAddress;
     }
 
     function createCityNode(uint256 cityNodeNum,string memory cityNodeName) public {
@@ -2777,6 +2784,10 @@ contract cityNode is ERC1155, Ownable {
     //
     function DistributionOfBonuses() public {
         
+    }
+    //城市节点推广竞赛合约分配奖励方法
+    function DistributionOfBonusesOfCityNode() public {
+        CityNodePromotionCompetition(CityNodePromotionCompetitionAddress).TotalDistributeAward();
     }
 
 

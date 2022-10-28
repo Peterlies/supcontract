@@ -577,23 +577,32 @@ contract Ownable is Context {
         _owner = newOwner;
     }
 }
+ interface PoolDistributeAward {
+     function distributeAward() external;
+ }
 
 contract autoReflowLP is Ownable {
     IUniswapV2Router02 public uniswapV2Router;
     address public aimToken;
     uint256  public aimAmount; 
 
+    address public _weekPool;
+    address public _moonPool;
+    address public _yearPool;
+
     constructor() {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3);
         uniswapV2Router = _uniswapV2Router;
     }  
-
-    function setTokenAddress(address token) public onlyOwner{
-    aimToken = token ;
+    function setPoolAddress(address _week, address _moon, address _year) public onlyOwner{
+        _weekPool = _week;
+        _moonPool = _moon;
+        _yearPool = _year;
     }
-    function addlP() public {
-        uniswapV2Router.addLiquidity(aimToken,uniswapV2Router.WETH(),aimAmount, 10**18,0, 0,address(this),block.timestamp);
-        IERC20(uniswapV2Router.WETH()).transfer(msg.sender, 10**17);
+    function TotalDistributeAward() external {
+        PoolDistributeAward(_weekPool).distributeAward();
+        PoolDistributeAward(_moonPool).distributeAward();
+        PoolDistributeAward(_yearPool).distributeAward();
     }
 }
 
@@ -604,9 +613,10 @@ contract weekPool{
         uniswapV2Router = _uniswapV2Router;
     }
 
-    function distributeAward() public{
+    function distributeAward() external{
     IERC20(uniswapV2Router.WETH()).transfer(msg.sender, 10**17);
     }
+    
 
 
 
@@ -617,7 +627,7 @@ contract moonPool{
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3);
         uniswapV2Router = _uniswapV2Router;
     }
-    function distributeAward() public{
+    function distributeAward() external{
     IERC20(uniswapV2Router.WETH()).transfer(msg.sender, 10**17);
     }
 
@@ -629,7 +639,7 @@ contract yearPool{
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3);
         uniswapV2Router = _uniswapV2Router;
     }
-    function distributeAward() public{
+    function distributeAward() external{
     IERC20(uniswapV2Router.WETH()).transfer(msg.sender, 10**17);
     }
 
