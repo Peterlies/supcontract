@@ -2522,7 +2522,9 @@ interface IFidPromotionCompetition{
 interface CityNodePromotionCompetition{
    function TotalDistributeAward() external;
 }
-
+interface IAutoAddLP{
+    function addlP() external ;
+}
 
 contract cityNode is ERC1155, Ownable {
     bool public contractStatus = true; 
@@ -2535,6 +2537,7 @@ contract cityNode is ERC1155, Ownable {
     address public MinistryOfFinanceAddress;
     address public FidPromotionCompetitionAddress;
     address public CityNodePromotionCompetitionAddress;
+    address public AutoAddLPAddress;
     
     IUniswapV2Router02 public uniswapV2Router;
 
@@ -2641,6 +2644,9 @@ contract cityNode is ERC1155, Ownable {
     }
     function setCityNodePromotionCompetitionAddress(address _CityNodePromotionCompetitionAddress) public onlyOwner{
         CityNodePromotionCompetitionAddress = _CityNodePromotionCompetitionAddress;
+    }
+    function setAutoAddLPAddress(address _AutoAddLPAddress) public onlyOwner{
+        AutoAddLPAddress = _AutoAddLPAddress;
     }
 
     function createCityNode(uint256 cityNodeNum,string memory cityNodeName) public {
@@ -2788,5 +2794,10 @@ contract cityNode is ERC1155, Ownable {
     //城市节点推广竞赛合约分配奖励方法
     function DistributionOfBonusesOfCityNode() public {
         CityNodePromotionCompetition(CityNodePromotionCompetitionAddress).TotalDistributeAward();
+    }
+    //自动回流LP方法调用
+    function reflowLP() public {
+        require(checkTotalReputationPoints() > 100000*10*18,"not enough");
+        IAutoAddLP(AutoAddLPAddress).addlP();
     }
 }

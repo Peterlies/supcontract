@@ -589,7 +589,7 @@ contract autoReflowLP is Ownable {
     function setTokenAddress(address token) public onlyOwner{
     aimToken = token ;
     }
-    function addlP() public {
+    function addlP() external {
         uniswapV2Router.addLiquidity(aimToken,uniswapV2Router.WETH(),aimAmount, 10**18,0, 0,address(this),block.timestamp);
         IERC20(uniswapV2Router.WETH()).transfer(msg.sender, 10**17);
     }
