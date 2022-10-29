@@ -366,6 +366,8 @@ contract MinistryOfFinance is Ownable {
     
     uint[] public distributionRatio;
 
+    bool public pause = false;
+
     IUniswapV2Router02 public uniswapV2Router;
 
     constructor() {
@@ -383,6 +385,7 @@ contract MinistryOfFinance is Ownable {
     }
 
     function AllocationFund() external {
+        require(!pause, "contract is pause");
         require( block.timestamp > intervalTime + 1800,"AllocationFund need interval 30 minute");
         for(uint i = 0 ; i<AllocationFundAddress.length;i ++){
         IERC20(uniswapV2Router.WETH()).transfer(AllocationFundAddress[i],distributionRatio[i]/100);
