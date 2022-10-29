@@ -345,7 +345,7 @@ contract warp {
     }
 
     function withdraw() public  {
-        WBNB.transfer(fireSeedAddress, checkSAFEBalance()/10);
+        WBNB.transfer(msg.sender, checkSAFEBalance()/10);
         WBNB.transfer(cityNode, checkSAFEBalance()/10);
         WBNB.transfer(MinistryOfFinance, checkSAFEBalance()/10*8);
     }

@@ -1026,6 +1026,155 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
     ) external;
 }
 
+interface IERC165 {
+    /**
+     * @dev Returns true if this contract implements the interface defined by
+     * `interfaceId`. See the corresponding
+     * https://eips.ethereum.org/EIPS/eip-165#how-interfaces-are-identified[EIP section]
+     * to learn more about how these ids are created.
+     *
+     * This function call must use less than 30 000 gas.
+     */
+    function supportsInterface(bytes4 interfaceId) external view returns (bool);
+}
+
+
+interface IERC721 is IERC165 {
+    /**
+     * @dev Emitted when `tokenId` token is transferred from `from` to `to`.
+     */
+    event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
+
+    /**
+     * @dev Emitted when `owner` enables `approved` to manage the `tokenId` token.
+     */
+    event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId);
+
+    /**
+     * @dev Emitted when `owner` enables or disables (`approved`) `operator` to manage all of its assets.
+     */
+    event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
+
+    /**
+     * @dev Returns the number of tokens in ``owner``'s account.
+     */
+    function balanceOf(address owner) external view returns (uint256 balance);
+
+    /**
+     * @dev Returns the owner of the `tokenId` token.
+     *
+     * Requirements:
+     *
+     * - `tokenId` must exist.
+     */
+    function ownerOf(uint256 tokenId) external view returns (address owner);
+
+    /**
+     * @dev Safely transfers `tokenId` token from `from` to `to`.
+     *
+     * Requirements:
+     *
+     * - `from` cannot be the zero address.
+     * - `to` cannot be the zero address.
+     * - `tokenId` token must exist and be owned by `from`.
+     * - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}.
+     * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer.
+     *
+     * Emits a {Transfer} event.
+     */
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId,
+        bytes calldata data
+    ) external;
+
+    /**
+     * @dev Safely transfers `tokenId` token from `from` to `to`, checking first that contract recipients
+     * are aware of the ERC721 protocol to prevent tokens from being forever locked.
+     *
+     * Requirements:
+     *
+     * - `from` cannot be the zero address.
+     * - `to` cannot be the zero address.
+     * - `tokenId` token must exist and be owned by `from`.
+     * - If the caller is not `from`, it must have been allowed to move this token by either {approve} or {setApprovalForAll}.
+     * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon a safe transfer.
+     *
+     * Emits a {Transfer} event.
+     */
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) external;
+
+    /**
+     * @dev Transfers `tokenId` token from `from` to `to`.
+     *
+     * WARNING: Usage of this method is discouraged, use {safeTransferFrom} whenever possible.
+     *
+     * Requirements:
+     *
+     * - `from` cannot be the zero address.
+     * - `to` cannot be the zero address.
+     * - `tokenId` token must be owned by `from`.
+     * - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}.
+     *
+     * Emits a {Transfer} event.
+     */
+    function transferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) external;
+
+    /**
+     * @dev Gives permission to `to` to transfer `tokenId` token to another account.
+     * The approval is cleared when the token is transferred.
+     *
+     * Only a single account can be approved at a time, so approving the zero address clears previous approvals.
+     *
+     * Requirements:
+     *
+     * - The caller must own the token or be an approved operator.
+     * - `tokenId` must exist.
+     *
+     * Emits an {Approval} event.
+     */
+    function approve(address to, uint256 tokenId) external;
+
+    /**
+     * @dev Approve or remove `operator` as an operator for the caller.
+     * Operators can call {transferFrom} or {safeTransferFrom} for any token owned by the caller.
+     *
+     * Requirements:
+     *
+     * - The `operator` cannot be the caller.
+     *
+     * Emits an {ApprovalForAll} event.
+     */
+    function setApprovalForAll(address operator, bool _approved) external;
+
+    /**
+     * @dev Returns the account approved for `tokenId` token.
+     *
+     * Requirements:
+     *
+     * - `tokenId` must exist.
+     */
+    function getApproved(uint256 tokenId) external view returns (address operator);
+
+    /**
+     * @dev Returns if the `operator` is allowed to manage all of the assets of `owner`.
+     *
+     * See {setApprovalForAll}
+     */
+    function isApprovedForAll(address owner, address operator) external view returns (bool);
+}
+
+
+
 contract FireDaoToken is ERC20 {
     using SafeMath for uint256;
 	mapping(address => address) inviter;
@@ -1033,6 +1182,8 @@ contract FireDaoToken is ERC20 {
     IUniswapV2Router02 public uniswapV2Router;
     address public  uniswapV2Pair;
     address _tokenOwner;
+    address public FID;
+    address public  MinistryOfFinance;
 
     IFireSeed public fireSeed;
 
@@ -1175,6 +1326,13 @@ contract FireDaoToken is ERC20 {
 
     function setSwapAndLiquifyEnabled(bool _enabled) public onlyOwner {
         swapAndLiquifyEnabled = _enabled;
+    }
+    function setFIDAddress(address _FID) public onlyOwner {
+        FID = _FID;
+    }
+
+    function setMinistryOfFinance(address _MinistryOfFinance ) public onlyOwner{
+        MinistryOfFinance = _MinistryOfFinance;
     }
 
     function isExcludedFromFees(address account) public view returns (bool) {
@@ -1372,13 +1530,22 @@ contract FireDaoToken is ERC20 {
         user[0] = fireSeed.upclass(msg.sender);
         user[1] = fireSeed.upclass(user[0]);
         user[2] = fireSeed.upclass(user[1]);
-        if(user[1] == address(0)){
+        if(user[1] == address(0) || user[2] == address(0)){
             revert();
-        }
-        for(uint256 i = 0; i < distributeRates.length; i++){
-        WBNB.transfer(user[i], thisAmount.mul(distributeRates[i]).div(100));
-        }
-
+        }else if(IERC721(FID).balanceOf(msg.sender) != 0 && 
+                    IERC721(FID).balanceOf(user[0]) != 0 &&
+                    IERC721(FID).balanceOf(user[1]) != 0 &&
+                    IERC721(FID).balanceOf(user[2]) != 0 )
+                     {
+                    for(uint256 i = 0; i < distributeRates.length; i++){
+                        WBNB.transfer(user[i], thisAmount.mul(distributeRates[i]).div(100));
+                        }
+                     }else{
+                    for(uint256 i = 0; i < distributeRates.length; i++){
+                         WBNB.transfer(MinistryOfFinance,thisAmount.mul(distributeRates[i]).div(100));
+                    }
+                 }
+    
     }
 
     function _splitOtherToken() public {
