@@ -9,12 +9,223 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 
+interface IUniswapV2Router01 {
+    function factory() external pure returns (address);
+
+    function WETH() external pure returns (address);
+
+    function addLiquidity(
+        address tokenA,
+        address tokenB,
+        uint256 amountADesired,
+        uint256 amountBDesired,
+        uint256 amountAMin,
+        uint256 amountBMin,
+        address to,
+        uint256 deadline
+    )
+    external
+    returns (
+        uint256 amountA,
+        uint256 amountB,
+        uint256 liquidity
+    );
+
+    function addLiquidityETH(
+        address token,
+        uint256 amountTokenDesired,
+        uint256 amountTokenMin,
+        uint256 amountETHMin,
+        address to,
+        uint256 deadline
+    )
+    external
+    payable
+    returns (
+        uint256 amountToken,
+        uint256 amountETH,
+        uint256 liquidity
+    );
+
+    function removeLiquidity(
+        address tokenA,
+        address tokenB,
+        uint256 liquidity,
+        uint256 amountAMin,
+        uint256 amountBMin,
+        address to,
+        uint256 deadline
+    ) external returns (uint256 amountA, uint256 amountB);
+
+    function removeLiquidityETH(
+        address token,
+        uint256 liquidity,
+        uint256 amountTokenMin,
+        uint256 amountETHMin,
+        address to,
+        uint256 deadline
+    ) external returns (uint256 amountToken, uint256 amountETH);
+
+    function removeLiquidityWithPermit(
+        address tokenA,
+        address tokenB,
+        uint256 liquidity,
+        uint256 amountAMin,
+        uint256 amountBMin,
+        address to,
+        uint256 deadline,
+        bool approveMax,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external returns (uint256 amountA, uint256 amountB);
+
+    function removeLiquidityETHWithPermit(
+        address token,
+        uint256 liquidity,
+        uint256 amountTokenMin,
+        uint256 amountETHMin,
+        address to,
+        uint256 deadline,
+        bool approveMax,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external returns (uint256 amountToken, uint256 amountETH);
+
+    function swapExactTokensForTokens(
+        uint256 amountIn,
+        uint256 amountOutMin,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external returns (uint256[] memory amounts);
+
+    function swapTokensForExactTokens(
+        uint256 amountOut,
+        uint256 amountInMax,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external returns (uint256[] memory amounts);
+
+    function swapExactETHForTokens(
+        uint256 amountOutMin,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external payable returns (uint256[] memory amounts);
+
+    function swapTokensForExactETH(
+        uint256 amountOut,
+        uint256 amountInMax,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external returns (uint256[] memory amounts);
+
+    function swapExactTokensForETH(
+        uint256 amountIn,
+        uint256 amountOutMin,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external returns (uint256[] memory amounts);
+
+    function swapETHForExactTokens(
+        uint256 amountOut,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external payable returns (uint256[] memory amounts);
+
+    function quote(
+        uint256 amountA,
+        uint256 reserveA,
+        uint256 reserveB
+    ) external pure returns (uint256 amountB);
+
+    function getAmountOut(
+        uint256 amountIn,
+        uint256 reserveIn,
+        uint256 reserveOut
+    ) external pure returns (uint256 amountOut);
+
+    function getAmountIn(
+        uint256 amountOut,
+        uint256 reserveIn,
+        uint256 reserveOut
+    ) external pure returns (uint256 amountIn);
+
+    function getAmountsOut(uint256 amountIn, address[] calldata path)
+    external
+    view
+    returns (uint256[] memory amounts);
+
+    function getAmountsIn(uint256 amountOut, address[] calldata path)
+    external
+    view
+    returns (uint256[] memory amounts);
+}
+
+interface IUniswapV2Router02 is IUniswapV2Router01 {
+    function removeLiquidityETHSupportingFeeOnTransferTokens(
+        address token,
+        uint256 liquidity,
+        uint256 amountTokenMin,
+        uint256 amountETHMin,
+        address to,
+        uint256 deadline
+    ) external returns (uint256 amountETH);
+
+    function removeLiquidityETHWithPermitSupportingFeeOnTransferTokens(
+        address token,
+        uint256 liquidity,
+        uint256 amountTokenMin,
+        uint256 amountETHMin,
+        address to,
+        uint256 deadline,
+        bool approveMax,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) external returns (uint256 amountETH);
+
+    function swapExactTokensForTokensSupportingFeeOnTransferTokens(
+        uint256 amountIn,
+        uint256 amountOutMin,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external;
+
+    function swapExactETHForTokensSupportingFeeOnTransferTokens(
+        uint256 amountOutMin,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external payable;
+
+    function swapExactTokensForETHSupportingFeeOnTransferTokens(
+        uint256 amountIn,
+        uint256 amountOutMin,
+        address[] calldata path,
+        address to,
+        uint256 deadline
+    ) external;
+}
+
+
 
 contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable{
 
+    IUniswapV2Router02 public uniswapV2Router;
+    address public USDTAddress;
+    address public BUSDAddress;
     mapping(address => bool) public isRecommender;
     mapping(address => address) public recommender;
     mapping(address => address[]) public recommenderInfo;
+    
 
     struct accountInfo {
         bool isAccount;
@@ -33,7 +244,10 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
     uint256 public currentSendAmount;
 
 
-   constructor() ERC1155("https://bafybeiagpbpvyyk32t7n6n4pvguj75uh5hwq263b2jgamoh7bdqvf2quta.ipfs.nftstorage.link/0.json") {}
+   constructor() ERC1155("https://bafybeiagpbpvyyk32t7n6n4pvguj75uh5hwq263b2jgamoh7bdqvf2quta.ipfs.nftstorage.link/0.json") {
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
+        uniswapV2Router = _uniswapV2Router;
+   }
 
 
    function uri(uint256 tokenId) override public view returns(string memory) {
@@ -60,26 +274,80 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
     {
         return super.supportsInterface(interfaceId);
     }
-
+    function setUSDTAddress(address USDT) public onlyOwner{
+        USDTAddress = USDT;
+    }
+    function setBusdAddress(address Busd) public onlyOwner{
+        BUSDAddress = Busd;
+    }
        /// @notice Mint amount token of type `id` to `to`
     /// @param to the recipient of the token
     /// @param id id of the token type to mint
     /// @param amount amount of the token type to mint
     /// @param royaltyRecipient the recipient for royalties (if royaltyValue > 0)
     /// @param royaltyValue the royalties asked for (EIP2981)
-    function mint(
+    function mintWithUSDT(
         address to,
         uint256 id,
         uint256 amount,
         address royaltyRecipient,
         uint256 royaltyValue
     ) external {
+        // IERC20(uniswapV2Router.WETH()).transfer(owner(), 1);
+        IERC20(USDTAddress).transfer(owner(),100*10**18 );
         _mint(to, id, amount, '');
 
         if (royaltyValue > 0) {
             _setTokenRoyalty(id, royaltyRecipient, royaltyValue);
         }
     }
+
+    function mintWithBUSD(
+        address to,
+        uint256 id,
+        uint256 amount,
+        address royaltyRecipient,
+        uint256 royaltyValue
+    ) external {
+        // IERC20(uniswapV2Router.WETH()).transfer(owner(), 1);
+        IERC20(BUSDAddress).transfer(owner(),100*10**18 );
+        _mint(to, id, amount, '');
+
+        if (royaltyValue > 0) {
+            _setTokenRoyalty(id, royaltyRecipient, royaltyValue);
+        }
+    }
+
+ function mintWithBNB(
+        address to,
+        uint256 id,
+        uint256 amount,
+        address royaltyRecipient,
+        uint256 royaltyValue
+    ) external {
+        // IERC20(uniswapV2Router.WETH()).transfer(owner(), 1);
+
+        address[] memory path = new address[](2);
+        path[0] = uniswapV2Router.WETH();
+        path[1] = USDTAddress;//mainnet
+    //    path[1] = address(0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684);//testnet
+        
+        uniswapV2Router.swapExactTokensForTokensSupportingFeeOnTransferTokens(
+            //此处需要算出多少BNB兑换100U
+            1,
+            0,
+            path,
+            owner(),
+            block.timestamp
+        );
+        _mint(to, id, amount, '');
+
+        if (royaltyValue > 0) {
+            _setTokenRoyalty(id, royaltyRecipient, royaltyValue);
+        }
+    }
+    
+
 
     /// @notice Mint several tokens at once
     /// @param to the recipient of the token
