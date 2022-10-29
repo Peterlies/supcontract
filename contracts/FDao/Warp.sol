@@ -317,6 +317,7 @@ contract warp {
     address public owner;
     address public MinistryOfFinance;
     address public cityNode;
+    address public fireSeedAddress;
     constructor () {
         //mainnet
         // IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
@@ -339,10 +340,13 @@ contract warp {
     function setCityNode(address cNode) public onlyOwner{
         cityNode = cNode;
     }
+    function setFireSeedAddress(address fSeed) public onlyOwner{
+        fireSeedAddress = fSeed;
+    }
 
     function withdraw() public  {
-        WBNB.transfer(msg.sender, checkSAFEBalance()/10*1);
-        WBNB.transfer(cityNode, checkSAFEBalance()/10*1);
+        WBNB.transfer(fireSeedAddress, checkSAFEBalance()/10);
+        WBNB.transfer(cityNode, checkSAFEBalance()/10);
         WBNB.transfer(MinistryOfFinance, checkSAFEBalance()/10*8);
     }
     function checkSAFEBalance() public view returns(uint256){
