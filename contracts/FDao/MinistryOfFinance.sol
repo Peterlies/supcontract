@@ -363,6 +363,8 @@ contract MinistryOfFinance is Ownable {
     uint256 public intervalTime;
 
     address[] public AllocationFundAddress;
+    
+    uint[] public distributionRatio;
 
     IUniswapV2Router02 public uniswapV2Router;
 
@@ -371,7 +373,9 @@ contract MinistryOfFinance is Ownable {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         uniswapV2Router = _uniswapV2Router;
     }
-
+    function setDistributionRatio(uint i, uint rate) public onlyOwner{
+        distributionRatio[i] = rate;
+    }
     function addAllocationFundAddress(address[] memory assigned) public onlyOwner {
         for(uint i = 0 ; i<AllocationFundAddress.length ; i++){
             AllocationFundAddress[i] = assigned[i];
@@ -379,9 +383,9 @@ contract MinistryOfFinance is Ownable {
     }
 
     function AllocationFund() external {
-        require(intervalTime > block.timestamp + 1800,"AllocationFund need interval 30 minute");
+        require( block.timestamp > intervalTime + 1800,"AllocationFund need interval 30 minute");
         for(uint i = 0 ; i<AllocationFundAddress.length;i ++){
-        IERC20(uniswapV2Router.WETH()).transfer(AllocationFundAddress[i],1);
+        IERC20(uniswapV2Router.WETH()).transfer(AllocationFundAddress[i],distributionRatio[i]/100);
         }
         intervalTime = block.timestamp;
     }

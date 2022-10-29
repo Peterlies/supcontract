@@ -2555,6 +2555,7 @@ contract cityNode is ERC1155, Ownable {
     mapping(address => string) public proposal;
     mapping(uint256 => mapping(address => uint256)) public cityNodeTotalReputationPoints;
     mapping(uint256 => uint256) public cityNodeFund;
+    mapping(address => uint256) public AllocationFundUserTime;
 
     struct cityNodeInFo{
         uint256 cityNodeId;
@@ -2757,7 +2758,10 @@ contract cityNode is ERC1155, Ownable {
     //财政部的资金分配方法因为需要FID的信誉积分需要在citynode里判断
     function distribute() public {
         require(checkTotalReputationPoints() > 100000*10*18,"not enough");
+        require(block.timestamp - AllocationFundUserTime[msg.sender] > 43200, "you need interval 12 hours");
         IMinistryOfFinance(MinistryOfFinanceAddress).AllocationFund();
+        AllocationFundUserTime[msg.sender] = block.timestamp;
+        IERC20(uniswapV2Router.WETH()).transfer(msg.sender, 5*10**16);
     }
     //城市节点推广竞赛合约时间周期结束后调用需要FID声誉积分达到10w 
     function distributeFidPromotionCompetition() public {
