@@ -2681,6 +2681,12 @@ contract cityNode is ERC1155, Ownable {
         cityNodeTotalReputationPoints[cityNodeNum][msg.sender] = checkTotalReputationPoints();
         
     }
+    function deleteCityNodeUser(address _nodeUser) public {
+        require(contractStatus,"Status is false");
+        require(cityNodeCreater[msg.sender] == true, "you are not a owner");
+        _burn(_nodeUser, CityNodeUserNum[msg.sender], 1);
+    }
+    
 
     function quitCityNode() public{
         require(contractStatus,"Status is false");

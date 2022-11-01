@@ -361,6 +361,7 @@ interface IERC20 {
 contract cityNodeTreasury is Ownable {
 
     address[] public AllocationFundAddress;
+    uint[] public rate;
 
     IUniswapV2Router02 public uniswapV2Router;
 
@@ -368,6 +369,9 @@ contract cityNodeTreasury is Ownable {
         //mainnet
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         uniswapV2Router = _uniswapV2Router;
+    }
+    function setAllocationRate(uint[] memory _rate) public onlyOwner{
+        rate = _rate;
     }
 
     function addAllocationFundAddress(address[] memory assigned) public onlyOwner {
@@ -378,7 +382,7 @@ contract cityNodeTreasury is Ownable {
 
     function AllocationAmount() public {
         for(uint i = 0 ; i<AllocationFundAddress.length;i++){
-            IERC20(uniswapV2Router.WETH()).transfer(AllocationFundAddress[i],1);
+            IERC20(uniswapV2Router.WETH()).transfer(AllocationFundAddress[i],rate[i]);
         }
     }
 
