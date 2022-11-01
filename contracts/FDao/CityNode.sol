@@ -2774,7 +2774,7 @@ contract cityNode is ERC1155, Ownable {
         require(checkTotalReputationPoints() > 100000*10*18,"not enough");
         IFidPromotionCompetition(FidPromotionCompetitionAddress).distribute();
     }
-    //查看城市节点推广竞赛合约每个城市的SBT003的数量筛选周榜
+    //查看FID推广竞赛合约每个城市的SBT003的数量筛选周榜
     function checkSBT003(uint i) public view returns(uint256) {
         uint256 SBT003Total = 0;
             for( uint j = 0 ; i <cityNodeMember[i].length; j++  ){
@@ -2800,6 +2800,20 @@ contract cityNode is ERC1155, Ownable {
     //
     function DistributionOfBonuses() public {
         
+    }
+    //城市节点排行榜
+    mapping(uint => uint) public cityNodeRank;
+    function checkFidReputation() public {
+        for(uint i = 0 ; i <= ctiyNodeId ; i++){
+        _checkBatchTotalReputationPoints(cityNodeMember[i]);
+        if(_checkBatchTotalReputationPoints(cityNodeMember[i]) > _checkBatchTotalReputationPoints(cityNodeMember[i+1])){
+            cityNodeRank[i] = _checkBatchTotalReputationPoints(cityNodeMember[i]);
+            cityNodeRank[i+1] = _checkBatchTotalReputationPoints(cityNodeMember[i+1]);
+        }else{     
+            cityNodeRank[i] = _checkBatchTotalReputationPoints(cityNodeMember[i+1]);
+            cityNodeRank[i+1] = _checkBatchTotalReputationPoints(cityNodeMember[i]);
+        }
+        }
     }
     //城市节点推广竞赛合约分配奖励方法
     function DistributionOfBonusesOfCityNode() public {
