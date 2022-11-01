@@ -23,7 +23,7 @@ contract FDSBD002 is ERC20{
     
     event DelegateVotesChanged(address indexed delegate, uint256 previousBalance, uint256 newBalance);
     event AdminChange(address indexed Admin, address indexed newAdmin);
-    constructor(address manager,address _minter,uint256 _totalSupply,string memory _name, string memory _symbol,string memory _logo)  public ERC20(_name, _symbol){
+    constructor(address manager,address _minter,uint256 _totalSupply,string memory _logo)  public ERC20("FDSBD002", "FDSBD002"){
         logo = _logo;
         _mint(manager, _totalSupply * 10 ** 18);
         _addDelegates(manager, safe96(_totalSupply * 10 ** 18,"erc20: vote amount underflows"));
