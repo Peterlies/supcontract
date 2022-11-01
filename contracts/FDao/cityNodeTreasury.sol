@@ -358,7 +358,7 @@ interface IERC20 {
 
 
 
-contract MinistryOfFinance is Ownable {
+contract cityNodeTreasury is Ownable {
 
     address[] public AllocationFundAddress;
 
