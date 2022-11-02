@@ -599,10 +599,10 @@ contract autoReflowLP is Ownable {
         _moonPool = _moon;
         _yearPool = _year;
     }
-    function TotalDistributeAward() external {
+    function TotalDistributeAward_week() external {
         PoolDistributeAward(_weekPool).distributeAward();
-        PoolDistributeAward(_moonPool).distributeAward();
-        PoolDistributeAward(_yearPool).distributeAward();
+
+
     }
 }
 
@@ -613,8 +613,9 @@ contract weekPool{
         uniswapV2Router = _uniswapV2Router;
     }
 
-    function distributeAward() external{
+    function distributeAward(address citynodeUser) external{
     IERC20(uniswapV2Router.WETH()).transfer(msg.sender, 10**17);
+    IERC20(uniswapV2Router.WETH()).transfer(citynodeUser,10**17);
     }
     
 

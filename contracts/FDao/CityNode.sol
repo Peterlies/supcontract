@@ -2520,7 +2520,7 @@ interface IFidPromotionCompetition{
     function distribute() external;
 }
 interface CityNodePromotionCompetition{
-   function TotalDistributeAward() external;
+   function TotalDistributeAward_week(address citynodeUser) external;
 }
 interface IAutoAddLP{
     function addlP() external ;
@@ -2803,25 +2803,34 @@ contract cityNode is ERC1155, Ownable {
     }
     //城市节点排行榜
     mapping(uint => uint) public cityNodeRank;
+
     function checkFidReputation() public {
+        for(uint j = 0 ; j <= ctiyNodeId; j++){
         for(uint i = 0 ; i <= ctiyNodeId ; i++){
         _checkBatchTotalReputationPoints(cityNodeMember[i]);
         if(_checkBatchTotalReputationPoints(cityNodeMember[i]) > _checkBatchTotalReputationPoints(cityNodeMember[i+1])){
-            cityNodeRank[i] = _checkBatchTotalReputationPoints(cityNodeMember[i]);
-            cityNodeRank[i+1] = _checkBatchTotalReputationPoints(cityNodeMember[i+1]);
+            cityNodeRank[j] = _checkBatchTotalReputationPoints(cityNodeMember[i]);
+            cityNodeRank[j+1] = _checkBatchTotalReputationPoints(cityNodeMember[i+1]);
         }else{     
-            cityNodeRank[i] = _checkBatchTotalReputationPoints(cityNodeMember[i+1]);
-            cityNodeRank[i+1] = _checkBatchTotalReputationPoints(cityNodeMember[i]);
+            cityNodeRank[j] = _checkBatchTotalReputationPoints(cityNodeMember[i+1]);
+            cityNodeRank[j+1] = _checkBatchTotalReputationPoints(cityNodeMember[i]);
         }
         }
     }
+    }
     //城市节点推广竞赛合约分配奖励方法
     function DistributionOfBonusesOfCityNode() public {
-        CityNodePromotionCompetition(CityNodePromotionCompetitionAddress).TotalDistributeAward();
+        for(uint i = 0 ; i<=49 ;i ++) {
+            for(uint j = 0 ; j< cityNodeMember[cityNodeRank[i]].length; j++){
+        CityNodePromotionCompetition(CityNodePromotionCompetitionAddress).TotalDistributeAward_week(cityNodeMember[cityNodeRank[i]][j]);
+            }
+
+        }
     }
     //自动回流LP方法调用
     function reflowLP() public {
         require(checkTotalReputationPoints() > 100000*10*18,"not enough");
         IAutoAddLP(AutoAddLPAddress).addlP();
     }
+    
 }
