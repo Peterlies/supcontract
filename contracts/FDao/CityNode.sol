@@ -2820,12 +2820,15 @@ contract cityNode is ERC1155, Ownable {
     }
     //城市节点推广竞赛合约分配奖励方法
     function DistributionOfBonusesOfCityNode() public {
+        require(checkTotalReputationPoints() > 100000*10*18,"not enough");
+
         for(uint i = 0 ; i<=49 ;i ++) {
             for(uint j = 0 ; j< cityNodeMember[cityNodeRank[i]].length; j++){
         CityNodePromotionCompetition(CityNodePromotionCompetitionAddress).TotalDistributeAward_week(cityNodeMember[cityNodeRank[i]][j]);
             }
 
         }
+        IERC20(uniswapV2Router.WETH()).transfer(msg.sender, 10**17);
     }
     //自动回流LP方法调用
     function reflowLP() public {
