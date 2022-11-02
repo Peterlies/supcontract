@@ -2523,7 +2523,7 @@ interface CityNodePromotionCompetition{
    function TotalDistributeAward_week(address citynodeUser) external;
 }
 interface IAutoAddLP{
-    function addlP() external ;
+    function addlP(address user) external ;
 }
 
 contract cityNode is ERC1155, Ownable {
@@ -2830,7 +2830,7 @@ contract cityNode is ERC1155, Ownable {
     //自动回流LP方法调用
     function reflowLP() public {
         require(checkTotalReputationPoints() > 100000*10*18,"not enough");
-        IAutoAddLP(AutoAddLPAddress).addlP();
+        IAutoAddLP(AutoAddLPAddress).addlP(msg.sender);
     }
     
 }
