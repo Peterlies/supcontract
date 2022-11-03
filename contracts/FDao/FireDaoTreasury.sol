@@ -368,7 +368,8 @@ contract FireDaoTreasury is Ownable {
     IUniswapV2Router02 public uniswapV2Router;
     mapping(uint256 => mapping(uint256 => string))public proposal;
     mapping(uint256 => uint256 ) public tokenAmount;
-
+    mapping(uint256 => address) public proposalOwner;
+ 
 
     constructor() {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
