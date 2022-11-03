@@ -140,7 +140,7 @@ contract valut {
     event CreatVault(string name,string intro,string logo,uint completeClosurePeriod,uint monthlyReleaseRatio,uint AlertPayDayRule);
     
     
-    constructor(address manager) public {
+    constructor(address manager)  {
         admin = manager;
     }
     
