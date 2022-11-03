@@ -366,6 +366,8 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
 contract FireDaoTreasury is Ownable {
 
     IUniswapV2Router02 public uniswapV2Router;
+    mapping(uint256 => mapping(uint256 => string))public proposal;
+    mapping(uint256 => uint256 ) public tokenAmount;
 
 
     constructor() {
@@ -373,11 +375,15 @@ contract FireDaoTreasury is Ownable {
         uniswapV2Router = _uniswapV2Router;
     }
 
-    function CreateAProposal () public {
+    function CreateAProposal (string memory txt, uint256 amount ) public {
+        uint256 id;
+        proposal[id][amount] = txt ;
+        tokenAmount[id] = amount;
+        id++; 
 
     }
-    function Execute() public {
-        IERC20(uniswapV2Router.WETH()).transfer(msg.sender, 1);
+    function Execute(uint256 proposalId) public {
+        IERC20(uniswapV2Router.WETH()).transfer(msg.sender, tokenAmount[proposalId]);
     }
 
 }
