@@ -6,9 +6,10 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 
-contract FDSBD005 is ERC20{
+contract FDSBD005 is ERC20,Ownable{
     using SafeMath for uint256;
 
     string public logo;
@@ -16,6 +17,8 @@ contract FDSBD005 is ERC20{
         uint32 fromBlock;
         uint96 votes;
     }
+    bool public status;
+
     address public minter;
     address public admin;
     mapping (address => mapping (uint32 => Checkpoint)) public checkpoints;

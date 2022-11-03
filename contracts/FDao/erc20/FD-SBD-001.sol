@@ -5,10 +5,10 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 
-
-contract FDSBD001 is ERC20{
+contract FDSBD001 is ERC20 ,Ownable{
     using SafeMath for uint256;
 
     string public logo;
@@ -16,6 +16,7 @@ contract FDSBD001 is ERC20{
         uint32 fromBlock;
         uint96 votes;
     }
+    bool public status = false;
     address public minter;
     address public admin;
     mapping (address => mapping (uint32 => Checkpoint)) public checkpoints;
@@ -38,19 +39,28 @@ contract FDSBD001 is ERC20{
         require(msg.sender == admin);
         _;
     }
+
+    function setContractStatus() public onlyOwner {
+        status = !status;
+    }
     function mint(address account, uint256 amount) public _isMinter returns (bool) {
+        require(!status , "status is not able");
         _mint( account, amount);
         return true;
     }
 
 
     function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
+        require(!status , "status is not able");
+
         require(false);
        _transferErc20(msg.sender,recipient,amount);
         return true;
     }
     
     function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
+        require(!status , "status is not able");
+
         require(false);
         _transferErc20(sender,recipient,amount);
         uint256 currentAllowance = allowance(sender,_msgSender());
@@ -60,11 +70,15 @@ contract FDSBD001 is ERC20{
     }
    
     function getCurrentVotes(address account) external view returns (uint96) {
+        require(!status , "status is not able");
+
         uint32 nCheckpoints = numCheckpoints[account];
         return nCheckpoints > 0 ? checkpoints[account][nCheckpoints - 1].votes : 0;
     }
     
     function getPriorVotes(address account, uint blockNumber) public view returns (uint96) {
+        require(!status , "status is not able");
+
          require(blockNumber <= block.number, "ERC20: not yet determined");
     
          uint32 nCheckpoints = numCheckpoints[account];
