@@ -1,4 +1,3 @@
-pragma solidity ^0.8.0;
 
 // SPDX-License-Identifier: MIT
 // OpenZeppelin Contracts (last updated v4.6.0) (token/ERC20/IERC20.sol)
@@ -83,10 +82,10 @@ interface IERC20 {
     ) external returns (bool);
 }
 
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract valut {
+contract valut is Ownable {
 
-    address public owner;
     address public rbd;
     address public admin; 
 
@@ -101,7 +100,7 @@ contract valut {
     
 
     mapping(address=>bool)status;
-    mapping(address=> userInfo) info;
+    mapping(address=> userInfo)  info;
 
     struct userInfo{
         //uint id;
@@ -112,15 +111,16 @@ contract valut {
         uint time;
     }
     userInfo[]public list2;
-    mapping(address=>AlertPayRule) alertPayRules;
+    mapping(address => AlertPayRule) alertPayRules;
+
     struct AlertPayRule{
-        uint completeClosurePeriod ;
+        uint completeClosurePeriod;
         uint ReleasePeriod;
         uint monthlyReleaseRatio;
         uint AlertPayDayRule;
     }
     //mapping (address=>certigierInfo) certigier;
-    mapping (address=>uint) amounts;
+    mapping (address=>uint) amountof;
     struct withdrawalInfo{
         address owner;
         uint time;
@@ -148,28 +148,30 @@ contract valut {
         require(msg.sender == admin);
         _;
     }
+    function setTokenAddress(address _token) public onlyOwner {
+            rbd = _token;
+    }
     
-    function creatVault(string memory _name,string memory _intro,string memory _logo,uint completeClosurePeriod,uint ReleasePeriod,uint monthlyReleaseRatio,uint AlertPayDayRule)public{
-        owner=msg.sender;
+    function creatVault(string memory _name,string memory _intro,string memory _logo,uint _completeClosurePeriod,uint _ReleasePeriod,uint _monthlyReleaseRatio,uint _AlertPayDayRule) public {
         name=_name;
         intro=_intro;
         logo=_logo;
-        AlertPayRule memory info1= AlertPayRule({
-      
-            completeClosurePeriod:24,
-            ReleasePeriod:ReleasePeriod,
-            monthlyReleaseRatio:monthlyReleaseRatio,
-            AlertPayDayRule:AlertPayDayRule
+        AlertPayRule memory info1 = AlertPayRule({
+            completeClosurePeriod:_completeClosurePeriod,
+            ReleasePeriod:_ReleasePeriod,
+            monthlyReleaseRatio:_monthlyReleaseRatio,
+            AlertPayDayRule:_AlertPayDayRule
 
         });
+        alertPayRules[msg.sender] = info1;
         
     }
     
-    function deposit(address rbd, uint amount ) public {
+    function deposit(uint amount ) public {
         uint32 blockTime=uint32(block.timestamp % 2 ** 32);
         uint userBalance=IERC20(rbd).balanceOf(msg.sender);
 
-        //require (amount<=userBalance,"There aren't enough tokens");
+        require (amount<=userBalance,"There aren't enough tokens");
         index=index+1; 
         IERC20(rbd).transferFrom(msg.sender,address(this),amount);
         time=blockTime;
@@ -184,7 +186,7 @@ contract valut {
         list2.push(userinfo);
     }
 
-    function withdraw(address rbd,address to ,uint amount,uint number)public{
+    function withdraw(address to ,uint amount,uint number)public{
          
         index1=index1+1;
          if (msg.sender==to){
@@ -200,7 +202,7 @@ contract valut {
                 
             }
             if (number==2){
-                if(alertPayRules[address(this)].AlertPayDayRule==0){
+                if(alertPayRules[address(this)].AlertPayDayRule == 0){
                     uint amounts=(((blockTime-time)/86400)*alertPayRules[address(this)].monthlyReleaseRatio/100)*info[msg.sender].amount;
                      //amounts=(userInfo.amonut/1000)*((blockTime-time)/86400);
                     require(amount<=amounts,"Exceeds withdrawal amount");
@@ -215,7 +217,7 @@ contract valut {
         }
         else{
             require(status[to]==true,"not authorized");
-            require(amount <=list2[index].amount*amounts[to]);
+            require(amount <=list2[index].amount*amountof[to]);
             uint32 blockTime = uint32(block.timestamp % 2 ** 32);
             uint time2=info[to].time+(alertPayRules[address(this)].completeClosurePeriod+alertPayRules[address(this)].ReleasePeriod)*2592000;
             require(blockTime>=time2);  
@@ -234,21 +236,23 @@ contract valut {
         return name;
     }
 
-    function cancelApprove(address to )public{
-        list3[index2].pause==false;
+    function cancelApprove() public {
+        require(msg.sender ==  list3[index2].owner ,"");
+        list3[index2].pause = false;
     }
 
-    function approves(address to,uint rate)public{
+    function approves(address to,uint rate) public {
         index2=index2+1;
         //require(msg.sender==owner);
         //require(msg.sender !=to);
-        manageinfo memory info=manageinfo({
+        manageinfo memory _info = manageinfo({
             owner:to,
             proportion:rate,
             pause:true,
             termination:true
         });
-        list3.push(info);
+        list3.push(_info);
+        
     }
 
     function getAlertPayRule()public view returns(AlertPayRule memory){
