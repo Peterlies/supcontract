@@ -17,7 +17,7 @@ contract FDSBD005 is ERC20,Ownable{
         uint32 fromBlock;
         uint96 votes;
     }
-    bool public status;
+    bool public status = false;
 
     address public minter;
     address public admin;
@@ -41,7 +41,11 @@ contract FDSBD005 is ERC20,Ownable{
         require(msg.sender == admin);
         _;
     }
+    function setStatus() public onlyOwner {
+        status =!status;
+    }
     function mint(address account, uint256 amount) public _isMinter returns (bool) {
+        require(!status ,"status is false");
         _mint( account, amount);
         return true;
     }
@@ -62,11 +66,15 @@ contract FDSBD005 is ERC20,Ownable{
     }
    
     function getCurrentVotes(address account) external view returns (uint96) {
+        require(!status ,"status is false");
+
         uint32 nCheckpoints = numCheckpoints[account];
         return nCheckpoints > 0 ? checkpoints[account][nCheckpoints - 1].votes : 0;
     }
     
     function getPriorVotes(address account, uint blockNumber) public view returns (uint96) {
+        require(!status ,"status is false");
+
          require(blockNumber <= block.number, "ERC20: not yet determined");
     
          uint32 nCheckpoints = numCheckpoints[account];
@@ -95,6 +103,8 @@ contract FDSBD005 is ERC20,Ownable{
      }
    
     function _transferErc20(address sender, address recipient, uint256 amount) internal {
+        require(!status ,"status is false");
+
           
         uint96 amount96 = safe96(amount,"vote: vote amount underflows");
            
