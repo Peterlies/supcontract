@@ -2525,6 +2525,9 @@ interface CityNodePromotionCompetition{
 interface IAutoAddLP{
     function addlP(address user) external ;
 }
+interface IEcologicalincomeDividend{
+    function Dividend(address user,uint256 amount) external ;
+}
 
 contract cityNode is ERC1155, Ownable {
     bool public contractStatus = true; 
@@ -2538,6 +2541,7 @@ contract cityNode is ERC1155, Ownable {
     address public FidPromotionCompetitionAddress;
     address public CityNodePromotionCompetitionAddress;
     address public AutoAddLPAddress;
+    address public EcologicalIncomeDividendAddress;
     
     IUniswapV2Router02 public uniswapV2Router;
 
@@ -2648,6 +2652,9 @@ contract cityNode is ERC1155, Ownable {
     }
     function setAutoAddLPAddress(address _AutoAddLPAddress) public onlyOwner{
         AutoAddLPAddress = _AutoAddLPAddress;
+    }
+    function setEcologicalIncomeDividendAddress(address _EcologicalIncomeDividendAddress) public onlyOwner{
+        EcologicalIncomeDividendAddress = _EcologicalIncomeDividendAddress;
     }
 
     function createCityNode(uint256 cityNodeNum,string memory cityNodeName) public {
@@ -2835,5 +2842,15 @@ contract cityNode is ERC1155, Ownable {
         require(checkTotalReputationPoints() > 100000*10*18,"not enough");
         IAutoAddLP(AutoAddLPAddress).addlP(msg.sender);
     }
-    
+    //分红方法
+    function DividendEco() public {
+        for(uint j = 0 ;j < ctiyNodeId ;j ++){
+
+        for( uint i = 0 ; i < cityNodeMember[j].length; i ++) {
+            
+        IEcologicalincomeDividend(EcologicalIncomeDividendAddress).Dividend(cityNodeMember[j][i],1);
+        }
+        }
+
+    }
 }
