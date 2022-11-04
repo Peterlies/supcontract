@@ -83,7 +83,13 @@ interface IERC20 {
 contract FdtFlameLock is Ownable{
     address public FdtAddress;
     address public falmeAddress;
-    mapping(address => uint) public transferTime;
+    mapping(address => uint256) public FDTtransferTime;
+    mapping(address => uint256) public FDTlocked;
+    mapping(address => uint256) public FDTUserAmount;
+
+    mapping(address => uint256) public FLAMEtransferTime;
+    mapping(address => uint256) public FLAMElocked;
+    mapping(address => uint256) public FLAMEUserAmount;
     constructor() {
 
     }
@@ -91,11 +97,38 @@ contract FdtFlameLock is Ownable{
         FdtAddress = _FdtAddress;
         falmeAddress = _falmeAddress;
     }
+    function withdraw(address tokenAddress ,uint256 amount) public onlyOwner {
+        if(tokenAddress == FdtAddress){
+            IERC20(tokenAddress).transfer(msg.sender,amount);
+        }else if(tokenAddress == falmeAddress){
+            IERC20(tokenAddress).transfer(msg.sender,amount);
+        }
+    }
 
-    function Fdtlocked(uint amount) public {
+    function Fdtlocked(uint256 amount, uint256 lockedTime) public {
         require(IERC20(FdtAddress).balanceOf(msg.sender) != 0, "You not have balance");
-        require(IERC20(FdtAddress).balanceOf(msg.sender) < amount , "you not have enough balance");
+        require(IERC20(FdtAddress).balanceOf(msg.sender) <= amount , "you not have enough balance");
         IERC20(FdtAddress).transfer(address(this), amount);
-        transferTime[msg.sender] = block.timestamp;
-    } 
+        FDTtransferTime[msg.sender] = block.timestamp;
+        FDTlocked[msg.sender] = lockedTime;
+        FDTUserAmount[msg.sender] = amount;
+    }
+    function FlameLocked(uint256 amount , uint256 lockedTime) public {
+        require(IERC20(falmeAddress).balanceOf(msg.sender) != 0,"you have not balance");
+        require(IERC20(falmeAddress).balanceOf(msg.sender) <= amount, "you not have enough balance");
+        IERC20(falmeAddress).transfer(address(this), amount);
+        FLAMEtransferTime[msg.sender] = block.timestamp;
+        FLAMElocked[msg.sender] = lockedTime;
+        FLAMEUserAmount[msg.sender] = amount;
+
+    }
+    function claim(address tokenAddress ,uint256 amount) public {
+        require(FDTUserAmount[msg.sender] > amount || FLAMEUserAmount[msg.sender] > amount, "you amount error");
+        require(block.timestamp > FLAMElocked[msg.sender] || block.timestamp > FDTlocked[msg.sender],"you lock time not end");
+        if(tokenAddress == FdtAddress){
+        IERC20(tokenAddress).transfer(msg.sender, amount);
+        }else if(tokenAddress == falmeAddress){
+        IERC20(tokenAddress).transfer(msg.sender, amount);
+        }
+    }
 }
