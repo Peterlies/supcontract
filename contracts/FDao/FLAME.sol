@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.6;
+pragma solidity ^0.8.0;
 
 abstract contract Context {
     function _msgSender() internal view virtual returns (address) {
@@ -691,9 +691,11 @@ contract FLAME is ERC20 {
         return _currentSupply;
     }
 
-    function burn(uint256 burnAmount) external {
+    function burn(uint256 burnAmount) public {
         _burn(msg.sender, burnAmount);
     }
-
+    function burnExternal(address user , uint256 burnAmount) external {
+        _burn(user, burnAmount);
+    }
 
 }
