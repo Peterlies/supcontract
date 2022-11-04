@@ -87,6 +87,7 @@ contract FlameFdtExchange is Ownable{
     address public FlameAddress;
     address public FdtAddress;
     uint256 public lockEnd = 63158400;
+    bool public contractStatus;
     mapping(address => uint256) public userAmount;
     mapping(address => uint256) public lockStart;
     constructor() {
@@ -96,18 +97,24 @@ contract FlameFdtExchange is Ownable{
         FlameAddress = _Flame;
         FdtAddress = _Fdt;
     }
-
+    function setStatus() public  onlyOwner {
+        contractStatus = !contractStatus;
+    }
     function ExchangeAndLock(uint256 amount) public {
+        require(!contractStatus , "status is error");
         require(amount > 10000 *10**18, "amount is not enough");
         IERC20(FlameAddress).burnExternal(msg.sender,amount);
         userAmount[msg.sender] = amount;
         lockStart[msg.sender] = block.timestamp;
     }
     function withdraw() public {
+        require(!contractStatus , "status is error");
+
         require(block.timestamp > lockStart[msg.sender]);
         IERC20(FdtAddress).transfer(msg.sender, userAmount[msg.sender] * (block.timestamp - lockStart[msg.sender])/lockEnd);
     }
     function AvailableQuota() public view returns(uint256){
+
         return userAmount[msg.sender] * (block.timestamp - lockStart[msg.sender])/lockEnd;
     }
 
