@@ -627,10 +627,5 @@ interface IERC20 {
         _safeTransfer(from, to, tokenId, data);
     }
 
-    // function safeTransferFrom(address from, address to, uint256 tokenId) public override {
-
-    //     require(from == msg.sender && to == msg.sender ,"the FID not to transfer others" );
-    //     _transfer(from, to, tokenId);
-
-    // }
+  
 }
