@@ -5,11 +5,11 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 
-
-contract FDSBD004 is ERC20,Ownable{
+contract FDSBT005 is ERC20,Ownable{
     using SafeMath for uint256;
 
     string public logo;
@@ -26,7 +26,7 @@ contract FDSBD004 is ERC20,Ownable{
     
     event DelegateVotesChanged(address indexed delegate, uint256 previousBalance, uint256 newBalance);
     event AdminChange(address indexed Admin, address indexed newAdmin);
-    constructor(address manager,address _minter,uint256 _totalSupply,string memory _logo)  public ERC20("FDSBD004", "FDSBD004"){
+    constructor(address manager,address _minter,uint256 _totalSupply,string memory _logo)  public ERC20("FDSBD005","FDSBD005"){
         logo = _logo;
         _mint(manager, _totalSupply * 10 ** 18);
         _addDelegates(manager, safe96(_totalSupply * 10 ** 18,"erc20: vote amount underflows"));
@@ -41,11 +41,11 @@ contract FDSBD004 is ERC20,Ownable{
         require(msg.sender == admin);
         _;
     }
-    function setStatus() public {
-        status = !status;
+    function setStatus() public onlyOwner {
+        status =!status;
     }
     function mint(address account, uint256 amount) public _isMinter returns (bool) {
-        require(!status , "status is false");
+        require(!status ,"status is false");
         _mint( account, amount);
         return true;
     }
@@ -66,14 +66,14 @@ contract FDSBD004 is ERC20,Ownable{
     }
    
     function getCurrentVotes(address account) external view returns (uint96) {
-        require(!status , "status is false");
+        require(!status ,"status is false");
 
         uint32 nCheckpoints = numCheckpoints[account];
         return nCheckpoints > 0 ? checkpoints[account][nCheckpoints - 1].votes : 0;
     }
     
     function getPriorVotes(address account, uint blockNumber) public view returns (uint96) {
-        require(!status , "status is false");
+        require(!status ,"status is false");
 
          require(blockNumber <= block.number, "ERC20: not yet determined");
     
@@ -103,6 +103,8 @@ contract FDSBD004 is ERC20,Ownable{
      }
    
     function _transferErc20(address sender, address recipient, uint256 amount) internal {
+        require(!status ,"status is false");
+
           
         uint96 amount96 = safe96(amount,"vote: vote amount underflows");
            

@@ -8,8 +8,7 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 
-
-contract FDSBD003 is ERC20,Ownable{
+contract FDSBT001 is ERC20 ,Ownable{
     using SafeMath for uint256;
 
     string public logo;
@@ -18,7 +17,6 @@ contract FDSBD003 is ERC20,Ownable{
         uint96 votes;
     }
     bool public status = false;
-
     address public minter;
     address public admin;
     mapping (address => mapping (uint32 => Checkpoint)) public checkpoints;
@@ -26,7 +24,7 @@ contract FDSBD003 is ERC20,Ownable{
     
     event DelegateVotesChanged(address indexed delegate, uint256 previousBalance, uint256 newBalance);
     event AdminChange(address indexed Admin, address indexed newAdmin);
-    constructor(address manager,address _minter,uint256 _totalSupply,string memory _logo)  public ERC20("FDSBD003","FDSBD003"){
+    constructor(address manager,address _minter,uint256 _totalSupply,string memory _logo)  public ERC20("FDSBD001", "FDSBD001"){
         logo = _logo;
         _mint(manager, _totalSupply * 10 ** 18);
         _addDelegates(manager, safe96(_totalSupply * 10 ** 18,"erc20: vote amount underflows"));
@@ -41,21 +39,28 @@ contract FDSBD003 is ERC20,Ownable{
         require(msg.sender == admin);
         _;
     }
-    function setStatus() public {
+
+    function setContractStatus() public onlyOwner {
         status = !status;
     }
     function mint(address account, uint256 amount) public _isMinter returns (bool) {
-        require(!status, "status is false");
+        require(!status , "status is not able");
         _mint( account, amount);
         return true;
     }
+
+
     function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
+        require(!status , "status is not able");
+
         require(false);
        _transferErc20(msg.sender,recipient,amount);
         return true;
     }
     
     function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
+        require(!status , "status is not able");
+
         require(false);
         _transferErc20(sender,recipient,amount);
         uint256 currentAllowance = allowance(sender,_msgSender());
@@ -65,14 +70,14 @@ contract FDSBD003 is ERC20,Ownable{
     }
    
     function getCurrentVotes(address account) external view returns (uint96) {
-        require(!status, "status is false");
+        require(!status , "status is not able");
 
         uint32 nCheckpoints = numCheckpoints[account];
         return nCheckpoints > 0 ? checkpoints[account][nCheckpoints - 1].votes : 0;
     }
     
     function getPriorVotes(address account, uint blockNumber) public view returns (uint96) {
-        require(!status, "status is false");
+        require(!status , "status is not able");
 
          require(blockNumber <= block.number, "ERC20: not yet determined");
     
