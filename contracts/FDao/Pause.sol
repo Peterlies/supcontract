@@ -20,12 +20,16 @@ interface ICityNodePromotionCompetition{
 interface IEcologicalIncomeDividend{
     function setContractStatus() external;
 }
+interface IFlameFdtExchange {
+    function setStatus() external ;
+}
 contract Pause is Ownable {
     address public autoReflowLpAddress;
     address public FidPromotionCompetitionAddress;
     address public FireSeedAndFSoulAddress;
     address public CityNodePromotionCompetition;
     address public EcologicalIncomeDividend;
+    address public FlameFdtExchangeAdress;
     uint256 public pauseTime = 259200;
     uint256 public pauseStartTime;
     uint256 public pauseEndTime;
@@ -38,6 +42,7 @@ contract Pause is Ownable {
     FireSeedAndFSoulAddress = aim[2];
     CityNodePromotionCompetition = aim[3];
     EcologicalIncomeDividend = aim[4];
+    FlameFdtExchangeAdress = aim[5];
     }
     function setStatus() public onlyOwner {
         require(block.timestamp > pauseEndTime);
@@ -46,6 +51,7 @@ contract Pause is Ownable {
         IFireSeedAndFSoul(FireSeedAndFSoulAddress).setStatus();
         ICityNodePromotionCompetition(CityNodePromotionCompetition).setStatus();
         IEcologicalIncomeDividend(EcologicalIncomeDividend).setContractStatus();
+        IFlameFdtExchange(FlameFdtExchangeAdress).setStatus();
         pauseStartTime = block.timestamp;
         pauseEndTime = pauseStartTime +  pauseTime;
         

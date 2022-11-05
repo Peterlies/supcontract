@@ -88,6 +88,7 @@ contract FlameFdtExchange is Ownable{
     address public FdtAddress;
     uint256 public lockEnd = 63158400;
     bool public contractStatus;
+    address public controlAddress;
     mapping(address => uint256) public userAmount;
     mapping(address => uint256) public lockStart;
     constructor() {
@@ -97,7 +98,11 @@ contract FlameFdtExchange is Ownable{
         FlameAddress = _Flame;
         FdtAddress = _Fdt;
     }
-    function setStatus() public  onlyOwner {
+    function setControlAddress(address _controlAddress) public onlyOwner{
+        controlAddress = _controlAddress;
+    }
+    function setStatus() external  {
+        require(msg.sender ==controlAddress, "address is error");
         contractStatus = !contractStatus;
     }
     function ExchangeAndLock(uint256 amount) public {
