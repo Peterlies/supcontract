@@ -358,7 +358,7 @@ interface IERC20 {
 
 
 
-contract cityNodeTreasury is Ownable {
+contract CityNodeTreasury is Ownable {
 
     address[] public AllocationFundAddress;
     uint[] public rate;
