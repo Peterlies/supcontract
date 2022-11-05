@@ -581,10 +581,12 @@ contract Ownable is Context {
      function distributeAward() external;
  }
 
-contract autoReflowLP is Ownable {
+contract CityNodePromotionCompetition is Ownable {
     IUniswapV2Router02 public uniswapV2Router;
     address public aimToken;
     uint256  public aimAmount; 
+    bool public Status;
+    address public pauseControlAddress;
 
     address public _weekPool;
     address public _moonPool;
@@ -594,6 +596,14 @@ contract autoReflowLP is Ownable {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3);
         uniswapV2Router = _uniswapV2Router;
     }  
+    function setPauseControlAddress(address _pauseControlAddress) public onlyOwner{
+        pauseControlAddress = _pauseControlAddress;
+    }
+
+    function setStatus() external {
+    require(msg.sender == pauseControlAddress,"address is error");
+        Status = !Status;
+    }
     function setPoolAddress(address _week, address _moon, address _year) public onlyOwner{
         _weekPool = _week;
         _moonPool = _moon;

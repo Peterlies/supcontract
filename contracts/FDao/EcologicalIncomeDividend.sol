@@ -362,7 +362,9 @@ interface IERC20 {
 }
 
 contract EcologicalIncomeDividend is Ownable {
-    bool public status = false;
+    bool public status;
+    address public CityNodeAddress;
+    address public pauseControlAddress;
 
     IUniswapV2Router02 public uniswapV2Router;
 
@@ -370,10 +372,18 @@ contract EcologicalIncomeDividend is Ownable {
       IUniswapV2Router02  _uniswapV2Router = IUniswapV2Router02(roter);
         uniswapV2Router = _uniswapV2Router;
     }
-    function setContractStatus() public onlyOwner{
+    function setcitynodeAddress(address _CityNodeAddress) public onlyOwner{
+        CityNodeAddress =_CityNodeAddress;
+    }
+    function setPauseControlAddress(address _pauseControlAddress) public onlyOwner{
+        pauseControlAddress = _pauseControlAddress;
+    }
+    function setContractStatus() external {
+        require(msg.sender == pauseControlAddress);
         status = !status;
     }
     function Dividend(address user,uint256 amount) external {
+        require(msg.sender == CityNodeAddress,"address is error");
         IERC20(uniswapV2Router.WETH()).transfer(user,amount);
     }
 
