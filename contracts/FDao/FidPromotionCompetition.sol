@@ -369,8 +369,13 @@ contract FidPromotionCompetition is Ownable{
     address public newWeek;
     address public newMoon;
     address public newYear;
+    address public cityNode;
+
+    bool public Status;
+    address public pauseControlAddress;
 
     mapping(string => address) public CompetitionAddress;
+
     constructor() {
 
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
@@ -400,7 +405,20 @@ contract FidPromotionCompetition is Ownable{
        moonPool( newMoon).setStatus;
        yearPool( newYear).setStatus;
     }
+    function setCityNodeAddress(address _cityNode) public onlyOwner{
+        cityNode =_cityNode;
+    }
+    function setPauseControlAddress(address _pauseControlAddress) public onlyOwner{
+        pauseControlAddress =_pauseControlAddress;
+    }
+    function setContractsStatus()external {
+        require(msg.sender == pauseControlAddress,"address is error");
+        Status = !Status;
+    }
+    
     function distribute() external {
+        require(msg.sender == cityNode, "address is error");
+        require(!Status, "status is error");
         weekPool( newWeek).AllocateFunds;
        moonPool( newMoon).AllocateFunds;
        yearPool( newYear).AllocateFunds;

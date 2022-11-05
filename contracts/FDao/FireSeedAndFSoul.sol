@@ -539,6 +539,9 @@ interface IERC20 {
         address[] public sbtAddress;
         FireSeed fireseed;
        address public _owner;
+       bool public status;
+       address public pauseControlAddress;
+
        mapping(address => uint256) public awardFlame;
        constructor(FireSeed _fireseed) ERC721("FireSoul", "FireSoul"){
 
@@ -546,9 +549,17 @@ interface IERC20 {
         fireseed = _fireseed;
 
        }
+       function setPauseControlAddress(address _pauseControlAddress) public onlyOwner {
+           pauseControlAddress = _pauseControlAddress;
+       }
+       function setStatus() external {
+           require(msg.sender == pauseControlAddress,"address is error");
+           status = !status;
+       }
 
 
     function burnToMint() external {
+        require(!status, "status is error");
         require(fireseed.balanceOf(msg.sender,1) != 0 );
         fireseed.burnFireSeed(msg.sender, 1,1);
         _mint(msg.sender, FID);

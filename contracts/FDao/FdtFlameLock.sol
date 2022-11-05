@@ -124,12 +124,12 @@ contract FdtFlameLock is Ownable{
 
     }
 
-    function claim(address tokenAddress ,uint256 amount) public {
+    function claim(address tokenAddress , uint256 amount) public {
         require(FDTUserAmount[msg.sender] > amount || FLAMEUserAmount[msg.sender] > amount, "you amount error");
         require(block.timestamp > FLAMElocked[msg.sender] || block.timestamp > FDTlocked[msg.sender],"you lock time not end");
-        if(tokenAddress == FdtAddress){
+        if(tokenAddress == FdtAddress && FDTUserAmount[msg.sender] * (block.timestamp - FDTtransferTime[msg.sender])/TotallockTime > amount){
         IERC20(tokenAddress).transfer(msg.sender, amount);
-        }else if(tokenAddress == falmeAddress){
+        }else if(tokenAddress == falmeAddress &&  FLAMEUserAmount[msg.sender] * (block.timestamp - FLAMEtransferTime[msg.sender])/TotallockTime > amount){
         IERC20(tokenAddress).transfer(msg.sender, amount);
         }
     }
