@@ -20,7 +20,7 @@ interface ICityNodePromotionCompetition{
 interface IEcologicalIncomeDividend{
     function setContractStatus() external;
 }
-contract pause is Ownable {
+contract Pause is Ownable {
     address public autoReflowLpAddress;
     address public FidPromotionCompetitionAddress;
     address public FireSeedAndFSoulAddress;
