@@ -541,8 +541,14 @@ interface IERC20 {
        address public _owner;
        bool public status;
        address public pauseControlAddress;
+        address[] public sbt;
 
-       mapping(address => uint256) public awardFlame;
+    uint[] public  coefficient;
+
+    mapping(address => mapping(uint256 => uint256)) public UserSbt;
+    mapping(address => uint256) public awardFlame;
+    mapping(address => uint256) public UserFID;
+       
        constructor(FireSeed _fireseed) ERC721("FireSoul", "FireSoul"){
 
         _owner = msg.sender;
@@ -552,17 +558,38 @@ interface IERC20 {
        function setPauseControlAddress(address _pauseControlAddress) public onlyOwner {
            pauseControlAddress = _pauseControlAddress;
        }
+        function setSBTAddress(address[] memory _sbt) public onlyOwner {
+            for(uint i = 0; i < _sbt.length; i++){
+                sbt[i] = sbt[i];
+            }
+        }
+        function setCoefficient(uint[] memory _coefficient) public onlyOwner {
+            for(uint i=0 ; i<_coefficient.length; i++){
+                coefficient[i] = _coefficient[i];
+            }
+        }
+
        function setStatus() external {
            require(msg.sender == pauseControlAddress,"address is error");
            status = !status;
+       }
+
+       function checkOutUserReputationPoints(address User) external view returns(uint256) {
+           uint256 UsertotalPoints = 0;
+           for(uint i = 0 ; i < sbt.length ; i++){
+               UsertotalPoints += IERC20(sbt[i]).balanceOf(User) * coefficient[i];
+           }
+           return UsertotalPoints;
        }
 
 
     function burnToMint() external {
         require(!status, "status is error");
         require(fireseed.balanceOf(msg.sender,1) != 0 );
+        require(super.balanceOf(msg.sender) == 0 , "you already have FID");
         fireseed.burnFireSeed(msg.sender, 1,1);
         _mint(msg.sender, FID);
+        UserFID[msg.sender] = FID;
         if(IFireSeed(FireSeedAddress).upclass(msg.sender) != address(0) && IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender)) != address(0)){
         IERC20(FLAME).transfer(msg.sender, 10000*10**18);
         IERC20(FLAME).transfer(IFireSeed(FireSeedAddress).upclass(msg.sender), 5000*10**18);
@@ -571,6 +598,10 @@ interface IERC20 {
         awardFlame[IFireSeed(FireSeedAddress).upclass(msg.sender)] = 5000*10**18;
         awardFlame[IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender))] = 2000*10**18;
         }
+        for(uint i = 0 ; i < sbt.length; i++){
+        UserSbt[msg.sender][i] = IERC20(sbt[i]).balanceOf(msg.sender);
+        }
+
         FID++;
     }
     function setFlameAddress(address _FLAME) public onlyOwner{
@@ -581,6 +612,7 @@ interface IERC20 {
             sbtAddress[i] = sbt;
         }
     }
+
     //设置查上一级的地址，用于邀请关系
     function setFireSeedAddress(address _FireSeedAddress) public onlyOwner{
             FireSeedAddress = _FireSeedAddress;

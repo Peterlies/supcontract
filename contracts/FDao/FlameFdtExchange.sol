@@ -82,6 +82,15 @@ interface IERC20 {
     function burnExternal(address user , uint256 burnAmount) external;
 }
 
+interface IFDSBT001{
+    function mintExternal(address User, uint256 mintAmount) external;
+    function burnExternal(address User, uint256 mintAmount) external;
+}
+interface IFDSBT002{
+    function mintExternal(address User, uint256 mintAmount) external;
+    
+}
+
 
 contract FlameFdtExchange is Ownable{
     address public FlameAddress;
@@ -89,6 +98,8 @@ contract FlameFdtExchange is Ownable{
     uint256 public lockEnd = 63158400;
     bool public contractStatus;
     address public controlAddress;
+    address public Sbt001address;
+    address public Sbt002address;
     mapping(address => uint256) public userAmount;
     mapping(address => uint256) public lockStart;
     constructor() {
@@ -101,22 +112,32 @@ contract FlameFdtExchange is Ownable{
     function setControlAddress(address _controlAddress) public onlyOwner{
         controlAddress = _controlAddress;
     }
+    function setSBT001Address(address _Sbt001address) public onlyOwner{
+        Sbt001address = _Sbt001address;
+    }
+    function setSBT002Address(address _Sbt002address) public onlyOwner{
+        Sbt002address = _Sbt002address;
+    }
     function setStatus() external  {
         require(msg.sender ==controlAddress, "address is error");
         contractStatus = !contractStatus;
     }
+    
     function ExchangeAndLock(uint256 amount) public {
         require(!contractStatus , "status is error");
         require(amount > 10000 *10**18, "amount is not enough");
         IERC20(FlameAddress).burnExternal(msg.sender,amount);
+        IFDSBT001(Sbt001address).mintExternal(msg.sender, amount);
+        IFDSBT002(Sbt002address).mintExternal(msg.sender, amount/10);
+
         userAmount[msg.sender] = amount;
         lockStart[msg.sender] = block.timestamp;
     }
     function withdraw() public {
         require(!contractStatus , "status is error");
-
         require(block.timestamp > lockStart[msg.sender]);
         IERC20(FdtAddress).transfer(msg.sender, userAmount[msg.sender] * (block.timestamp - lockStart[msg.sender])/lockEnd);
+        IFDSBT001(Sbt001address).burnExternal(msg.sender,userAmount[msg.sender] * (block.timestamp - lockStart[msg.sender])/lockEnd);
     }
     function AvailableQuota() public view returns(uint256){
 

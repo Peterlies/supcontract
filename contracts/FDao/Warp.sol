@@ -309,6 +309,9 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
         uint256 deadline
     ) external;
 }
+interface IcityNode{
+  function checkIsCityNode(address account , uint256 amount) external  returns(bool) ;
+}
 
 
 contract warp {
@@ -344,10 +347,15 @@ contract warp {
         fireSeedAddress = fSeed;
     }
 
-    function withdraw() public  {
+    function withdraw(address user) public  {
         WBNB.transfer(msg.sender, checkSAFEBalance()/10);
+        if(IcityNode(cityNode).checkIsCityNode(user,checkSAFEBalance()/10))
+        {
         WBNB.transfer(cityNode, checkSAFEBalance()/10);
         WBNB.transfer(MinistryOfFinance, checkSAFEBalance()/10*8);
+        }else{
+        WBNB.transfer(MinistryOfFinance, checkSAFEBalance()/10*9);
+        }
     }
     function checkSAFEBalance() public view returns(uint256){
         return WBNB.balanceOf(address(this));

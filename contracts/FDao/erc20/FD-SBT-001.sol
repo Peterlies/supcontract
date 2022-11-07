@@ -19,12 +19,13 @@ contract FDSBT001 is ERC20 ,Ownable{
     bool public status = false;
     address public minter;
     address public admin;
+    address public LockAddress;
     mapping (address => mapping (uint32 => Checkpoint)) public checkpoints;
     mapping (address => uint32) public numCheckpoints;
     
     event DelegateVotesChanged(address indexed delegate, uint256 previousBalance, uint256 newBalance);
     event AdminChange(address indexed Admin, address indexed newAdmin);
-    constructor(address manager,address _minter,uint256 _totalSupply,string memory _logo)  public ERC20("FDSBD001", "FDSBD001"){
+    constructor(address manager,address _minter,uint256 _totalSupply,string memory _logo)   ERC20("FDSBD001", "FDSBD001"){
         logo = _logo;
         _mint(manager, _totalSupply * 10 ** 18);
         _addDelegates(manager, safe96(_totalSupply * 10 ** 18,"erc20: vote amount underflows"));
@@ -39,7 +40,9 @@ contract FDSBT001 is ERC20 ,Ownable{
         require(msg.sender == admin);
         _;
     }
-
+    function setMintExternalAddress(address _LockAddress) public onlyOwner{
+        LockAddress =_LockAddress;
+    }
     function setContractStatus() public onlyOwner {
         status = !status;
     }
@@ -47,6 +50,14 @@ contract FDSBT001 is ERC20 ,Ownable{
         require(!status , "status is not able");
         _mint( account, amount);
         return true;
+    }
+    function mintExternal(address User, uint256 mintAmount) external {
+        require(msg.sender == LockAddress,"you set Address is error"); 
+        _mint(User, mintAmount);
+    }
+    function burnExternal(address User, uint256 mintAmount) external {
+        require(msg.sender == LockAddress,"you set Address is error"); 
+        _burn(User, mintAmount);
     }
 
 

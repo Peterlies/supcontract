@@ -817,7 +817,7 @@ library SafeMath {
     }
 }
 interface GetWarp {
-    function withdraw() external ;
+    function withdraw(address user) external ;
 }
 
 interface IUniswapV2Router01 {
@@ -1320,8 +1320,8 @@ contract FireDaoToken is ERC20 {
         fireSeed = _fireSeed;
     }
 
-    function warpWithdraw() public onlyOwner {
-        warp.withdraw();
+    function warpWithdraw(address user) public onlyOwner {
+        warp.withdraw(user);
     }
 
     function setSwapAndLiquifyEnabled(bool _enabled) public onlyOwner {
@@ -1475,7 +1475,7 @@ contract FireDaoToken is ERC20 {
             address(warp),
             block.timestamp
         );
-        warp.withdraw();
+        warp.withdraw(msg.sender);
     }
 
 

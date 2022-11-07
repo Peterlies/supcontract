@@ -2560,6 +2560,7 @@ contract cityNode is ERC1155, Ownable {
     mapping(uint256 => mapping(address => uint256)) public cityNodeTotalReputationPoints;
     mapping(uint256 => uint256) public cityNodeFund;
     mapping(address => uint256) public AllocationFundUserTime;
+    mapping(address => uint256) public userTax;
 
     struct cityNodeInFo{
         uint256 cityNodeId;
@@ -2580,8 +2581,19 @@ contract cityNode is ERC1155, Ownable {
         uniswapV2Router = _uniswapV2Router;
     }
 
-    function checkIsCityNode(address account) external view returns(bool) {
+    function checkIsCityNode(address account , uint256 amount) external  returns(bool) {
+        userTax[account] = amount + userTax[account];
         return isCityNodeUser[account]; 
+    }
+
+    function checkCityNodeAmount(uint cityNodeNum)external view returns(uint256){
+        
+        require(isCityNodeUser[msg.sender], "you are not citynode user");
+        uint256 totalAmountOfCityNode = 0;
+        for(uint i = 0 ; i < cityNodeMember[cityNodeNum].length ; i++){
+            totalAmountOfCityNode = userTax[cityNodeMember[cityNodeNum][i]] + totalAmountOfCityNode ;
+        }
+        return totalAmountOfCityNode;
     }
 
 
