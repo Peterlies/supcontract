@@ -56,7 +56,6 @@ constructor () {
         IERC20(flame).transfer(IFireSeed(FireSeedAddress).upclass(msg.sender),400*10**18);
         IERC20(flame).transfer(IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender)),240*10**18);
         IERC20(flame).transfer(IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender))),160*10**18);
-
         }
     }
 
