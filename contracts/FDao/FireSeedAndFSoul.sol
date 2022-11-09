@@ -533,21 +533,22 @@ interface IERC20 {
    contract FireSoul is ERC721,ReentrancyGuard,Ownable{
 
         // bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
-        address public FireSeedAddress;
-        address public FLAME;
-        uint256 public FID;
-        address[] public sbtAddress;
-        FireSeed fireseed;
-       address public _owner;
-       bool public status;
-       address public pauseControlAddress;
-        address[] public sbt;
+    address public FireSeedAddress;
+    address public FLAME;
+    uint256 public FID;
+    address[] public sbtAddress;
+    FireSeed fireseed;
+    address public _owner;
+    bool public status;
+    address public pauseControlAddress;
+    address[] public sbt;
 
     uint[] public  coefficient;
 
     mapping(address => mapping(uint256 => uint256)) public UserSbt;
     mapping(address => uint256) public awardFlame;
     mapping(address => uint256) public UserFID;
+    mapping(address => bool) public haveFID;
        
        constructor(FireSeed _fireseed) ERC721("FireSoul", "FireSoul"){
 
@@ -573,6 +574,9 @@ interface IERC20 {
            require(msg.sender == pauseControlAddress,"address is error");
            status = !status;
        }
+       function checkFID(address user) external view returns(bool){
+           return haveFID[user];
+       }
 
        function checkOutUserReputationPoints(address User) external view returns(uint256) {
            uint256 UsertotalPoints = 0;
@@ -590,6 +594,7 @@ interface IERC20 {
         fireseed.burnFireSeed(msg.sender, 1,1);
         _mint(msg.sender, FID);
         UserFID[msg.sender] = FID;
+        haveFID[msg.sender] = true;
         if(IFireSeed(FireSeedAddress).upclass(msg.sender) != address(0) && IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender)) != address(0)){
         IERC20(FLAME).transfer(msg.sender, 10000*10**18);
         IERC20(FLAME).transfer(IFireSeed(FireSeedAddress).upclass(msg.sender), 5000*10**18);
