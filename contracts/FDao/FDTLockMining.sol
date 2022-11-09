@@ -50,6 +50,6 @@ contract FDTLockMining is Ownable {
     }
 
     function ReceiveAward() public {
-        // IERC20(flame).transfer(user,(FlameAmount/BounsTime))
+        IERC20(flame).transfer(user,(FlameAmount/BounsTime))
     }
 }
