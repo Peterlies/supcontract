@@ -576,7 +576,7 @@ contract Ownable is Context {
     }
 }
 
-contract marketValueManager is Ownable {
+contract MarketValueManager is Ownable {
 
     IERC20 public BNB;
 

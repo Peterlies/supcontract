@@ -677,7 +677,7 @@ contract ERC20 is Ownable, IERC20, IERC20Metadata {
 }
 
 
-contract FLAME is ERC20 {
+contract Flame is ERC20 {
 
     uint256 public _currentSupply;
 

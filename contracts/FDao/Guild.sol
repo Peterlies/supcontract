@@ -995,7 +995,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
 }
 
 
-contract guild is ERC1155,Ownable {
+contract Guild is ERC1155,Ownable {
     uint256 public guildId;
     mapping(address => bool) public isnotWhitelistUser; 
     mapping(uint256 =>mapping(address => bool)) public isnotcreater;
