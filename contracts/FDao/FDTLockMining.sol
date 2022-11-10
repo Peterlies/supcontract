@@ -18,6 +18,7 @@ contract FDTLockMining is Ownable {
     address public FDSBT001Address;
     bool public Status;
     address public controlAddress;
+    address public LPTokenAddress;
     mapping(address => mapping(uint256 => uint256)) userStakeInfo;
     mapping(address => StakeInfo) public StakeInfos;
     mapping(address => mapping(uint256 => uint256)) public UserWithdraw; 
@@ -104,6 +105,5 @@ contract FDTLockMining is Ownable {
                 }
             }
         }
-
     }
 }
