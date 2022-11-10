@@ -9,16 +9,22 @@ interface IFDSBT001 {
     function mintExternal(address User, uint256 mintAmount) external;
     function burnExternal(address User, uint256 mintAmount) external;
 }
-
+interface IFDSBT006{
+    function mintExternal(address User, uint256 mintAmount) external;
+    function burnExternal(address User, uint256 mintAmount) external;
+}
 
 contract FDTLockMining is Ownable {
     uint256 public Id;
     address public FDTAddress;
     address public flame;
     address public FDSBT001Address;
+    address public FDSBT006Address;
     bool public Status;
     address public controlAddress;
+    
     address public LPTokenAddress;
+
     mapping(address => mapping(uint256 => uint256)) userStakeInfo;
     mapping(address => StakeInfo) public StakeInfos;
     mapping(address => mapping(uint256 => uint256)) public UserWithdraw; 
@@ -40,6 +46,9 @@ contract FDTLockMining is Ownable {
     }
     function setControlAddress(address _controlAddress) public onlyOwner{
         controlAddress = _controlAddress;
+    }
+    function setLPTokenAddress(address _LPTokenAddress) public onlyOwner{
+        LPTokenAddress = _LPTokenAddress;
     }
     function setStatus() public {
         require(msg.sender == controlAddress ,"you are not controlAddress");
@@ -85,6 +94,10 @@ contract FDTLockMining is Ownable {
         ReceiveAward();
         }
         Id++;
+    }
+    function LockLP(uint256 amount , uint256 inputTime) public {
+        IERC20(LPTokenAddress).transfer(address(this), amount);
+        IFDSBT006(FDSBT006Address).mintExternal(msg.sender,amount* inputTime);
     }
     
     function ReceiveAward() internal {
