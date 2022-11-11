@@ -23,6 +23,7 @@ contract FDTConsensusMining is Ownable {
 
     address public FireSeedAddress;
     address public FireSoulAddress;
+    address public FDSBT001Address;
     mapping(address => uint256) public award;
     
     constructor() {
@@ -39,6 +40,9 @@ contract FDTConsensusMining is Ownable {
     }
     function setFireSoulAddress(address _FireSoulAddress) public onlyOwner {
         FireSoulAddress = _FireSoulAddress;
+    }
+    function setFDSBT001Address(address _FDSBT001Address ) public onlyOwner{
+        FDSBT001Address = _FDSBT001Address;
     }
 
 
