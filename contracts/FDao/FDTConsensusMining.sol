@@ -10,6 +10,10 @@ interface IFireSeed{
 interface IFireSoul{
     function checkFID(address user) external view returns(bool);
 }
+interface IFDSBT001{
+    function mintExternal(address User, uint256 mintAmount) external;
+    function burnExternal(address User, uint256 mintAmount) external;
+}
 
 contract FDTConsensusMining is Ownable {
     address public USDT;
@@ -19,7 +23,7 @@ contract FDTConsensusMining is Ownable {
 
     address public FireSeedAddress;
     address public FireSoulAddress;
-    
+    mapping(address => uint256) public award;
     
     constructor() {
 
@@ -39,12 +43,12 @@ contract FDTConsensusMining is Ownable {
 
 
     function ConsensusMining(uint256 amount) public {
-
-
+        uint choose;
+        uint256 amountRemaining;
+        uint256 netxRounds;
         if(eachRound + amount > 500000*10**18){
-        uint256 amountRemaining = 500000*10**18 - eachRound;
-        uint256 netxRounds = amount - amountRemaining;
-
+         amountRemaining = 500000*10**18 - eachRound;
+         netxRounds = amount - amountRemaining;
         IERC20(USDT).transfer(address(this), amountRemaining*price/100000);
         IERC20(USDT).transfer(address(this), netxRounds*(price+1)/100000);
         IERC20(FDT).transfer(msg.sender, amountRemaining);
@@ -52,15 +56,34 @@ contract FDTConsensusMining is Ownable {
 
         eachRound = netxRounds;
         price++;
+        choose = 1;
         }else if(eachRound + amount == 500000*10**18){
         IERC20(USDT).transfer(address(this), amount*price/100000);
         IERC20(FDT).transfer(msg.sender, amount);
         eachRound =0;
         price++;
+        choose = 2;
         }else{
         IERC20(USDT).transfer(address(this), amount*price/100000);
         IERC20(FDT).transfer(msg.sender, amount);
         eachRound = eachRound + amount;
+        choose = 2;
+        }
+
+        if(choose == 1 && IFireSeed(FireSeedAddress).upclass(msg.sender) != address(0) && IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender)) != address(0)){
+        IERC20(USDT).transfer(msg.sender,(amountRemaining*price + netxRounds*(price+1))*35/100000000);
+        IERC20(USDT).transfer(IFireSeed(FireSeedAddress).upclass(msg.sender), (amountRemaining*price + netxRounds*(price+1))/10000000);
+        IERC20(USDT).transfer(IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender)), (amountRemaining*price + netxRounds*(price+1))*5/100000000);
+        award[msg.sender] = (amountRemaining*price + netxRounds*(price+1))*35/100000000 + award[msg.sender];
+        award[IFireSeed(FireSeedAddress).upclass(msg.sender)] =  (amountRemaining*price + netxRounds*(price+1))/10000000 +award[IFireSeed(FireSeedAddress).upclass(msg.sender)]  ;
+        award[IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender))] =(amountRemaining*price + netxRounds*(price+1))*5/100000000 + award[IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender))];
+        }else if(choose == 2 && IFireSeed(FireSeedAddress).upclass(msg.sender) != address(0) && IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender)) != address(0) ){
+        IERC20(USDT).transfer(msg.sender,amount*price*35/100000000);
+        IERC20(USDT).transfer(IFireSeed(FireSeedAddress).upclass(msg.sender), amount*price/10000000);
+        IERC20(USDT).transfer(IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender)), amount*price*5/100000000);
+        award[msg.sender] = (amount*price)*35/100000000 + award[msg.sender];
+        award[IFireSeed(FireSeedAddress).upclass(msg.sender)] = (amount*price)/10000000 + award[IFireSeed(FireSeedAddress).upclass(msg.sender)];
+        award[IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender))] =(amount*price)*5/100000000 + award[IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender))];
         }
     }
 
