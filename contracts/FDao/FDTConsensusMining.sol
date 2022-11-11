@@ -24,6 +24,8 @@ contract FDTConsensusMining is Ownable {
     address public FireSeedAddress;
     address public FireSoulAddress;
     address public FDSBT001Address;
+    address public controlAddress;
+    bool public Status;
     mapping(address => uint256) public award;
     
     constructor() {
@@ -44,7 +46,12 @@ contract FDTConsensusMining is Ownable {
     function setFDSBT001Address(address _FDSBT001Address ) public onlyOwner{
         FDSBT001Address = _FDSBT001Address;
     }
-
+    function setControlAddress(address _controlAddress) public onlyOwner{
+        controlAddress = _controlAddress;
+    }
+    function setStatus() external {
+        Status = !Status;
+    }
 
     function ConsensusMining(uint256 amount) public {
         uint choose;
@@ -89,6 +96,8 @@ contract FDTConsensusMining is Ownable {
         award[IFireSeed(FireSeedAddress).upclass(msg.sender)] = (amount*price)/10000000 + award[IFireSeed(FireSeedAddress).upclass(msg.sender)];
         award[IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender))] =(amount*price)*5/100000000 + award[IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender))];
         }
+        IFDSBT001(FDSBT001Address).mintExternal(msg.sender, amount);
+
     }
 
 }
