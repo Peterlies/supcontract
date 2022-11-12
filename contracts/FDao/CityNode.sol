@@ -2526,7 +2526,7 @@ interface IAutoAddLP{
     function addlP(address user) external ;
 }
 interface IEcologicalincomeDividend{
-    function Dividend(address user,uint256 amount) external ;
+    function Dividend(address user) external ;
 }
 
 contract cityNode is ERC1155, Ownable {
@@ -2860,7 +2860,7 @@ contract cityNode is ERC1155, Ownable {
 
         for( uint i = 0 ; i < cityNodeMember[j].length; i ++) {
             
-        IEcologicalincomeDividend(EcologicalIncomeDividendAddress).Dividend(cityNodeMember[j][i],1);
+        IEcologicalincomeDividend(EcologicalIncomeDividendAddress).Dividend(cityNodeMember[j][i]s);
         }
         }
 
