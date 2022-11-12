@@ -2860,7 +2860,7 @@ contract cityNode is ERC1155, Ownable {
 
         for( uint i = 0 ; i < cityNodeMember[j].length; i ++) {
             
-        IEcologicalincomeDividend(EcologicalIncomeDividendAddress).Dividend(cityNodeMember[j][i]s);
+        IEcologicalincomeDividend(EcologicalIncomeDividendAddress).Dividend(cityNodeMember[j][i]);
         }
         }
 
