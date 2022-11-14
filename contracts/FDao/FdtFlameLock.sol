@@ -123,7 +123,6 @@ contract FdtFlameLock is Ownable{
         FLAMEUserAmount[msg.sender] = amount;
 
     }
-
     function claim(address tokenAddress , uint256 amount) public {
         require(FDTUserAmount[msg.sender] > amount || FLAMEUserAmount[msg.sender] > amount, "you amount error");
         require(block.timestamp > FLAMElocked[msg.sender] || block.timestamp > FDTlocked[msg.sender],"you lock time not end");

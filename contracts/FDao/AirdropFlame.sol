@@ -58,6 +58,4 @@ constructor () {
         IERC20(flame).transfer(IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender))),160*10**18);
         }
     }
-
-
 }

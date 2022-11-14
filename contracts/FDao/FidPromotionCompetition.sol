@@ -432,7 +432,7 @@ contract FidPromotionCompetition is Ownable{
     function setPauseControlAddress(address _pauseControlAddress) public onlyOwner{
         pauseControlAddress =_pauseControlAddress;
     }
-    function setContractsStatus()external {
+    function setContractsStatus() external {
         require(msg.sender == pauseControlAddress,"address is error");
         Status = !Status;
     }
@@ -452,13 +452,15 @@ contract FidPromotionCompetition is Ownable{
             isNotList:false
         });
         addressToInfo[msg.sender] = info;
-
     }
+
     function fundExchange() public {
         require(block.timestamp > addressToInfo[msg.sender].time + 604800, "the week time is error");
         exchangeFund[msg.sender] =IERC20(SBT003Address).balanceOf(address(this)) - addressToInfo[msg.sender].initFund;
+
         addressToInfo[msg.sender].isNotList = true;
     }
+    
 }
 
 

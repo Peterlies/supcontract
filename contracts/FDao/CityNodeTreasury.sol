@@ -375,13 +375,13 @@ contract CityNodeTreasury is Ownable {
     }
 
     function addAllocationFundAddress(address[] memory assigned) public onlyOwner {
-        for(uint i = 0 ; i<assigned.length ; i++){
+        for(uint i = 0 ; i < assigned.length ; i++){
             AllocationFundAddress[i] = assigned[i];
         }
     }
 
     function AllocationAmount() public {
-        for(uint i = 0 ; i<AllocationFundAddress.length;i++){
+        for(uint i = 0 ; i < AllocationFundAddress.length;i++){
             IERC20(uniswapV2Router.WETH()).transfer(AllocationFundAddress[i],rate[i]);
         }
     }
