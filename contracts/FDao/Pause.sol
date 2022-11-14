@@ -32,6 +32,9 @@ interface IFDTLockMining{
 interface IFdtConsensusMining {
     function setStatus() external;
 }
+interface IMinistryOfFinance {
+    function setStatus() external;
+}
 contract Pause is Ownable {
     address public autoReflowLpAddress;
     address public FidPromotionCompetitionAddress;
@@ -42,6 +45,7 @@ contract Pause is Ownable {
     address public AirdropFlameAddress;
     address public FDTLockMiningAddress;
     address public FdtConsensusMiningAddress;
+    address public MinistryOfFinanceAddress;
 
     uint256 public pauseTime = 259200;
     uint256 public pauseStartTime;
@@ -59,6 +63,7 @@ contract Pause is Ownable {
     AirdropFlameAddress = aim[6];
     FDTLockMiningAddress = aim[7];
     FdtConsensusMiningAddress = aim[8];
+    MinistryOfFinanceAddress = aim[9];
     }
     function setStatus() public onlyOwner {
         require(block.timestamp > pauseEndTime);
@@ -71,6 +76,7 @@ contract Pause is Ownable {
         IAirdropFlame(AirdropFlameAddress).setStatus();
         IFDTLockMining(FDTLockMiningAddress).setStatus();
         IFdtConsensusMining(FdtConsensusMiningAddress).setStatus();
+        IMinistryOfFinance(MinistryOfFinanceAddress).setStatus();
 
         pauseStartTime = block.timestamp;
         pauseEndTime = pauseStartTime +  pauseTime;

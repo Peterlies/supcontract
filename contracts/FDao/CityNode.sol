@@ -2510,9 +2510,7 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
 }
 
 
-interface IMarketValueManager{
-    function buyAndBurn() external;
-}
+
 interface IMinistryOfFinance {
   function AllocationFund() external ;
 }
@@ -2559,7 +2557,6 @@ contract cityNode is ERC1155, Ownable {
     mapping(address => string) public proposal;
     mapping(uint256 => mapping(address => uint256)) public cityNodeTotalReputationPoints;
     mapping(uint256 => uint256) public cityNodeFund;
-    mapping(address => uint256) public AllocationFundUserTime;
     mapping(address => uint256) public userTax;
 
     struct cityNodeInFo{
@@ -2610,6 +2607,13 @@ contract cityNode is ERC1155, Ownable {
         uint256 t = 0;
         for(uint i = 0; i< SBT.length ; i++){
             t += SBT[i].balanceOf(msg.sender)*WeightFactor[i];
+        }
+        return t;
+    } 
+       function checkTotalReputationPointsExternal(address user)external view returns(uint256){
+        uint256 t = 0;
+        for(uint i = 0; i< SBT.length ; i++){
+            t += SBT[i].balanceOf(user)*WeightFactor[i];
         }
         return t;
     } 
@@ -2773,21 +2777,7 @@ contract cityNode is ERC1155, Ownable {
         );
         _safeBatchTransferFrom(from, to, ids, amounts, data);
     }
-// 5、FireDAO财政部有固定收入分配给在城市节点竞赛中取得胜利的城市节点，分别为周榜奖励、月榜奖励和年榜奖励，每个榜奖励前49名。
-    
-    //这里是市值管理的方法接口，因为判断 FID的积分要在cityNode里判断
-    function buyToBurn() public {
-     require(checkTotalReputationPoints() > 100000*10*18,"not enough");
-     IMarketValueManager(marketValueManager).buyAndBurn();
-    }
-    //财政部的资金分配方法因为需要FID的信誉积分需要在citynode里判断
-    function distribute() public {
-        require(checkTotalReputationPoints() > 100000*10*18,"not enough");
-        require(block.timestamp - AllocationFundUserTime[msg.sender] > 43200, "you need interval 12 hours");
-        IMinistryOfFinance(MinistryOfFinanceAddress).AllocationFund();
-        AllocationFundUserTime[msg.sender] = block.timestamp;
-        IERC20(uniswapV2Router.WETH()).transfer(msg.sender, 5*10**16);
-    }
+
     //城市节点推广竞赛合约时间周期结束后调用需要FID声誉积分达到10w 
     function distributeFidPromotionCompetition() public {
         require(checkTotalReputationPoints() > 100000*10*18,"not enough");

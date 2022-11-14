@@ -575,6 +575,9 @@ contract Ownable is Context {
         _owner = newOwner;
     }
 }
+interface ICityNode{
+    function checkTotalReputationPointsExternal(address user)external view returns(uint256);
+}
 
 contract MarketValueManager is Ownable {
 
@@ -583,12 +586,12 @@ contract MarketValueManager is Ownable {
     address public token;
 
     
-    uint256 public cooldown = 0;
+    uint256 public cooldown;
 
     IUniswapV2Router02 public uniswapV2Router;
     
-    mapping(address => uint256) public isOrNotUse;
-
+    mapping(address => uint256) public isOrNotUseWallet;
+    address public cityNodeAddress;
 
     constructor() {
         //mainnet
@@ -609,17 +612,20 @@ contract MarketValueManager is Ownable {
         require(!Address.isContract(msg.sender), "No contracts");
         _;
     }
+    function setcityNodeAddress(address _cityNodeAddress) public onlyOwner {
+        cityNodeAddress = _cityNodeAddress;
+    }
 
-
-    function buyAndBurn() external  {
-        require(BNB.balanceOf(address(this)) >= 1 *10 **14 , "BNB balance error");
-        require(block.timestamp > cooldown + 15 , "is not cooldown");
+    function buyAndBurn() public  {
+        require(ICityNode(cityNodeAddress).checkTotalReputationPointsExternal(msg.sender) > 100000*10*18 ,"Reputation Points is not enough");
+        require(BNB.balanceOf(address(this)) >=10 **18 , "BNB balance error");
+        require(block.timestamp > cooldown + 300 , "is not cooldown");
         require(IERC20(token).balanceOf(msg.sender) > 1000*10**18,"u hold amount error" );
-        if(block.timestamp < isOrNotUse[msg.sender] + 300){
+        if(block.timestamp < isOrNotUseWallet[msg.sender] + 3600){
             revert();
         }
-        swapTokensForOther(1*10**14);
-        isOrNotUse[msg.sender] = block.timestamp;
+        swapTokensForOther(10**18);
+        isOrNotUseWallet[msg.sender] = block.timestamp;
         cooldown = block.timestamp;
     }
    
@@ -649,8 +655,8 @@ contract MarketValueManager is Ownable {
             address(this),
             block.timestamp
         );
-        IERC20(token).transfer(address(0x000000000000000000000000000000000000dEaD), checkSAFEBalance()/10*9);
-        IERC20(token).transfer(msg.sender, checkSAFEBalance()/10);
+        IERC20(token).transfer(address(0x000000000000000000000000000000000000dEaD), checkSAFEBalance()/100*95);
+        IERC20(token).transfer(msg.sender, checkSAFEBalance()/100*5);
     }
     function withdraw() public onlyOwner{
         BNB.transfer(msg.sender, checkBNBBalance());

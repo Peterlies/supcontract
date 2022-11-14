@@ -359,6 +359,9 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
     ) external;
 }
 
+interface ICityNode{
+    function checkTotalReputationPointsExternal(address user)external view returns(uint256);
+}
 
 
 contract FidPromotionCompetition is Ownable{
@@ -370,9 +373,20 @@ contract FidPromotionCompetition is Ownable{
     address public newMoon;
     address public newYear;
     address public cityNode;
+    address public cityNodeAddress;
+    address public SBT003Address;
+    mapping(address => userInfo) public addressToInfo;
+    mapping(address => uint256) public exchangeFund;
+
 
     bool public Status;
     address public pauseControlAddress;
+    struct userInfo{
+        address user;
+        uint256 initFund;
+        uint256 time;
+        bool    isNotList;
+    }
 
     mapping(string => address) public CompetitionAddress;
 
@@ -395,15 +409,22 @@ contract FidPromotionCompetition is Ownable{
         CompetitionAddress[_moon]  = newMoon;
         CompetitionAddress[_year]  = newYear;
     }
-
+    function injectionFunds() public onlyOwner{
+        IERC20(uniswapV2Router.WETH()).transfer(newWeek , IERC20(uniswapV2Router.WETH()).balanceOf(address(this))/100*50);
+        IERC20(uniswapV2Router.WETH()).transfer(newMoon , IERC20(uniswapV2Router.WETH()).balanceOf(address(this))/100*30);
+        IERC20(uniswapV2Router.WETH()).transfer(newYear , IERC20(uniswapV2Router.WETH()).balanceOf(address(this))/100*20);
+    }
+    function setSBT003Address(address _SBT003Address) public onlyOwner{
+        SBT003Address =_SBT003Address;
+    }
     function setSBTAddress(address _sbt) public onlyOwner{
         sbt = _sbt;
     }
 
     function setPoolStatus() public onlyOwner {
-       weekPool( newWeek).setStatus;
-       moonPool( newMoon).setStatus;
-       yearPool( newYear).setStatus;
+       weekPool(newWeek).setStatus();
+       moonPool(newMoon).setStatus();
+       yearPool(newYear).setStatus();
     }
     function setCityNodeAddress(address _cityNode) public onlyOwner{
         cityNode =_cityNode;
@@ -417,11 +438,26 @@ contract FidPromotionCompetition is Ownable{
     }
     
     function distribute() external {
-        require(msg.sender == cityNode, "address is error");
         require(!Status, "status is error");
-        weekPool( newWeek).AllocateFunds;
-       moonPool( newMoon).AllocateFunds;
-       yearPool( newYear).AllocateFunds;
+        require(ICityNode(cityNode).checkTotalReputationPointsExternal(msg.sender) > 100000*10*18 ,"Reputation Points is not enough");
+        weekPool(newWeek).AllocateFunds();
+        moonPool(newMoon).AllocateFunds();
+        yearPool(newYear).AllocateFunds();
+    }
+    function updateWeekList() public {
+        userInfo memory info = userInfo({
+            user:msg.sender,
+            initFund:IERC20(SBT003Address).balanceOf(msg.sender),
+            time: block.timestamp,
+            isNotList:false
+        });
+        addressToInfo[msg.sender] = info;
+
+    }
+    function fundExchange() public {
+        require(block.timestamp > addressToInfo[msg.sender].time + 604800, "the week time is error");
+        exchangeFund[msg.sender] =IERC20(SBT003Address).balanceOf(address(this)) - addressToInfo[msg.sender].initFund;
+        addressToInfo[msg.sender].isNotList = true;
     }
 }
 
@@ -482,7 +518,6 @@ contract yearPool{
     function AllocateFunds() external  {
         require(status == true ,"status is false");
         //奖励部分
-
         IERC20(uniswapV2Router.WETH()).transfer(msg.sender,10**17);
     }
 }
