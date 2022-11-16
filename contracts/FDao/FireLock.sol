@@ -97,7 +97,7 @@ contract FireLock {
 
     mapping(address => address[]) tokenAddress;
 
-    mapping(address => LockDetail[]) ownerLockDetail;
+    mapping(address => LockDetail[]) public ownerLockDetail;
 
     mapping(uint256 => address[]) groupMumber;
     mapping(uint256 => address[]) groupTokenAddress;
