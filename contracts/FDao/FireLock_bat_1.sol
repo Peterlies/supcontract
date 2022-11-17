@@ -91,7 +91,9 @@ interface IERC20 {
     function decimals() external view returns (uint8);
 }
 
-
+interface IFireGLock{
+       function initMumber(address[] memory _mumber) external;
+}
 
 contract LockFactory is Ownable{
     address public newLock;
@@ -113,6 +115,10 @@ contract LockFactory is Ownable{
         newGLock = Glock;
         IERC20(_token).transferFrom(msg.sender,newGLock,_amount);
         groupOfLock[msg.sender] = Glock;
+    }
+    function setMumber(address[] memory _mumber) public {
+        require(groupOfLock[msg.sender] != address(0),"you haven't address Of LOCk");
+        IFireGLock(groupOfLock[msg.sender]).initMumber(_mumber);
     }
 }
 
@@ -217,10 +223,10 @@ constructor(address _token,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _a
     //     }else{revert();}
     // }
 
-    function initMumber(address[] memory _mumber) public {
+    function initMumber(address[] memory _mumber) external {
         mumber =  _mumber;
     }
-    function transferToUser(address _token) public {
+    function transferToUser(address _token) external {
         IERC20(_token).transfer(msg.sender ,IERC20(_token).balanceOf(address(this)));
     }
 }
