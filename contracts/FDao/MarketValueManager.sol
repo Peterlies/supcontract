@@ -621,7 +621,7 @@ contract MarketValueManager is Ownable {
         require(BNB.balanceOf(address(this)) >=10 **18 , "BNB balance error");
         require(block.timestamp > cooldown + 300 , "is not cooldown");
         require(IERC20(token).balanceOf(msg.sender) > 1000*10**18,"u hold amount error" );
-        if(block.timestamp < isOrNotUseWallet[msg.sender] + 3600){
+        if(block.timestamp - isOrNotUseWallet[msg.sender] < 3600){
             revert();
         }
         swapTokensForOther(10**18);
