@@ -113,6 +113,11 @@ constructor(address _token,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _a
 
 contract groupLock{
 
+    bool alreadyChange;
+
+    mapping(address => bool) isChangedOwner;
+
+    mapping(address => address) adminAndOwner;
 
 
   struct groupLockDetail{
@@ -163,5 +168,36 @@ contract groupLock{
         IERC20(_token).transferFrom(msg.sender,address(this),_amount);
         LockId++;
     }
+     function groupUnLock(address _token ,uint256 index) public {
+   
+        require(block.timestamp >= adminGropLockDetail[msg.sender][index].ddl,"current time should be bigger than deadlineTime");
+        uint amountOfUser = adminGropLockDetail[msg.sender][index].amount;
+        uint amount = IERC20(_token).balanceOf(address(this));
+        if(amount > amountOfUser){
+            for(uint i = 0 ; i < adminGropLockDetail[msg.sender][index].mumber.length;i++){
+            IERC20(_token).transfer(adminGropLockDetail[msg.sender][index].mumber[i], (amountOfUser*adminGropLockDetail[msg.sender][index].rate[i]/100)/(adminGropLockDetail[msg.sender][index].unlockRound*adminGropLockDetail[msg.sender][index].unlockRound)*(block.timestamp - adminGropLockDetail[msg.sender][index].startTime)/86400);
+            }
+        }else{revert();}
+    }
+       function changeLockAdmin(address  _to, uint _index) public {
+        require(msg.sender == adminGropLockDetail[msg.sender][_index].admin,"you are not admin");
+        require(!isChangedOwner[_to], "you already change");
+        require(adminGropLockDetail[msg.sender][_index].isNotchange ,"you can't turn on isNotchange when you create ");
+        adminGropLockDetail[msg.sender][_index].admin = _to;
+        adminAndOwner[_to] = msg.sender;
+        alreadyChange =true;
+        isChangedOwner[_to] = alreadyChange;
+        
+    }
+    function changeLockNumber(address[] memory _to, uint _index) public {
+        if(!isChangedOwner[msg.sender]){
+        require(msg.sender == adminGropLockDetail[msg.sender][_index].admin);
+        adminGropLockDetail[msg.sender][_index].mumber = _to;
+        adminGropLockDetail[adminAndOwner[msg.sender]][_index].mumber = _to;
+        }else{
+        require(msg.sender == adminGropLockDetail[adminAndOwner[msg.sender]][_index].admin, "you are not admin");
+        adminGropLockDetail[adminAndOwner[msg.sender]][_index].mumber = _to;
+    }
+}
 
 }
