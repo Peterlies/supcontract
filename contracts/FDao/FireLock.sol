@@ -314,7 +314,7 @@ contract FireLock {
     uint256 public fee;
     mapping(address => address[]) tokenAddress;
     mapping(address => LockDetail[]) public ownerLockDetail;
-    mapping(uint256 => address[]) groupMumber;
+    mapping(uint256 => address[]) public groupMumber;
     mapping(uint256 => address[]) groupTokenAddress;
     mapping(address => groupLockDetail[]) public adminGropLockDetail;
     mapping(address => address) adminAndOwner;
@@ -534,12 +534,12 @@ contract FireLock {
     // }
 }
 
-contract LockFactory is Ownable{
-    address public newLock;
-    mapping (address => address) public ownerOfLock;
-    function createNewLock() public {
-        address lock = address(new FireLock());
-        newLock = lock;
-        ownerOfLock[msg.sender] = lock;
-    }
-}
+// contract LockFactory is Ownable{
+//     address public newLock;
+//     mapping (address => address) public ownerOfLock;
+//     function createNewLock() public {
+//         address lock = address(new FireLock());
+//         newLock = lock;
+//         ownerOfLock[msg.sender] = lock;
+//     }
+// }

@@ -159,11 +159,7 @@ constructor(address _token,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _a
         tokenAddress[_user].push(_token);
         ownerLockDetail[_user].push(lockinfo);
     }
-
-
-
-        function unlock(address _token, uint256 index) public{
-      
+    function unlock(address _token, uint256 index) public{
         require(block.timestamp >= ownerLockDetail[msg.sender][index].cliffPeriod,"current time should be bigger than cliffPeriod");
         uint amountOfUser = ownerLockDetail[msg.sender][index].amount;
         uint amount = IERC20(_token).balanceOf(address(this));
@@ -176,8 +172,6 @@ constructor(address _token,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _a
 
 
 contract FireGLock {
-
-    
     struct LockDetail{
         string LockTitle;
         uint256 ddl;
@@ -187,11 +181,13 @@ contract FireGLock {
         uint256 unlockRound;
         address token;
         uint256 cliffPeriod;
+        address[] mumber;
     }
     mapping(address => address[]) tokenAddress;
     mapping(address => LockDetail[]) public ownerLockDetail;
     
-    address[] public mumber;
+    address[]  _mumber;
+    uint256 public startTime;
     address public user;
 constructor(address _token,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount,uint256 _cliffPeriod ,string memory _titile,address  _user) {
     lock( _token,_unlockCycle, _unlockRound , _amount, _cliffPeriod , _titile,_user);
@@ -208,25 +204,19 @@ constructor(address _token,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _a
             unlockCycle: _unlockCycle,
             unlockRound:_unlockRound,
             token:_token,
-            cliffPeriod:block.timestamp +_cliffPeriod *86400
+            cliffPeriod:block.timestamp +_cliffPeriod *86400,
+            mumber:_mumber
         });
         tokenAddress[_user].push(_token);
         ownerLockDetail[_user].push(lockinfo);
+        user = _user;
     }
 
-    // function unlock(address _token) public{  
-    //     require(block.timestamp >= ownerLockDetail[msg.sender][0].cliffPeriod,"current time should be bigger than cliffPeriod");
-    //     uint amountOfUser = ownerLockDetail[msg.sender][0].amount;
-    //     uint amount = IERC20(_token).balanceOf(address(this));
-    //     if(amount > amountOfUser){
-    //     IERC20(_token).transfer(msg.sender, (amountOfUser/(ownerLockDetail[msg.sender][index].unlockCycle*ownerLockDetail[msg.sender][index].unlockRound))*(block.timestamp-ownerLockDetail[msg.sender][index].startTime)/86400);
-    //     }else{revert();}
+    function shareUser(address[] calldata userOfLock) public {
+        ownerLockDetail[msg.sender][0].mumber = userOfLock;
+    }
+
+    // function checkOwnerLockDetail(address _user) external view returns(LockDetail calldata){
+    //     return ownerLockDetail[_user][0];
     // }
-
-    function initMumber(address[] memory _mumber) external {
-        mumber =  _mumber;
-    }
-    function transferToUser(address _token) external {
-        IERC20(_token).transfer(msg.sender ,IERC20(_token).balanceOf(address(this)));
-    }
 }
