@@ -432,6 +432,10 @@ contract FidPromotionCompetition is Ownable{
     function setPauseControlAddress(address _pauseControlAddress) public onlyOwner{
         pauseControlAddress =_pauseControlAddress;
     }
+
+    function jionWeekRank() public {
+        
+    }
     function setContractsStatus() external {
         require(msg.sender == pauseControlAddress,"address is error");
         Status = !Status;
