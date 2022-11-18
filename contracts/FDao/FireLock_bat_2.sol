@@ -15,4 +15,5 @@ contract FireLockFactory is Ownable{
         currentLockAddress = address(new FireLock());
         ownerLock[msg.sender].push(currentLockAddress);
     }
+
 }
