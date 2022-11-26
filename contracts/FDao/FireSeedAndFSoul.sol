@@ -244,18 +244,18 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
     uint256 public currentSendAmount;
 
 
-   constructor() ERC1155("https://bafybeiagpbpvyyk32t7n6n4pvguj75uh5hwq263b2jgamoh7bdqvf2quta.ipfs.nftstorage.link/0.json") {
+   constructor() ERC1155("ipfs://bafybeib6mujd4ujufb7ouapf2izluyr5ogwfborc6qrkc2kerhyi74ku5q") {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         uniswapV2Router = _uniswapV2Router;
    }
 
 
-   function uri(uint256 tokenId) override public view returns(string memory) {
-       return(_uris[tokenId]);
-   }
-    function setTokenUri(uint256 tokenId, string memory uri) public onlyOwner{
-        _uris[tokenId] = uri;
-    }
+//    function uri(uint256 tokenId) override public view returns(string memory) {
+//        return(_uris[tokenId]);
+//    }
+    // function setTokenUri(uint256 tokenId, string memory uri) public onlyOwner{
+    //     _uris[tokenId] = uri;
+    // }
 
     function recommenderNumber(address account) external view returns (uint256) {
         return recommenderInfo[account].length;
@@ -294,7 +294,7 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
         uint256 royaltyValue
     ) external {
         // IERC20(uniswapV2Router.WETH()).transfer(owner(), 1);
-        IERC20(USDTAddress).transfer(owner(),100*10**18 );
+        // IERC20(USDTAddress).transfer(owner(),100*10**18 );
         _mint(to, id, amount, '');
 
         if (royaltyValue > 0) {
@@ -612,11 +612,11 @@ interface IERC20 {
     function setFlameAddress(address _FLAME) public onlyOwner{
         FLAME = _FLAME;
     }
-    function setSBTAddress(address sbt) public  onlyOwner{
-        for(uint256 i = 0; i < sbtAddress.length; i++){
-            sbtAddress[i] = sbt;
-        }
-    }
+    // function setSBTAddress(address sbt) public  onlyOwner{
+    //     for(uint256 i = 0; i < sbtAddress.length; i++){
+    //         sbtAddress[i] = sbt;
+    //     }
+    // }
 
     //设置查上一级的地址，用于邀请关系
     function setFireSeedAddress(address _FireSeedAddress) public onlyOwner{

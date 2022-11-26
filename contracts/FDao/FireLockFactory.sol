@@ -7,6 +7,7 @@ import "./FireLock.sol";
 contract FireLockFactory is Ownable{
 
     address public currentLockAddress;
+    address[] public lockList;
     mapping(address => address[]) public ownerLock; 
     constructor(){
 
@@ -14,6 +15,10 @@ contract FireLockFactory is Ownable{
     function createLock() public { 
         currentLockAddress = address(new FireLock());
         ownerLock[msg.sender].push(currentLockAddress);
+        lockList.push(currentLockAddress);
+    }
+    function getOwnerLockLenglength() public view returns(uint256){
+        return ownerLock[msg.sender].length;
     }
 
 }
