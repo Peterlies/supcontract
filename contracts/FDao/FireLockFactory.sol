@@ -20,5 +20,7 @@ contract FireLockFactory is Ownable{
     function getOwnerLockLenglength() public view returns(uint256){
         return ownerLock[msg.sender].length;
     }
-
+    function getLockList() public view returns(uint256){
+        return lockList.length;
+    }
 }
