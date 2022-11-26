@@ -244,7 +244,7 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
     uint256 public currentSendAmount;
 
 
-   constructor() ERC1155("ipfs://bafybeib6mujd4ujufb7ouapf2izluyr5ogwfborc6qrkc2kerhyi74ku5q") {
+   constructor() ERC1155("https://bafybeicscfvgtequcmqeps5u37haswrtzcmhtcomeiu35hxrc2xtndwgne.ipfs.nftstorage.link/1.json") {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         uniswapV2Router = _uniswapV2Router;
    }
