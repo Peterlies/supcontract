@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 
 contract FDSBT001 is ERC20 ,Ownable{
@@ -20,6 +21,8 @@ contract FDSBT001 is ERC20 ,Ownable{
     address public minter;
     address public admin;
     address public LockAddress;
+    address public fireSoul;
+    mapping(address => uint256) public SoulOfSBT001;
     mapping (address => mapping (uint32 => Checkpoint)) public checkpoints;
     mapping (address => uint32) public numCheckpoints;
     
@@ -40,26 +43,37 @@ contract FDSBT001 is ERC20 ,Ownable{
         require(msg.sender == admin);
         _;
     }
+    function setFireSoul(address firesoulAddress) public onlyOwner{
+        fireSoul = firesoulAddress;
+    } 
     function setMintExternalAddress(address _LockAddress) public onlyOwner{
         LockAddress =_LockAddress;
     }
     function setContractStatus() public onlyOwner {
         status = !status;
     }
-    function mint(address account, uint256 amount) public _isMinter returns (bool) {
+    function mint(address account,uint256 amount) public _isMinter returns (bool) {
         require(!status , "status is not able");
-        _mint( account, amount);
+        _mint( fireSoul, amount);
+        SoulOfSBT001[account] += amount;
         return true;
     }
     function mintExternal(address User, uint256 mintAmount) external {
         require(msg.sender == LockAddress,"you set Address is error"); 
-        _mint(User, mintAmount);
-    }
-    function burnExternal(address User, uint256 mintAmount) external {
-        require(msg.sender == LockAddress,"you set Address is error"); 
-        _burn(User, mintAmount);
-    }
+        _mint(fireSoul, mintAmount);
+        SoulOfSBT001[User] += mintAmount;
 
+    }
+    function burnExternal(address User, uint256 burnAmount) external {
+        require(msg.sender == LockAddress,"you set Address is error"); 
+        _burn(fireSoul, burnAmount);
+        SoulOfSBT001[User] -= burnAmount;
+
+    }
+    
+    function checkSBT001Amount(address user) external view returns(uint256) {
+        return SoulOfSBT001[user];
+    }
 
     function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
         require(!status , "status is not able");

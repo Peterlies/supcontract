@@ -542,13 +542,13 @@ interface IERC20 {
     bool public status;
     address public pauseControlAddress;
     address[] public sbt;
-
     uint[] public  coefficient;
 
     mapping(address => mapping(uint256 => uint256)) public UserSbt;
     mapping(address => uint256) public awardFlame;
     mapping(address => uint256) public UserFID;
     mapping(address => bool) public haveFID;
+    mapping(address => uint256[]) public sbtTokenAmount; 
        
        constructor(FireSeed _fireseed) ERC721("FireSoul", "FireSoul"){
 
@@ -585,6 +585,10 @@ interface IERC20 {
            }
            return UsertotalPoints;
        }
+
+    function inputSbtTokenAmount(uint[] memory sbtAmount) external {
+        
+    }
 
 
     function burnToMint() external {
