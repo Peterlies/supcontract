@@ -22,6 +22,7 @@ contract FDSBT002 is ERC20, Ownable{
     address public minter;
     address public admin;
     address public LockAddress;
+    address public fireSoul;
     mapping (address => mapping (uint32 => Checkpoint)) public checkpoints;
     mapping (address => uint32) public numCheckpoints;
     
@@ -41,6 +42,9 @@ contract FDSBT002 is ERC20, Ownable{
     modifier  _isOwner() {
         require(msg.sender == admin);
         _;
+    }
+    function setFireSoulAddress(address _fireSoul) public onlyOwner{
+        fireSoul = _fireSoul;
     }
     function setStatus() public onlyOwner {
         status  = !status;
