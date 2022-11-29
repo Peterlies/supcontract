@@ -460,7 +460,7 @@ contract FireLock {
         require(ownerLockDetail[msg.sender][_lockId].isNotTerminate,"!isNotTerminate");
         IERC20(token).transfer(msg.sender , ownerLockDetail[msg.sender][_lockId].amount);
     }
-  function TerminateLockForGroup(uint256 _lockId,address token) public {
+  function TerminateLockForGroupLock(uint256 _lockId,address token) public {
         require(adminGropLockDetail[msg.sender][_lockId].isNotTerminate,"!isNotTerminate");
         IERC20(token).transfer(msg.sender , adminGropLockDetail[msg.sender][_lockId].amount);
     }
