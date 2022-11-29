@@ -365,11 +365,11 @@ contract FireLock {
         // lockDetail.startTime = block.timestamp;
         tokenAddress[msg.sender].push(_token);
         ownerLockDetail[msg.sender].push(lockinfo);
-        if(msg.value == fee){
-        payable(feeTo);
-        }else{
-            revert();
-        }
+        // if(msg.value == fee){
+        // payable(feeTo);
+        // }else{
+        //     revert();
+        // }
         IERC20(_token).transferFrom(owner,address(this),_amount);
     }
 
