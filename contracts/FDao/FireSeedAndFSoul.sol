@@ -530,6 +530,39 @@ interface IERC20 {
         function upclass(address usr) external view returns(address);
     }
 
+    
+contract Soul {
+    address public owner;
+    address public create;
+    address[] public sbt;
+    uint256[] public sbtAmount;
+    constructor(address _owner, address _create) {
+        owner = _owner;
+        create = _create;
+    }
+    modifier onlyOwner{
+        require(msg.sender == owner);
+        _;
+    }
+    modifier onlyCreate{
+        require(msg.sender == create);
+        _;
+    }
+    function setSBTAddress(address[] memory _sbt) external onlyCreate {
+        for(uint i = 0 ; i < _sbt.length; i ++) {
+            sbt[i] = _sbt[i];
+        }
+    }
+    function checkBalanceOfSBT(address _user) external returns(uint256[] memory) {
+        for(uint i = 0 ; i < sbt.length ; i++) {
+            sbtAmount.push(IERC20(sbt[i]).balanceOf(_user));
+        }
+        return sbtAmount;
+    }
+    
+
+}
+
    contract FireSoul is ERC721,ReentrancyGuard,Ownable{
 
         // bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
@@ -549,6 +582,7 @@ interface IERC20 {
     mapping(address => uint256) public UserFID;
     mapping(address => bool) public haveFID;
     mapping(address => uint256[]) public sbtTokenAmount; 
+    mapping(address => address) public UserToSoul;
        
        constructor(FireSeed _fireseed) ERC721("FireSoul", "FireSoul"){
 
@@ -610,7 +644,8 @@ interface IERC20 {
         for(uint i = 0 ; i < sbt.length; i++){
         UserSbt[msg.sender][i] = IERC20(sbt[i]).balanceOf(msg.sender);
         }
-
+        address _Soul = address(new Soul(msg.sender , address(this)));
+        UserToSoul[msg.sender] = _Soul;
         FID++;
     }
     function setFlameAddress(address _FLAME) public onlyOwner{

@@ -2,7 +2,7 @@
 
 pragma solidity  ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+// import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract Soul {
     address public owner;
@@ -26,12 +26,12 @@ contract Soul {
             sbt[i] = _sbt[i];
         }
     }
-    function checkBalanceOfSBT(address _user) external returns(uint256[] memory) {
-        for(uint i = 0 ; i < sbt.length ; i++) {
-            sbtAmount.push(IERC20(sbt[i]).balanceOf(_user));
-        }
-        return sbtAmount;
-    }
-
+    // function checkBalanceOfSBT(address _user) external returns(uint256[] memory) {
+    //     for(uint i = 0 ; i < sbt.length ; i++) {
+    //         // sbtAmount.push(IERC20(sbt[i]).balanceOf(_user));
+    //     }
+    //     return sbtAmount;
+    // }
+    
 
 }
