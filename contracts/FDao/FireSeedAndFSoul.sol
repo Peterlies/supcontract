@@ -317,29 +317,26 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
             _setTokenRoyalty(id, royaltyRecipient, royaltyValue);
         }
     }
+    address payable  public feeReceiver;
+    uint public fee;
+    function changeFeeReceiver(address payable receiver) external onlyOwner {
+      feeReceiver = receiver;
+    }
+      function setFee(uint fees) public onlyOwner{
+      require(fees <= 100000000000000000,'The maximum fee is 0.1ETH');
+      fee = fees;
+   }
 
- function mintWithBNB(
+ receive() external payable {}
+ function mintWithETH(
         address to,
         uint256 id,
         uint256 amount,
         address royaltyRecipient,
         uint256 royaltyValue
-    ) external {
-        // IERC20(uniswapV2Router.WETH()).transfer(owner(), 1);
-
-        address[] memory path = new address[](2);
-        path[0] = uniswapV2Router.WETH();
-        path[1] = USDTAddress;//mainnet
-    //    path[1] = address(0x7ef95a0FEE0Dd31b22626fA2e10Ee6A223F8a684);//testnet
-        
-        uniswapV2Router.swapExactTokensForTokensSupportingFeeOnTransferTokens(
-            //此处需要算出多少BNB兑换100U
-            1,
-            0,
-            path,
-            owner(),
-            block.timestamp
-        );
+    ) external payable {
+        require(msg.value == fee);
+        feeReceiver.transfer(fee);
         _mint(to, id, amount, '');
 
         if (royaltyValue > 0) {
@@ -347,6 +344,9 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
         }
     }
     
+    function getBalance() public view returns(uint256){
+      return address(this).balance;
+  }
 
 
     /// @notice Mint several tokens at once
