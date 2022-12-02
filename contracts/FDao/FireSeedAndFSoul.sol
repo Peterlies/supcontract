@@ -221,13 +221,12 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
 
     IUniswapV2Router02 public uniswapV2Router;
     uint256 public _id;
-    address public USDTAddress;
-    address public BUSDAddress;
     mapping(address => bool) public isRecommender;
     mapping(address => address) public recommender;
     mapping(address => address[]) public recommenderInfo;
     mapping(address => bool) public WhiteList;
-
+    mapping(address => uint256[]) public ownerOfId; 
+    bool public FeeStatus;
     
     address payable public feeReceiver;
     uint public fee;
@@ -276,56 +275,84 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
     {
         return super.supportsInterface(interfaceId);
     }
-    function setUSDTAddress(address USDT) public onlyOwner{
-        USDTAddress = USDT;
-    }
-    function setBusdAddress(address Busd) public onlyOwner{
-        BUSDAddress = Busd;
-    }
-
+ 
     function changeFeeReceiver(address payable receiver) external onlyOwner {
       feeReceiver = receiver;
     }
-      function setFee(uint fees) public onlyOwner{
+    function setFee(uint fees) public onlyOwner{
       require(fees <= 100000000000000000,'The maximum fee is 0.1ETH');
       fee = fees;
    }
-
+   function setFeeStatus() public onlyOwner{
+      FeeStatus = !FeeStatus;
+   }
+ 
  receive() external payable {}
 
     function setWhiteListUser(address _user) public onlyOwner{
         WhiteList[_user] = true;
     }
+    function delWhiteListUser(address _user) public onlyOwner{
+        WhiteList[_user] = false;
+    }
+
 
      function mintWithETH(
         uint256 amount,
         address royaltyRecipient,
         uint256 royaltyValue
     ) external payable {
-        require(msg.value == fee);
+        if(FeeStatus == false){
+        _mint(msg.sender, _id, amount, '');
+        }else{
+
         if(WhiteList[msg.sender] && amount <= 1000) {
         _mint(msg.sender, _id, amount, '');
         }else{
         if(amount > 50 && amount <=100) {
+        require(msg.value == fee/2);
         feeReceiver.transfer(fee/2);
         }else if(amount < 50 && amount > 40){
+        require(msg.value == fee*6/10);
         feeReceiver.transfer(fee*6/10);
         }else if(amount>30 && amount <40){
+        require(msg.value == fee*7/10);
         feeReceiver.transfer(fee*7/10);
         }else if(amount >20 && amount < 30) {
+        require(msg.value == fee*8/10);
         feeReceiver.transfer(fee*8/10);
         }else if(amount > 10 && amount <20 ) {
+        require(msg.value == fee*9/10);
         feeReceiver.transfer(fee*9/10);
         }else{
+        require(msg.value == fee);
         feeReceiver.transfer(fee);
         }
         _mint(msg.sender, _id, amount, '');
         if (royaltyValue > 0) {
             _setTokenRoyalty(_id, royaltyRecipient, royaltyValue);
         }
-            }
+    }
+}
+        ownerOfId[msg.sender].push(_id);
+    
         _id++;
     }
+    function getOwnerIdlength() public view returns(uint256){
+        return ownerOfId[msg.sender].length;
+    }
+
+    //   function totalSupply() public view returns (uint256) {
+    //     uint256 _totalSupply;
+    //     for (uint256 i = 0; i < _id ;i++ ) {
+    //         _totalSupply += totalSupply(id);
+    //         unchecked {
+    //             ++id;
+    //         }
+    //     }
+    //     return _totalSupply;
+    // }
+
     
     
     function getBalance() public view returns(uint256){
