@@ -259,6 +259,11 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
     //     _uris[tokenId] = uri;
     // }
 
+    //   function setURI(uint256 tokenId, string memory tokenURI) public onlyOwner {
+    //     _setURI(tokenId, tokenURI);
+    // }
+
+
     function recommenderNumber(address account) external view returns (uint256) {
         return recommenderInfo[account].length;
     }
