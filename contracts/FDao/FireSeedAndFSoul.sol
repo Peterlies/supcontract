@@ -227,6 +227,10 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
     mapping(address => address) public recommender;
     mapping(address => address[]) public recommenderInfo;
     mapping(address => bool) public WhiteList;
+
+    
+    address payable public feeReceiver;
+    uint public fee;
     
 
     struct accountInfo {
@@ -244,24 +248,15 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
 
     // uint8 tokenId = 1;
     uint256 public currentSendAmount;
+    string public constant name = "FireSeed";
+    string public constant symbol = "FireSeed";
+    uint256 public constant FireSeedToken = 0;
 
-
-   constructor() ERC1155("https://bafybeicscfvgtequcmqeps5u37haswrtzcmhtcomeiu35hxrc2xtndwgne.ipfs.nftstorage.link/1.json") {
+   constructor() ERC1155("https://bafybeicvt4ri2zzclvtu7gy2kgm5oyvhmeapuojqca5exadbvammxmjq5e.ipfs.nftstorage.link/0.json") {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         uniswapV2Router = _uniswapV2Router;
+        _mint(msg.sender, FireSeedToken, 100, "");
    }
-
-
-//    function uri(uint256 tokenId) override public view returns(string memory) {
-//        return(_uris[tokenId]);
-//    }
-    // function setTokenUri(uint256 tokenId, string memory uri) public onlyOwner{
-    //     _uris[tokenId] = uri;
-    // }
-
-    //   function setURI(uint256 tokenId, string memory tokenURI) public onlyOwner {
-    //     _setURI(tokenId, tokenURI);
-    // }
 
 
     function recommenderNumber(address account) external view returns (uint256) {
@@ -288,39 +283,6 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
         BUSDAddress = Busd;
     }
 
-//     function mintWithUSDT(
-//         address to,
-//         uint256 id,
-//         uint256 amount,
-//         address royaltyRecipient,
-//         uint256 royaltyValue
-//     ) external {
-//         // IERC20(uniswapV2Router.WETH()).transfer(owner(), 1);
-//         // IERC20(USDTAddress).transfer(owner(),100*10**18 );
-//         _mint(to, id, amount, '');
-
-//         if (royaltyValue > 0) {
-//             _setTokenRoyalty(id, royaltyRecipient, royaltyValue);
-//         }
-//     }
-
-//     function mintWithBUSD(
-//         address to,
-//         uint256 id,
-//         uint256 amount,
-//         address royaltyRecipient,
-//         uint256 royaltyValue
-//     ) external {
-//         // IERC20(uniswapV2Router.WETH()).transfer(owner(), 1);
-//         IERC20(BUSDAddress).transfer(owner(),100*10**18 );
-//         _mint(to, id, amount, '');
-
-//         if (royaltyValue > 0) {
-//             _setTokenRoyalty(id, royaltyRecipient, royaltyValue);
-//         }
-//     }
-    address payable  public feeReceiver;
-    uint public fee;
     function changeFeeReceiver(address payable receiver) external onlyOwner {
       feeReceiver = receiver;
     }
@@ -330,21 +292,7 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
    }
 
  receive() external payable {}
-//  function mintWithETH(
-//         address to,
-//         uint256 id,
-//         uint256 amount,
-//         address royaltyRecipient,
-//         uint256 royaltyValue
-//     ) external payable {
-//         require(msg.value == fee);
-//         feeReceiver.transfer(fee);
-//         _mint(to, id, amount, '');
 
-//         if (royaltyValue > 0) {
-//             _setTokenRoyalty(id, royaltyRecipient, royaltyValue);
-//         }
-//     }
     function setWhiteListUser(address _user) public onlyOwner{
         WhiteList[_user] = true;
     }
