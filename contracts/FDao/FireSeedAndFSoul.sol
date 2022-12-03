@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./ERC2981PerTokenRoyalties.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 
 interface IUniswapV2Router01 {
@@ -226,6 +227,11 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
     mapping(address => address[]) public recommenderInfo;
     mapping(address => bool) public WhiteList;
     mapping(address => uint256[]) public ownerOfId; 
+
+    using Counters for Counters.Counter;
+    Counters.Counter private _idTracker;
+
+
     bool public FeeStatus;
     
     address payable public feeReceiver;
@@ -251,7 +257,7 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
     string public constant symbol = "FireSeed";
     uint256 public constant FireSeedToken = 0;
 
-   constructor() ERC1155("https://bafybeicvt4ri2zzclvtu7gy2kgm5oyvhmeapuojqca5exadbvammxmjq5e.ipfs.nftstorage.link/0.json") {
+   constructor() ERC1155("https://bafybeifreyyioksi6zdxwtzhp7pckmqqc5kvbathxhzl2qesqjwhcfr6b4.ipfs.nftstorage.link/0.json") {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         uniswapV2Router = _uniswapV2Router;
         _mint(msg.sender, FireSeedToken, 100, "");
@@ -300,14 +306,15 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
      function mintWithETH(
         uint256 amount,
         address royaltyRecipient,
-        uint256 royaltyValue
+        uint256 royaltyValue,
+        string memory _uriOfipfs
     ) external payable {
         if(FeeStatus == false){
-        _mint(msg.sender, _id, amount, '');
+        _mint(msg.sender, _idTracker.current(), amount, '');
         }else{
 
         if(WhiteList[msg.sender] && amount <= 1000) {
-        _mint(msg.sender, _id, amount, '');
+        _mint(msg.sender, _idTracker.current(), amount, '');
         }else{
         if(amount > 50 && amount <=100) {
         require(msg.value == fee/2);
@@ -328,16 +335,29 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
         require(msg.value == fee);
         feeReceiver.transfer(fee);
         }
-        _mint(msg.sender, _id, amount, '');
+        _mint(msg.sender, _idTracker.current(), amount, '');
         if (royaltyValue > 0) {
-            _setTokenRoyalty(_id, royaltyRecipient, royaltyValue);
+            _setTokenRoyalty(_idTracker.current(), royaltyRecipient, royaltyValue);
         }
     }
 }
-        ownerOfId[msg.sender].push(_id);
-    
-        _id++;
+        ownerOfId[msg.sender].push(_idTracker.current());
+        _uris[_idTracker.current()] = _uriOfipfs;
+        // _id++;
+        _idTracker.increment();
     }
+
+    function uri(uint256 _tokenId) override public view  returns(string memory) {
+        return _uris[_tokenId];
+        // string(
+        //     abi.encodePacked(
+        //         "https://bafybeifreyyioksi6zdxwtzhp7pckmqqc5kvbathxhzl2qesqjwhcfr6b4.ipfs.nftstorage.link/",
+        //         Strings.toString(_tokenId),
+        //         ".json"
+        //     )
+        // );
+    }
+
     function getOwnerIdlength() public view returns(uint256){
         return ownerOfId[msg.sender].length;
     }
