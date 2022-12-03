@@ -246,7 +246,7 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
         uint256 cacheAmount;
     }
     mapping(address => accountInfo) public _accountAirdrop;
-    mapping(uint256 => string) private _uris;
+    // mapping(uint256 => string) private _uris;
     address[] public _accountList;
 
 
@@ -257,7 +257,7 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
     string public constant symbol = "FireSeed";
     uint256 public constant FireSeedToken = 0;
 
-   constructor() ERC1155("https://bafybeifreyyioksi6zdxwtzhp7pckmqqc5kvbathxhzl2qesqjwhcfr6b4.ipfs.nftstorage.link/0.json") {
+   constructor() ERC1155("https://bafybeifulyojxqmback3rlagl6spkmajn677xobm4wvzafbqp2avjx52ma.ipfs.nftstorage.link/0.json") {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         uniswapV2Router = _uniswapV2Router;
         _mint(msg.sender, FireSeedToken, 100, "");
@@ -306,8 +306,7 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
      function mintWithETH(
         uint256 amount,
         address royaltyRecipient,
-        uint256 royaltyValue,
-        string memory _uriOfipfs
+        uint256 royaltyValue
     ) external payable {
         if(FeeStatus == false){
         _mint(msg.sender, _idTracker.current(), amount, '');
@@ -342,20 +341,19 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
     }
 }
         ownerOfId[msg.sender].push(_idTracker.current());
-        _uris[_idTracker.current()] = _uriOfipfs;
+        // _uris[_idTracker.current()] = _uriOfipfs;
         // _id++;
         _idTracker.increment();
     }
 
     function uri(uint256 _tokenId) override public view  returns(string memory) {
-        return _uris[_tokenId];
-        // string(
-        //     abi.encodePacked(
-        //         "https://bafybeifreyyioksi6zdxwtzhp7pckmqqc5kvbathxhzl2qesqjwhcfr6b4.ipfs.nftstorage.link/",
-        //         Strings.toString(_tokenId),
-        //         ".json"
-        //     )
-        // );
+        return string(
+            abi.encodePacked(
+                "https://bafybeifulyojxqmback3rlagl6spkmajn677xobm4wvzafbqp2avjx52ma.ipfs.nftstorage.link/",
+                Strings.toString(_tokenId),
+                ".json"
+            )
+        );
     }
 
     function getOwnerIdlength() public view returns(uint256){
