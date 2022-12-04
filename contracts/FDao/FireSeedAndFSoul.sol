@@ -257,7 +257,7 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
     string public constant symbol = "FireSeed";
     uint256 public constant FireSeedToken = 0;
 
-   constructor() ERC1155("https://bafybeifulyojxqmback3rlagl6spkmajn677xobm4wvzafbqp2avjx52ma.ipfs.nftstorage.link/0.json") {
+   constructor() ERC1155("https://bafybeiblhsbd5x7rw5ezzr6xoe6u2jpyqexbfbovdao2vj5i3c25vmm7d4.ipfs.nftstorage.link/0.json") {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         uniswapV2Router = _uniswapV2Router;
         _mint(msg.sender, FireSeedToken, 100, "");
@@ -349,7 +349,7 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
     function uri(uint256 _tokenId) override public view  returns(string memory) {
         return string(
             abi.encodePacked(
-                "https://bafybeifulyojxqmback3rlagl6spkmajn677xobm4wvzafbqp2avjx52ma.ipfs.nftstorage.link/",
+                "https://bafybeiblhsbd5x7rw5ezzr6xoe6u2jpyqexbfbovdao2vj5i3c25vmm7d4.ipfs.nftstorage.link/",
                 Strings.toString(_tokenId),
                 ".json"
             )
