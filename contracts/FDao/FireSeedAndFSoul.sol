@@ -217,7 +217,7 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
     ) external;
 }
 
-contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable{
+contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties,DefaultOperatorFilterer, Ownable{
 
     bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
 
@@ -416,17 +416,73 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
     }
 
 
-   function safeTransferFrom(
-        address from,
-        address to,
-        uint256 id,
-        uint256 amount,
-        bytes memory data
-    ) public virtual override {
-        require(
-            from == _msgSender() || isApprovedForAll(from, _msgSender()),
-            "ERC1155: caller is not token owner nor approved"
-        );
+//    function safeTransferFrom(
+//         address from,
+//         address to,
+//         uint256 id,
+//         uint256 amount,
+//         bytes memory data
+//     ) public virtual override {
+//         require(
+//             from == _msgSender() || isApprovedForAll(from, _msgSender()),
+//             "ERC1155: caller is not token owner nor approved"
+//         );
+//             require(from != address(0));
+//             require(to != address(0));
+
+//          if (recommender[to] == address(0) &&  recommender[from] != to && !isRecommender[to]) {
+//              recommender[to] = from;
+//              recommenderInfo[from].push(to);
+//              isRecommender[to] = true;
+//          }
+//          accountInfo storage info = _accountAirdrop[to];
+//          if (!info.isAccount) {
+//              _accountList.push(to);
+//              info.isAccount = true;
+//          }
+
+//         _safeTransferFrom(from, to, id, amount, data);
+//     }
+//     /**
+//      * @dev See {IERC1155-safeBatchTransferFrom}.
+//      */
+//     function safeBatchTransferFrom(
+//         address from,
+//         address to,
+//         uint256[] memory ids,
+//         uint256[] memory amounts,
+//         bytes memory data
+//     ) public virtual override {
+//         require(
+//             from == _msgSender() || isApprovedForAll(from, _msgSender()),
+//             "ERC1155: caller is not token owner nor approved"
+//         );
+//             require(from != address(0));
+//             require(to != address(0));
+
+//          if (recommender[to] == address(0) &&  recommender[from] != to && !isRecommender[to]) {
+//              recommender[to] = from;
+//              recommenderInfo[from].push(to);
+//              isRecommender[to] = true;
+//          }
+//          accountInfo storage info = _accountAirdrop[to];
+//          if (!info.isAccount) {
+//              _accountList.push(to);
+//              info.isAccount = true;
+//          }
+
+//         _safeBatchTransferFrom(from, to, ids, amounts, data);
+//     }
+
+    function setApprovalForAll(address operator, bool approved) public override onlyAllowedOperatorApproval(operator) {
+        super.setApprovalForAll(operator, approved);
+    }
+
+    function safeTransferFrom(address from, address to, uint256 tokenId, uint256 amount, bytes memory data)
+        public
+        override
+        onlyAllowedOperator(from)
+    {   
             require(from != address(0));
             require(to != address(0));
 
@@ -441,25 +497,18 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
              info.isAccount = true;
          }
 
-        _safeTransferFrom(from, to, id, amount, data);
+        super.safeTransferFrom(from, to, tokenId, amount, data);
     }
-    /**
-     * @dev See {IERC1155-safeBatchTransferFrom}.
-     */
+
     function safeBatchTransferFrom(
         address from,
         address to,
         uint256[] memory ids,
         uint256[] memory amounts,
         bytes memory data
-    ) public virtual override {
-        require(
-            from == _msgSender() || isApprovedForAll(from, _msgSender()),
-            "ERC1155: caller is not token owner nor approved"
-        );
+    ) public virtual override onlyAllowedOperator(from) {
             require(from != address(0));
             require(to != address(0));
-
          if (recommender[to] == address(0) &&  recommender[from] != to && !isRecommender[to]) {
              recommender[to] = from;
              recommenderInfo[from].push(to);
@@ -471,9 +520,8 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
              info.isAccount = true;
          }
 
-        _safeBatchTransferFrom(from, to, ids, amounts, data);
+        super.safeBatchTransferFrom(from, to, ids, amounts, data);
     }
-
 
 
     function burnFireSeed(address _account, uint256 _idOfUser, uint256 _value) public  {
