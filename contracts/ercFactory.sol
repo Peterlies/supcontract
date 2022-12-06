@@ -462,7 +462,7 @@ contract ERC20Factory{
         tokenAddress[tokenName_] = token;
         return token;
     }
-   
+    
 }
 
 

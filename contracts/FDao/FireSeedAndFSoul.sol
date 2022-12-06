@@ -217,8 +217,6 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
     ) external;
 }
 
-
-
 contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable{
 
     bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
@@ -445,18 +443,6 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties, Ownable
 
         _safeTransferFrom(from, to, id, amount, data);
     }
-
-    // function safeTransferFrom(address from, address to, uint256 tokenId, uint256 amount, bytes memory data)
-    //     public
-    //     override
-    //     onlyAllowedOperator(from)
-    // {
-        
-    //     super.safeTransferFrom(from, to, tokenId, amount, data);
-    // }
-
-
-
     /**
      * @dev See {IERC1155-safeBatchTransferFrom}.
      */
@@ -672,18 +658,23 @@ contract Soul {
     }
 
 
-    function burnToMint() external {
+    function burnToMint(uint256 _tokenId) external {
         require(!status, "status is error");
-        require(fireseed.balanceOf(msg.sender,1) != 0 );
         require(super.balanceOf(msg.sender) == 0 , "you already have FID");
-        fireseed.burnFireSeed(msg.sender, 1,1);
+        fireseed.burnFireSeed(msg.sender,_tokenId ,1);
         _mint(msg.sender, FID);
         UserFID[msg.sender] = FID;
         haveFID[msg.sender] = true;
+        
+        address _Soul = address(new Soul(msg.sender , address(this)));
+        UserToSoul[msg.sender] = _Soul;
+        
         if(IFireSeed(FireSeedAddress).upclass(msg.sender) != address(0) && IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender)) != address(0)){
-        IERC20(FLAME).transfer(msg.sender, 10000*10**18);
-        IERC20(FLAME).transfer(IFireSeed(FireSeedAddress).upclass(msg.sender), 5000*10**18);
-        IERC20(FLAME).transfer(IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender)),2000*10**18);
+        
+        IERC20(FLAME).transfer(UserToSoul[msg.sender], 10000*10**18);
+        IERC20(FLAME).transfer(UserToSoul[IFireSeed(FireSeedAddress).upclass(msg.sender)], 5000*10**18);
+        IERC20(FLAME).transfer(UserToSoul[IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender))],2000*10**18);
+        
         awardFlame[msg.sender] = 10000*10**18;
         awardFlame[IFireSeed(FireSeedAddress).upclass(msg.sender)] = 5000*10**18;
         awardFlame[IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender))] = 2000*10**18;
@@ -691,8 +682,7 @@ contract Soul {
         for(uint i = 0 ; i < sbt.length; i++){
         UserSbt[msg.sender][i] = IERC20(sbt[i]).balanceOf(msg.sender);
         }
-        address _Soul = address(new Soul(msg.sender , address(this)));
-        UserToSoul[msg.sender] = _Soul;
+
         FID++;
     }
     function setFlameAddress(address _FLAME) public onlyOwner{
