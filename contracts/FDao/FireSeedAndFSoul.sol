@@ -647,6 +647,7 @@ contract Soul {
    contract FireSoul is ERC721,ReentrancyGuard,Ownable{
 
         // bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
+    string public baseURI;
     address public FireSeedAddress;
     address public FLAME;
     uint256 public FID;
@@ -684,6 +685,10 @@ contract Soul {
                 coefficient[i] = _coefficient[i];
             }
         }
+        function setBaseURI(string memory baseURI_) external onlyOwner {
+        baseURI = baseURI_;
+    }
+
 
        function setStatus() external {
            require(msg.sender == pauseControlAddress,"address is error");
@@ -705,6 +710,9 @@ contract Soul {
         
     }
 
+    function _baseURI() internal view virtual override returns (string memory) {
+        return baseURI;
+    }
 
     function burnToMint(uint256 _tokenId) external {
         require(!status, "status is error");
@@ -733,6 +741,8 @@ contract Soul {
 
         FID++;
     }
+
+
     function setFlameAddress(address _FLAME) public onlyOwner{
         FLAME = _FLAME;
     }
