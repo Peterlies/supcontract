@@ -648,6 +648,10 @@ contract Soul {
 
         // bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     string public baseURI;
+    string public baseExtension = ".json";
+
+
+
     address public FireSeedAddress;
     address public FLAME;
     uint256 public FID;
@@ -685,7 +689,7 @@ contract Soul {
                 coefficient[i] = _coefficient[i];
             }
         }
-        function setBaseURI(string memory baseURI_) external onlyOwner {
+    function setBaseURI(string memory baseURI_) external onlyOwner {
         baseURI = baseURI_;
     }
 
@@ -713,6 +717,24 @@ contract Soul {
     function _baseURI() internal view virtual override returns (string memory) {
         return baseURI;
     }
+     function tokenURI(uint256 tokenId)
+    public
+    view
+    virtual
+    override
+    returns (string memory)
+  {
+    require(
+      _exists(tokenId),
+      "ERC721Metadata: URI query for nonexistent token"
+    );
+
+    string memory currentBaseURI = _baseURI();
+    return bytes(currentBaseURI).length > 0
+        ? string(abi.encodePacked(currentBaseURI, Strings.toString(tokenId), baseExtension))
+        : "";
+  }
+
 
     function burnToMint(uint256 _tokenId) external {
         require(!status, "status is error");

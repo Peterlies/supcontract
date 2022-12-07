@@ -1,7 +1,5 @@
 {
     "id" : 0,
-    "name" : "FireSeed #0",
-    "image" : "https://raw.githubusercontent.com/henry-maker-commits/supcontract/master/contracts/FDao/PIC/0.png",
-    "seller_fee_basis_points": 250,
-    "fee_recipient": "0x1Afb56477e88f6CCa6e43F3c1387cA0dF292D68b"
+    "name" : "FireSoul #0",
+    "image" : "https://raw.githubusercontent.com/henry-maker-commits/supcontract/master/contracts/FDao/PIC/2.png"
 }
