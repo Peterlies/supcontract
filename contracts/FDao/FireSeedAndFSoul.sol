@@ -611,12 +611,10 @@ interface IERC20 {
         function upclass(address usr) external view returns(address);
     }
 
-    
 contract Soul {
     address public owner;
     address public create;
     address[] public sbt;
-    uint256[] public sbtAmount;
     constructor(address _owner, address _create) {
         owner = _owner;
         create = _create;
@@ -634,11 +632,8 @@ contract Soul {
             sbt[i] = _sbt[i];
         }
     }
-    function checkBalanceOfSBT(address _user) external returns(uint256[] memory) {
-        for(uint i = 0 ; i < sbt.length ; i++) {
-            sbtAmount.push(IERC20(sbt[i]).balanceOf(_user));
-        }
-        return sbtAmount;
+    function checkBalanceOfSBT(address _user, uint256 sbtNum) external view returns(uint256) {
+        return IERC20(sbt[sbtNum]).balanceOf(_user);
     }
     
 
@@ -749,9 +744,9 @@ contract Soul {
         
         if(IFireSeed(FireSeedAddress).upclass(msg.sender) != address(0) && IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender)) != address(0)){
         
-        IERC20(FLAME).transfer(UserToSoul[msg.sender], 10000*10**18);
-        IERC20(FLAME).transfer(UserToSoul[IFireSeed(FireSeedAddress).upclass(msg.sender)], 5000*10**18);
-        IERC20(FLAME).transfer(UserToSoul[IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender))],2000*10**18);
+        IERC20(FLAME).transfer(msg.sender, 10000*10**18);
+        IERC20(FLAME).transfer(IFireSeed(FireSeedAddress).upclass(msg.sender), 5000*10**18);
+        IERC20(FLAME).transfer(IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender)),2000*10**18);
         
         awardFlame[msg.sender] = 10000*10**18;
         awardFlame[IFireSeed(FireSeedAddress).upclass(msg.sender)] = 5000*10**18;
