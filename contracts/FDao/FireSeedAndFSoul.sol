@@ -759,7 +759,9 @@ contract Soul {
         FID++;
     }
 
-
+    function getSoulAccount(address _user) external view returns(address){
+        return UserToSoul[_user];
+    }
     function setFlameAddress(address _FLAME) public onlyOwner{
         FLAME = _FLAME;
     }
