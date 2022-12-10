@@ -3,6 +3,7 @@ pragma solidity ^0.8.6;
 
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./ERC2981PerTokenRoyalties.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
@@ -645,13 +646,12 @@ contract Soul {
     string public baseURI;
     string public baseExtension = ".json";
 
-
-
     address public FireSeedAddress;
     address public FLAME;
     uint256 public FID;
     address[] public sbtAddress;
     FireSeed fireseed;
+    address public userContract;
     address public _owner;
     bool public status;
     address public pauseControlAddress;
@@ -665,10 +665,11 @@ contract Soul {
     mapping(address => uint256[]) public sbtTokenAmount; 
     mapping(address => address) public UserToSoul;
        
-       constructor(FireSeed _fireseed) ERC721("FireSoul", "FireSoul"){
+       constructor(FireSeed _fireseed, address _userContract) ERC721("FireSoul", "FireSoul"){
 
         _owner = msg.sender;
         fireseed = _fireseed;
+        userContract = _userContract;
 
        }
        function setPauseControlAddress(address _pauseControlAddress) public onlyOwner {
@@ -734,6 +735,7 @@ contract Soul {
     function burnToMint(uint256 _tokenId) external {
         require(!status, "status is error");
         require(super.balanceOf(msg.sender) == 0 , "you already have FID");
+        require(IERC721(userContract).balanceOf(msg.sender) != 0 ,"you haven't passport");
         fireseed.burnFireSeed(msg.sender,_tokenId ,1);
         _mint(msg.sender, FID);
         UserFID[msg.sender] = FID;

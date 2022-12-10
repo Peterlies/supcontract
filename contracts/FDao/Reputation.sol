@@ -55,5 +55,8 @@ contract Reputation is Ownable
         }
         return ReputationPoint;
     }
+    function getSbtLength() public view returns(uint256) {
+        return sbt.length;
+    }
 
 }
