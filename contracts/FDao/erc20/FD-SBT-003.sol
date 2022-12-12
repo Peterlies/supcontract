@@ -21,6 +21,7 @@ contract FDSBT003 is ERC20,Ownable{
 
     address public minter;
     address public admin;
+    address public fireSoul;
     mapping (address => mapping (uint32 => Checkpoint)) public checkpoints;
     mapping (address => uint32) public numCheckpoints;
     
@@ -44,15 +45,19 @@ contract FDSBT003 is ERC20,Ownable{
     function setStatus() public {
         status = !status;
     }
-    function mint(address account, uint256 amount) external _isMinter returns (bool) {
-        require(!status, "status is false");
-        _mint( account, amount);
-        return true;
+    function setFireSoulAddress(address _fireSoul) public onlyOwner {
+		fireSoul = _fireSoul
     }
-    function burn(address account, uint256 amount) external _isMinter returns (bool) {
+
+    function mint(address account, uint256 amount) external {
+        require(!status, "status is false");
+	require(msg.sender == fireSoul,"caller is not fireSoul");
+        _mint( account, amount);
+    }
+    function burn(address account, uint256 amount) external {
 	require(!status , "status is false");
+	require(msg.sender == fireSoul,"caller is not fireSoul");
 	_burn(account, amount);
-	return true;
     }
 
     function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
