@@ -44,11 +44,17 @@ contract FDSBT003 is ERC20,Ownable{
     function setStatus() public {
         status = !status;
     }
-    function mint(address account, uint256 amount) public _isMinter returns (bool) {
+    function mint(address account, uint256 amount) external _isMinter returns (bool) {
         require(!status, "status is false");
         _mint( account, amount);
         return true;
     }
+    function burn(address account, uint256 amount) external _isMinter return (bool) {
+	require(!status , "status is false");
+	_burn(account, amount);
+	return true;
+    }
+
     function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
         require(false);
        _transferErc20(msg.sender,recipient,amount);
