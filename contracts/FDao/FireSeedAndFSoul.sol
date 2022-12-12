@@ -640,6 +640,11 @@ contract Soul {
 
 }
 
+interface ISbt003 {
+	function mint(address account, uint256 amount) external;
+	function burn(address account, uint256 amount) external;
+}
+
    contract FireSoul is ERC721,ReentrancyGuard,Ownable{
 
         // bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
@@ -657,6 +662,7 @@ contract Soul {
     address public pauseControlAddress;
     address[] public sbt;
     uint[] public  coefficient;
+    address public sbt003;
 
     mapping(address => mapping(uint256 => uint256)) public UserSbt;
     mapping(address => uint256) public awardFlame;
@@ -671,6 +677,9 @@ contract Soul {
         fireseed = _fireseed;
         userContract = _userContract;
 
+       }
+       function setSbt003Address(address _sbt003) public onlyOwner{
+	       sbt003 = _sbt003;
        }
        function setPauseControlAddress(address _pauseControlAddress) public onlyOwner {
            pauseControlAddress = _pauseControlAddress;
