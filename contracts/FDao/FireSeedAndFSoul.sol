@@ -301,7 +301,7 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties,DefaultO
       FeeStatus = !FeeStatus;
    }
  
- receive() external payable {}
+    receive() external payable {}
 
     function setWhiteListUser(address _user) public onlyOwner{
         WhiteList[_user] = true;
@@ -646,38 +646,31 @@ interface ISbt003 {
 }
 
    contract FireSoul is ERC721,ReentrancyGuard,Ownable{
-
-        // bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     string public baseURI;
     string public baseExtension = ".json";
-
     address public FireSeedAddress;
     address public FLAME;
     uint256 public FID;
     address[] public sbtAddress;
     FireSeed fireseed;
     address public userContract;
-    address public _owner;
     bool public status;
     address public pauseControlAddress;
     address[] public sbt;
     uint[] public  coefficient;
     address public sbt003;
 
-    mapping(address => mapping(uint256 => uint256)) public UserSbt;
-    mapping(address => uint256) public awardFlame;
     mapping(address => uint256) public UserFID;
     mapping(address => bool) public haveFID;
     mapping(address => uint256[]) public sbtTokenAmount; 
     mapping(address => address) public UserToSoul;
        
-       constructor(FireSeed _fireseed, address _userContract) ERC721("FireSoul", "FireSoul"){
-
-        _owner = msg.sender;
+       constructor(FireSeed _fireseed, address _userContract,address _sbt003) ERC721("FireSoul", "FireSoul"){
         fireseed = _fireseed;
         userContract = _userContract;
-
+	    sbt003 = _sbt003;
        }
+       //onlyOwner
        function setSbt003Address(address _sbt003) public onlyOwner{
 	       sbt003 = _sbt003;
        }
@@ -698,7 +691,7 @@ interface ISbt003 {
         baseURI = baseURI_;
     }
 
-
+        //main
        function setStatus() external {
            require(msg.sender == pauseControlAddress,"address is error");
            status = !status;
@@ -739,8 +732,6 @@ interface ISbt003 {
         ? string(abi.encodePacked(currentBaseURI, Strings.toString(tokenId), baseExtension))
         : "";
   }
-
-
     function burnToMint(uint256 _tokenId) external {
         require(!status, "status is error");
         require(super.balanceOf(msg.sender) == 0 , "you already have FID");
@@ -749,24 +740,13 @@ interface ISbt003 {
         _mint(msg.sender, FID);
         UserFID[msg.sender] = FID;
         haveFID[msg.sender] = true;
-        
         address _Soul = address(new Soul(msg.sender , address(this)));
         UserToSoul[msg.sender] = _Soul;
-        
-        if(IFireSeed(FireSeedAddress).upclass(msg.sender) != address(0) && IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender)) != address(0)){
-        
-        IERC20(FLAME).transfer(msg.sender, 10000*10**18);
-        IERC20(FLAME).transfer(IFireSeed(FireSeedAddress).upclass(msg.sender), 5000*10**18);
-        IERC20(FLAME).transfer(IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender)),2000*10**18);
-        
-        awardFlame[msg.sender] = 10000*10**18;
-        awardFlame[IFireSeed(FireSeedAddress).upclass(msg.sender)] = 5000*10**18;
-        awardFlame[IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender))] = 2000*10**18;
+        if(UserToSoul[IFireSeed(FireSeedAddress).upclass(msg.sender)] != address(0) && UserToSoul[IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender))] != address(0)){
+        ISbt003(sbt003).mint(UserToSoul[msg.sender], 7 *10**18);
+        ISbt003(sbt003).mint(UserToSoul[IFireSeed(FireSeedAddress).upclass(msg.sender)], 2*10**18);
+        ISbt003(sbt003).mint(UserToSoul[IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender))],10**18);
         }
-        for(uint i = 0 ; i < sbt.length; i++){
-        UserSbt[msg.sender][i] = IERC20(sbt[i]).balanceOf(msg.sender);
-        }
-
         FID++;
     }
 
