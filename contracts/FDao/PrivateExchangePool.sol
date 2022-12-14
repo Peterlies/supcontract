@@ -9,6 +9,10 @@ import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 interface IFireSoul {
 	function checkFID(address user) external view returns(bool);
 }
+interface ISbt001{
+	function mint(address Account, uint256 Amount) external;
+	function burn(address Account, uint256 Amount) external;
+}
 // FireDaoToken 0x6a7858fE9d76eeE661642561Ba06db24f293369C
 //	PRIVATEEXCHANGEPOOL 0x1551Cf5A77aDeeB45EB757E26FeA391eb7dd1547
 contract PrivateExchangePool is Ownable {
@@ -23,10 +27,11 @@ contract PrivateExchangePool is Ownable {
 	ERC20 fdt;
     
 	address payable public feeReceiver;
-	
+	address public sbt001;	
 	address public fireSoul;
+	address public lock;
 	uint256 private salePrice = 5;
-    bool public FeeStatus;
+    	bool public FeeStatus;
 	mapping(address => uint256) public userLockBalance;
 	mapping(address => userLock[]) public userLocks;
 	mapping(address => uint256) public userTotalBuy;
@@ -43,8 +48,8 @@ contract PrivateExchangePool is Ownable {
 	}
 	//onlyOwner
 	function setFeeStatus() public onlyOwner{
-      FeeStatus = !FeeStatus;
-   }
+      		FeeStatus = !FeeStatus;
+   	}
 	function setFDTAddress(ERC20 _fdt) public onlyOwner {
 		fdt = _fdt;
 	}
@@ -53,7 +58,13 @@ contract PrivateExchangePool is Ownable {
 	}
 	function changeFeeReceiver(address payable receiver) external onlyOwner {
       feeReceiver = receiver;
-    }
+    	}
+    	function setSbt001Address(address _sbt001) public onlyOwner {
+		sbt001 = _sbt001;
+	}
+	function setLockForPrivateExchangePool(address _lock) public onlyOwner {
+		lock = _lock;
+	}
 	//main
 	function exchangeFdt() public payable {
 		require(msg.value == 100000000000000000 || 
@@ -72,15 +83,21 @@ contract PrivateExchangePool is Ownable {
 		require(IFireSoul(fireSoul).checkFID(msg.sender), "you haven't FID,plz do this first");
 		require(userTotalBuy[msg.sender] + msg.value <= 5000000000000000000,"fireDao ID only buy 5 ETH");
 		feeReceiver.transfer(msg.value);
+		
 		fdt.transfer(msg.sender, msg.value*getLatesPrice()/10**8 * 1000/salePrice * 3/10);
+		fdt.transfer(
 		userLock memory info = userLock({amount:msg.value*getLatesPrice()/10**8 * 1000/salePrice *7/10, startTime:block.timestamp, endTime:block.timestamp + lockTime});
 		userLocks[msg.sender].push(info);
 		userTotalBuy[msg.sender] += msg.value;
+		ISbt001(sbt001).mint(msg.sender, msg.value*getLatesPrice()/10**8 * 1000/salePrice * 7/10);
 
 	}
 
-	function getUserbuylength() public view returns(uint256) {
+	function getUserBuyLength() external view returns(uint256) {
 		return userLocks[msg.sender].length;
+	}
+	function getUserLocksById(uint256 _id, address _user) external view returns(userLock) {
+		return userLocks[_user][_id];
 	}
    	
 
@@ -101,4 +118,19 @@ contract PrivateExchangePool is Ownable {
 	}
     receive() external payable {}
 }
-
+interface IPrivateExchangePool {
+	function getUserBuyLength() external view returns(uint256);
+	function getUserLocksById(uint256 _id, address _user) external view returns(userLock);
+}
+contract LockForPrivateExchangePool is Ownable {
+	ERC20 fdt;
+	address public exchangePool;
+	constructor (address _exchangePool) {exchangePool = _exchangePool}
+	function setFdt(ERC20 _fdt) public onlyOwner {
+		fdt = _fdt;
+	}
+	function withDraw(uint256 _amount) external {
+		require(IPrivateExchangePool(exchangePool).getUserBuyLength() >= 0, "you haven't lock");
+		fdt.transfer(msg.sender, _amount);
+	}
+}
