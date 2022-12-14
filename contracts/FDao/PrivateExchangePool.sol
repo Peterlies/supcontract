@@ -129,8 +129,8 @@ contract LockForPrivateExchangePool is Ownable {
 	function setFdt(ERC20 _fdt) public onlyOwner {
 		fdt = _fdt;
 	}
-	function withDraw(uint256 _amount) external {
-		require(IPrivateExchangePool(exchangePool).getUserBuyLength() >= 0, "you haven't lock");
+	function withDraw(address _user, uint256 _amount) external {
+		require(IPrivateExchangePool(exchangePool).getUserBuyLength() >= 0, "you haven't lock amount");
 		fdt.transfer(msg.sender, _amount);
 	}
 }
