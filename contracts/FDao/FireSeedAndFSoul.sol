@@ -497,7 +497,7 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties,DefaultO
              _accountList.push(to);
              info.isAccount = true;
          }
-
+        
         super.safeTransferFrom(from, to, tokenId, amount, data);
     }
 
@@ -742,10 +742,10 @@ interface ISbt003 {
         haveFID[msg.sender] = true;
         address _Soul = address(new Soul(msg.sender , address(this)));
         UserToSoul[msg.sender] = _Soul;
-        if(UserToSoul[IFireSeed(FireSeedAddress).upclass(msg.sender)] != address(0) && UserToSoul[IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender))] != address(0)){
-        ISbt003(sbt003).mint(UserToSoul[msg.sender], 7 *10**18);
-        ISbt003(sbt003).mint(UserToSoul[IFireSeed(FireSeedAddress).upclass(msg.sender)], 2*10**18);
-        ISbt003(sbt003).mint(UserToSoul[IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender))],10**18);
+        if(UserToSoul[IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender)))] != address(0)){
+        ISbt003(sbt003).mint(UserToSoul[IFireSeed(FireSeedAddress).upclass(msg.sender)], 7*10**18);
+        ISbt003(sbt003).mint(UserToSoul[IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender))],2*10**18);
+        ISbt003(sbt003).mint(UserToSoul[IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender)))], 10**18);
         }
         FID++;
     }
