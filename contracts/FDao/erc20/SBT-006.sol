@@ -5,11 +5,9 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
-
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-
-contract FDSBT005 is ERC20,Ownable{
+contract FDSBT006 is ERC20,Ownable{
     using SafeMath for uint256;
 
     string public logo;
@@ -17,16 +15,17 @@ contract FDSBT005 is ERC20,Ownable{
         uint32 fromBlock;
         uint96 votes;
     }
-    bool public status = false;
+    bool public status =false;
 
     address public minter;
     address public admin;
+    address public MiningAddress;
     mapping (address => mapping (uint32 => Checkpoint)) public checkpoints;
     mapping (address => uint32) public numCheckpoints;
     
     event DelegateVotesChanged(address indexed delegate, uint256 previousBalance, uint256 newBalance);
     event AdminChange(address indexed Admin, address indexed newAdmin);
-    constructor(address manager,address _minter,uint256 _totalSupply,string memory _logo)  public ERC20("FDSBD005","FDSBD005"){
+    constructor(address manager,address _minter,uint256 _totalSupply,string memory _name, string memory _symbol,string memory _logo)  public ERC20("SBT-006", "SBT-006"){
         logo = _logo;
         _mint(manager, _totalSupply * 10 ** 18);
         _addDelegates(manager, safe96(_totalSupply * 10 ** 18,"erc20: vote amount underflows"));
@@ -42,12 +41,22 @@ contract FDSBT005 is ERC20,Ownable{
         _;
     }
     function setStatus() public onlyOwner {
-        status =!status;
+        status = !status;
+    }
+    function setMiningAddress(address _MiningAddress) public onlyOwner{
+        MiningAddress = _MiningAddress;
     }
     function mint(address account, uint256 amount) public _isMinter returns (bool) {
-        require(!status ,"status is false");
         _mint( account, amount);
         return true;
+    }
+      function mintExternal(address User, uint256 mintAmount) external {
+        require(msg.sender == MiningAddress,"you set Address is error"); 
+        _mint(User, mintAmount);
+    }
+    function burnExternal(address User, uint256 mintAmount) external {
+        require(msg.sender == MiningAddress,"you set Address is error"); 
+        _burn(User, mintAmount);
     }
 
     function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
@@ -67,7 +76,6 @@ contract FDSBT005 is ERC20,Ownable{
    
     function getCurrentVotes(address account) external view returns (uint96) {
         require(!status ,"status is false");
-
         uint32 nCheckpoints = numCheckpoints[account];
         return nCheckpoints > 0 ? checkpoints[account][nCheckpoints - 1].votes : 0;
     }
@@ -103,8 +111,6 @@ contract FDSBT005 is ERC20,Ownable{
      }
    
     function _transferErc20(address sender, address recipient, uint256 amount) internal {
-        require(!status ,"status is false");
-
           
         uint96 amount96 = safe96(amount,"vote: vote amount underflows");
            

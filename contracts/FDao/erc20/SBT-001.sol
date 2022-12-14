@@ -6,49 +6,54 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 
-
-contract FDSBT003 is ERC20,Ownable{
+contract FDSBT001 is ERC20 ,Ownable{
     using SafeMath for uint256;
+
     struct Checkpoint {
         uint32 fromBlock;
         uint96 votes;
     }
-    bool public status = false;
-    address public fireSoul;
+    bool public status;
+    address public LockAddress;
     mapping (address => mapping (uint32 => Checkpoint)) public checkpoints;
     mapping (address => uint32) public numCheckpoints;
     
     event DelegateVotesChanged(address indexed delegate, uint256 previousBalance, uint256 newBalance);
-    constructor(address _fireSoul)  ERC20("FDSBD003","FDSBD003"){
-    	fireSoul = _fireSoul;
+    event AdminChange(address indexed Admin, address indexed newAdmin);
+    constructor() ERC20("SBT-001", "SBT-001"){
     }
-    function setStatus() public {
+
+    function setMintExternalAddress(address _LockAddress) public onlyOwner{
+        LockAddress =_LockAddress;
+    }
+    function setContractStatus() public onlyOwner {
         status = !status;
     }
-    function setFireSoulAddress(address _fireSoul) public onlyOwner {
-		fireSoul = _fireSoul;
-    }
 
-    function mint(address account, uint256 amount) external {
-        require(!status, "status is false");
-	require(msg.sender == fireSoul,"caller is not fireSoul");
-        _mint( account, amount);
-    }
-    function burn(address account, uint256 amount) external {
-	require(!status , "status is false");
-	require(msg.sender == fireSoul,"caller is not fireSoul");
-	_burn(account, amount);
-    }
+    function mint(address Account, uint256 Amount) external {
+        require(msg.sender == LockAddress,"you set Address is error"); 
+        _mint(Account, Amount);
 
+    }
+    function burn(address Account, uint256 Amount) external {
+        require(msg.sender == LockAddress,"you set Address is error"); 
+        _burn(Account, Amount);
+
+    }
     function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
+        require(!status , "status is not able");
+
         require(false);
        _transferErc20(msg.sender,recipient,amount);
         return true;
     }
     
     function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
+        require(!status , "status is not able");
+
         require(false);
         _transferErc20(sender,recipient,amount);
         uint256 currentAllowance = allowance(sender,_msgSender());
@@ -58,14 +63,14 @@ contract FDSBT003 is ERC20,Ownable{
     }
    
     function getCurrentVotes(address account) external view returns (uint96) {
-        require(!status, "status is false");
+        require(!status , "status is not able");
 
         uint32 nCheckpoints = numCheckpoints[account];
         return nCheckpoints > 0 ? checkpoints[account][nCheckpoints - 1].votes : 0;
     }
     
     function getPriorVotes(address account, uint blockNumber) public view returns (uint96) {
-        require(!status, "status is false");
+        require(!status , "status is not able");
 
          require(blockNumber <= block.number, "ERC20: not yet determined");
     

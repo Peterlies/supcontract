@@ -6,7 +6,9 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@uniswap/lib/contracts/libraries/TransferHelper.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
-
+interface IFireSoul {
+	function checkFID(address user) external view returns(bool);
+}
 // FireDaoToken 0x6a7858fE9d76eeE661642561Ba06db24f293369C
 //	PRIVATEEXCHANGEPOOL 0x1551Cf5A77aDeeB45EB757E26FeA391eb7dd1547
 contract PrivateExchangePool is Ownable {
@@ -19,11 +21,15 @@ contract PrivateExchangePool is Ownable {
 	}
 	uint256 private lockTime = 31536000;	
 	ERC20 fdt;
-    address payable public feeReceiver;
-    // uint public fee;
+    
+	address payable public feeReceiver;
+	
+	address public fireSoul;
+	uint256 private salePrice = 5;
     bool public FeeStatus;
 	mapping(address => uint256) public userLockBalance;
 	mapping(address => userLock[]) public userLocks;
+	mapping(address => uint256) public userTotalBuy;
 	AggregatorV3Interface internal priceFeed;
 	/**
 		* NetWork: Goerli
@@ -31,7 +37,8 @@ contract PrivateExchangePool is Ownable {
 		* Address:0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e
 		*/
 
-	constructor() {
+	constructor(address _fireSoul) {
+		fireSoul = _fireSoul;
 		priceFeed = AggregatorV3Interface(0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e);
 	}
 	//onlyOwner
@@ -41,7 +48,9 @@ contract PrivateExchangePool is Ownable {
 	function setFDTAddress(ERC20 _fdt) public onlyOwner {
 		fdt = _fdt;
 	}
-
+	function setSalePrice(uint256 _salePrice) public onlyOwner {
+		salePrice = _salePrice;
+	}
 	function changeFeeReceiver(address payable receiver) external onlyOwner {
       feeReceiver = receiver;
     }
@@ -59,13 +68,17 @@ contract PrivateExchangePool is Ownable {
 				msg.value == 1000000000000000000 ,
 				"input is error"
 				);
+		require(msg.value*getLatesPrice()/10**8 * 1000/salePrice > getBalanceOfFDT(), "the contract FDT balance is not enough");
+		require(IFireSoul(fireSoul).checkFID(msg.sender), "you haven't FID,plz do this first");
+		require(userTotalBuy[msg.sender] + msg.value <= 5000000000000000000,"fireDao ID only buy 5 ETH");
 		feeReceiver.transfer(msg.value);
-		
-		fdt.transfer(msg.sender, msg.value*getLatesPrice()/10**8 * 1000/5 * 3/10);
-		userLock memory info = userLock({amount:msg.value*getLatesPrice()/10**8 * 1000/5 *7/10, startTime:block.timestamp, endTime:block.timestamp + lockTime});
+		fdt.transfer(msg.sender, msg.value*getLatesPrice()/10**8 * 1000/salePrice * 3/10);
+		userLock memory info = userLock({amount:msg.value*getLatesPrice()/10**8 * 1000/salePrice *7/10, startTime:block.timestamp, endTime:block.timestamp + lockTime});
 		userLocks[msg.sender].push(info);
+		userTotalBuy[msg.sender] += msg.value;
 
 	}
+
 	function getUserbuylength() public view returns(uint256) {
 		return userLocks[msg.sender].length;
 	}
