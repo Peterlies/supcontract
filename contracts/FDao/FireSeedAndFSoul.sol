@@ -223,7 +223,6 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties,DefaultO
     bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
 
     IUniswapV2Router02 public uniswapV2Router;
-    uint256 public _id;
     mapping(address => bool) public isRecommender;
     mapping(address => address) public recommender;
     mapping(address => address[]) public recommenderInfo;
@@ -497,7 +496,15 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties,DefaultO
              _accountList.push(to);
              info.isAccount = true;
          }
-        
+       for(uint i = 0; i < ownerOfId[from].length; i ++ ){
+	       if(tokenId == ownerOfId[from][i]){
+		       uint  _id = i;
+                ownerOfId[from][_id] = ownerOfId[from][ownerOfId[from].length - 1];
+                ownerOfId[from].pop();
+                ownerOfId[to].push(tokenId);
+		       break;
+	       }
+       }
         super.safeTransferFrom(from, to, tokenId, amount, data);
     }
 
