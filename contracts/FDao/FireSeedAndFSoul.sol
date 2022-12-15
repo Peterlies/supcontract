@@ -497,14 +497,15 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties,DefaultO
              info.isAccount = true;
          }
        for(uint i = 0; i < ownerOfId[from].length; i ++ ){
-	       if(tokenId == ownerOfId[from][i]){
+	       if(tokenId == ownerOfId[from][i] && amount == super.balanceOf(msg.sender, tokenId)){
 		       uint  _id = i;
                 ownerOfId[from][_id] = ownerOfId[from][ownerOfId[from].length - 1];
                 ownerOfId[from].pop();
-                ownerOfId[to].push(tokenId);
 		       break;
 	       }
        }
+                ownerOfId[to].push(tokenId);
+
         super.safeTransferFrom(from, to, tokenId, amount, data);
     }
 
