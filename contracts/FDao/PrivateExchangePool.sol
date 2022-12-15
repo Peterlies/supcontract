@@ -4,13 +4,15 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-
+interface IFireSeed {
+	function upclass(address usr) external view returns(address);
+}
 interface IFireSoul {
 	function checkFID(address user) external view returns(bool);
 }
 interface ILockForPrivateExchangePool {
 
-	function withDraw(uint256 _id,address _user, uint256 _amount) external;
+	function withDraw(address _user, uint256 _amount) external;
 }
 interface ISbt001{
 	function mint(address Account, uint256 Amount) external;
@@ -30,11 +32,14 @@ contract PrivateExchangePool is Ownable {
 	ERC20 fdt;
     
 	address payable public feeReceiver;
+	address payable public rainbowCityFundation;
+	address payable public devAndOperation;
 	address public sbt001;	
-	// address public fireSoul;
+	address public fireSoul;
+	address public fireSeed;
 	address public lock;
 	uint256 private salePrice = 5;
-    bool public FeeStatus;
+	bool public FeeStatus;
 	mapping(address => userLock[]) public userLocks;
 	mapping(address => uint256) public userTotalBuy;
 	AggregatorV3Interface internal priceFeed;
@@ -59,14 +64,28 @@ contract PrivateExchangePool is Ownable {
 		salePrice = _salePrice;
 	}
 	function changeFeeReceiver(address payable receiver) external onlyOwner {
-      feeReceiver = receiver;
+      		feeReceiver = receiver;
     	}
+	function changeRainbowCityFundation(address payable _rainbowCityFundation) public onlyOwner {
+		rainbowCityFundation = _rainbowCityFundation;
+	}
+	function changeDevAndOperation(address payable _devAndOperation) public onlyOwner {
+		devAndOperation = _devAndOperation;
+	}
+
     	function setSbt001Address(address _sbt001) public onlyOwner {
 		sbt001 = _sbt001;
 	}
 	function setLockForPrivateExchangePool(address _lock) public onlyOwner {
 		lock = _lock;
 	}
+	function setFireSeed(address _fireSeed) public onlyOwner {
+		fireSeed = _fireSeed;
+	}
+	function setFireSoul(address _fireSoul) public onlyOwner {
+		fireSoul = _fireSoul;
+	}
+
 	//main
 	function exchangeFdt() public payable {
 		require(msg.value == 100000000000000000 || 
@@ -82,10 +101,14 @@ contract PrivateExchangePool is Ownable {
 				"input is error"
 				);
 		require(msg.value*getLatesPrice()/10**8 * 1000/salePrice < getBalanceOfFDT(), "the contract FDT balance is not enough");
-		// require(IFireSoul(fireSoul).checkFID(msg.sender), "you haven't FID,plz do this first");
+		require(IFireSoul(fireSoul).checkFID(msg.sender), "you haven't FID,plz do this first");
 		require(userTotalBuy[msg.sender] + msg.value <= 5000000000000000000,"fireDao ID only buy 5 ETH");
-		feeReceiver.transfer(msg.value);
-		
+		feeReceiver.transfer(msg.value*3/10);
+		rainbowCityFundation.transfer(msg.value*3/10);
+		devAndOperation.transfer(msg.value*3/10);
+		payable (IFireSeed(fireSeed).upclass(msg.sender)).transfer(msg.value*5/100);
+		payable (IFireSeed(fireSeed).upclass(IFireSeed(fireSeed).upclass(msg.sender))).transfer(msg.value*3/100);
+		payable (IFireSeed(fireSeed).upclass(IFireSeed(fireSeed).upclass(IFireSeed(fireSeed).upclass(msg.sender)))).transfer(msg.value*2/100);
 		fdt.transfer(msg.sender, msg.value*getLatesPrice()/10**8 * 1000/salePrice * 3/10);
 		fdt.transfer(lock, msg.value*getLatesPrice()/10**8 * 1000/salePrice * 7/10);
 		userLock memory info = userLock({amount:msg.value*getLatesPrice()/10**8 * 1000/salePrice *7/10, startTime:block.timestamp, endTime:block.timestamp + lockTime});
@@ -96,14 +119,25 @@ contract PrivateExchangePool is Ownable {
 	}
 
 	function withDrawLock(uint256 id_,address user_, uint256 amount_) public {
-		ILockForPrivateExchangePool(lock).withDraw(id_, user_, amount_);
+		require(amount_ <= this.getUserExtractable(user_,id_), "you must check getUserExtractable()");
+		require(userLocks[user_][id_].amount != 0,"you have withDraw");
+		ILockForPrivateExchangePool(lock).withDraw(user_, amount_);
 		ISbt001(sbt001).burn(msg.sender, amount_);
+		userLocks[user_][id_].startTime = block.timestamp;
+		userLocks[user_][id_].amount -=  amount_;
+
 	}
 	function getUserBuyLength(address _user) external view returns(uint256) {
 		return userLocks[_user].length;
 	}
 	function getUserLockEndTime(address _user, uint256 lockId) external view returns(uint256) {
 		return userLocks[_user][lockId].endTime;
+	}
+	function getUserLockStartTime(address _user, uint256 lockId) external view returns(uint256) {
+		return userLocks[_user][lockId].startTime;
+	}
+	function getUserExtractable(address _user, uint256 lockId) external view returns(uint256) {
+		return userLocks[_user][lockId].amount * (block.timestamp - userLocks[_user][lockId].startTime)/lockTime;
 	}
 
 
@@ -138,10 +172,10 @@ contract LockForPrivateExchangePool is Ownable {
 	function setExchangePool(address _exchangePool) public onlyOwner {
 		exchangePool = _exchangePool;
 	}
-	function withDraw(uint256 _id,address _user, uint256 _amount) external {
+	function withDraw(address _user, uint256 _amount) external {
 		require(msg.sender == exchangePool, "error");
 		require(IPrivateExchangePool(exchangePool).getUserBuyLength(_user) >= 0, "you haven't lock amount");
-		require(block.timestamp > IPrivateExchangePool(exchangePool).getUserLockEndTime(_user, _id) , "Your lockup has not expired");
+		// require(block.timestamp > IPrivateExchangePool(exchangePool).getUserLockEndTime(_user, _id) , "Your lockup has not expired");
 		fdt.transfer(msg.sender, _amount);
 	}
 
