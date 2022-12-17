@@ -13,17 +13,9 @@ import "./interface/ISbt003.sol";
 import "./interface/IFireSeed.sol";
 
 contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
-    bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
-    mapping(address => bool) public isRecommender;
-    mapping(address => address) public recommender;
-    mapping(address => address[]) public recommenderInfo;
-    mapping(address => bool) public WhiteList;
-    mapping(address => uint256[]) public ownerOfId; 
+
     using Counters for Counters.Counter;
     Counters.Counter private _idTracker;
-    bool public FeeStatus;
-    address payable public feeReceiver;
-    uint public fee;
 
     struct accountInfo {
         bool isAccount;
@@ -32,7 +24,17 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
         uint256 incomeAmount;
         uint256 cacheAmount;
     }
+
+    mapping(address => bool) public isRecommender;
+    mapping(address => address) public recommender;
+    mapping(address => address[]) public recommenderInfo;
+    mapping(address => bool) public WhiteList;
+    mapping(address => uint256[]) public ownerOfId; 
     mapping(address => accountInfo) public _accountAirdrop;
+
+    bool public FeeStatus;
+    address payable public feeReceiver;
+    uint public fee;
     address[] public _accountList;
     uint256 public currentSendAmount;
     string public constant name = "FireSeed";
@@ -41,21 +43,12 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
     uint256 public _royaltyValue = 250;
 
 
-   constructor() ERC1155("https://bafybeiblhsbd5x7rw5ezzr6xoe6u2jpyqexbfbovdao2vj5i3c25vmm7d4.ipfs.nftstorage.link/0.json") {
-        _mint(msg.sender, _idTracker.current(), 1, "");
-        _idTracker.increment();
+constructor() ERC1155("https://bafybeiblhsbd5x7rw5ezzr6xoe6u2jpyqexbfbovdao2vj5i3c25vmm7d4.ipfs.nftstorage.link/0.json") {
+    _mint(msg.sender, _idTracker.current(), 1, "");
+    _idTracker.increment();
+}
 
-   }
-
-    function recommenderNumber(address account) external view returns (uint256) {
-        return recommenderInfo[account].length;
-    }
-
-    function upclass(address usr) external view returns(address) {
-        return recommender[usr];
-    }
-    
-  
+    //onlyOwner
     function changeFeeReceiver(address payable receiver) external onlyOwner {
       feeReceiver = receiver;
     }
@@ -63,10 +56,9 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
       require(fees <= 100000000000000000,'The maximum fee is 0.1ETH');
       fee = fees;
    }
-   function setFeeStatus() public onlyOwner{
+    function setFeeStatus() public onlyOwner{
       FeeStatus = !FeeStatus;
    }
-    receive() external payable {}
     function setWhiteListUser(address _user) public onlyOwner{
         WhiteList[_user] = true;
     }
@@ -74,7 +66,8 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
         WhiteList[_user] = false;
     }
 
-     function mintWithETH(
+    //main
+function mintWithETH(
         uint256 amount
     ) external payable {
         if(FeeStatus == false){
@@ -111,6 +104,13 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
         _idTracker.increment();
     }
 
+    function recommenderNumber(address account) external view returns (uint256) {
+        return recommenderInfo[account].length;
+    }
+
+    function upclass(address usr) external view returns(address) {
+        return recommender[usr];
+    }
     function uri(uint256 _tokenId) override public view  returns(string memory) {
         return string(
             abi.encodePacked(
@@ -214,8 +214,7 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
     function burnFireSeed(address _account, uint256 _idOfUser, uint256 _value) public  {
         _burn(_account,_idOfUser,_value);
     }
-
-
+    receive() external payable {}
 }
 
 contract FireSoul is ERC721,Ownable{
@@ -232,7 +231,6 @@ contract FireSoul is ERC721,Ownable{
     address[] public sbt;
     uint[] public  coefficient;
     address public sbt003;
-
     address[] public UserHaveFID;
 
     mapping(address => uint256) public UserFID;
@@ -240,34 +238,24 @@ contract FireSoul is ERC721,Ownable{
     mapping(address => uint256[]) public sbtTokenAmount; 
     mapping(address => address) public UserToSoul;
        
-       constructor(FireSeed _fireseed, address _userContract,address _sbt003) ERC721("FireSoul", "FireSoul"){
-        fireseed = _fireseed;
-        userContract = _userContract;
+constructor(FireSeed _fireseed, address _userContract,address _sbt003) ERC721("FireSoul", "FireSoul"){
+    fireseed = _fireseed;
+    userContract = _userContract;
+	sbt003 = _sbt003;
+}
+    //onlyOwner
+    function setSbt003Address(address _sbt003) public onlyOwner{
 	    sbt003 = _sbt003;
-       }
-       //onlyOwner
-       function setSbt003Address(address _sbt003) public onlyOwner{
-	       sbt003 = _sbt003;
-       }
-       function setPauseControlAddress(address _pauseControlAddress) public onlyOwner {
-           pauseControlAddress = _pauseControlAddress;
-       }
-        function setSBTAddress(address[] memory _sbt) public onlyOwner {
-            for(uint i = 0; i < _sbt.length; i++){
-                sbt[i] = sbt[i];
-            }
-        }
-        function setCoefficient(uint[] memory _coefficient) public onlyOwner {
-            for(uint i=0 ; i<_coefficient.length; i++){
-                coefficient[i] = _coefficient[i];
-            }
-        }
+}
+    function setPauseControlAddress(address _pauseControlAddress) public onlyOwner {
+    pauseControlAddress = _pauseControlAddress;
+}
     function setBaseURI(string memory baseURI_) external onlyOwner {
         baseURI = baseURI_;
-    }
+}
 
-        //main
-       function setStatus() external {
+    //main
+    function setStatus() external {
            require(msg.sender == pauseControlAddress,"address is error");
            status = !status;
        }
@@ -398,13 +386,5 @@ contract Soul {
     modifier onlyCreate{
         require(msg.sender == create);
         _;
-    }
-    function setSBTAddress(address[] memory _sbt) external onlyCreate {
-        for(uint i = 0 ; i < _sbt.length; i ++) {
-            sbt[i] = _sbt[i];
-        }
-    }
-    function checkBalanceOfSBT(address _user, uint256 sbtNum) external view returns(uint256) {
-        return IERC20(sbt[sbtNum]).balanceOf(_user);
     }
 }
