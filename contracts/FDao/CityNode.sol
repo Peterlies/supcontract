@@ -37,7 +37,6 @@ contract cityNode is ERC1155, Ownable {
     uint[] public WeightFactor = [10,15];
         uint[] public cable;
 
-    // address[] public _SBT;
     mapping(address => uint256) public reputationPoints;
     mapping(address => bool) public isCityNodeUser;
     mapping(uint256 => bool) public isNotLightCity;
