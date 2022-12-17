@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./interface/IUsers.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "./interface/IUsers.sol";
 
 contract Users is IUsers,ERC721URIStorage {
    mapping(address => User) public userInfo;

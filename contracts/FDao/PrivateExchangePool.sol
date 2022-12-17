@@ -4,24 +4,13 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-interface IFireSeed {
-	function upclass(address usr) external view returns(address);
-}
-interface IFireSoul {
-	function checkFID(address user) external view returns(bool);
-}
-interface ILockForPrivateExchangePool {
+import "./interface/IFireSeed.sol";
+import "./interface/IFireSoul.sol";
+import "./interface/ISbt001.sol";
+import "./interface/IPrivateExchangePool.sol";
+import "./interface/ILockForPrivateExchangePool.sol";
 
-	function withDraw(address _user, uint256 _amount) external;
-}
-interface ISbt001{
-	function mint(address Account, uint256 Amount) external;
-	function burn(address Account, uint256 Amount) external;
-}
-// FireDaoToken 0x6a7858fE9d76eeE661642561Ba06db24f293369C
-//	PRIVATEEXCHANGEPOOL 0x1551Cf5A77aDeeB45EB757E26FeA391eb7dd1547
 contract PrivateExchangePool is Ownable {
-	
 	
 	struct userLock{
 		uint256 amount;
@@ -50,7 +39,6 @@ contract PrivateExchangePool is Ownable {
 		*/
 
 	constructor() {
-		// fireSoul = _fireSoul;
 		priceFeed = AggregatorV3Interface(0xD4a33860578De61DBAbDc8BFdb98FD742fA7028e);
 	}
 	//onlyOwner
@@ -158,10 +146,7 @@ contract PrivateExchangePool is Ownable {
 	}
     receive() external payable {}
 }
-interface IPrivateExchangePool {
-	function getUserBuyLength(address _user) external view returns(uint256);
-	function getUserLockEndTime(address _user, uint256 lockId) external view returns(uint256);
-}
+
 contract LockForPrivateExchangePool is Ownable {
 	ERC20 fdt;
 	address public exchangePool;
@@ -175,7 +160,6 @@ contract LockForPrivateExchangePool is Ownable {
 	function withDraw(address _user, uint256 _amount) external {
 		require(msg.sender == exchangePool, "error");
 		require(IPrivateExchangePool(exchangePool).getUserBuyLength(_user) >= 0, "you haven't lock amount");
-		// require(block.timestamp > IPrivateExchangePool(exchangePool).getUserLockEndTime(_user, _id) , "Your lockup has not expired");
 		fdt.transfer(msg.sender, _amount);
 	}
 

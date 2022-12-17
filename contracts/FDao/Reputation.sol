@@ -4,10 +4,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-
-interface ISoulAccount{
-    function getSoulAccount(address _user) external view returns(address);
-}
+import "./interface/IFireSoul.sol";
 
 contract Reputation is Ownable
 { 
@@ -47,7 +44,7 @@ contract Reputation is Ownable
     function checkReputation(address _user) public view returns(uint256) {
         uint256 ReputationPoint;
         for(uint i = 0 ; i < sbt.length; i ++) {
-            ReputationPoint =  IERC20(sbt[i]).balanceOf(ISoulAccount(fireSoul).getSoulAccount(_user))*coefficient[i] +ReputationPoint; 
+            ReputationPoint =  IERC20(sbt[i]).balanceOf(IFireSoul(fireSoul).getSoulAccount(_user))*coefficient[i] +ReputationPoint; 
 
         }
         return ReputationPoint;
