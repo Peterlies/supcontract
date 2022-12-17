@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.2;
+pragma solidity ^0.8.0;
 
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -11,7 +11,6 @@ interface ISoulAccount{
 
 contract Reputation is Ownable
 { 
-    // mapping(address => uint256) public Reputation;
     bool initStatus;
     uint256[] public coefficient;
     address[] public sbt;
@@ -25,7 +24,6 @@ contract Reputation is Ownable
         sbt.push(address(0xb3CDC058F8910D95dADC1456F898E8a8458C053d));
         coefficient.push(1);
         coefficient.push(2);
-        // sbt[1] = address(0xb3CDC058F8910D95dADC1456F898E8a8458C053d);
         initStatus = true;
     }
     //onlyOwner
@@ -50,7 +48,6 @@ contract Reputation is Ownable
         uint256 ReputationPoint;
         for(uint i = 0 ; i < sbt.length; i ++) {
             ReputationPoint =  IERC20(sbt[i]).balanceOf(ISoulAccount(fireSoul).getSoulAccount(_user))*coefficient[i] +ReputationPoint; 
-            // ReputationPoint =  IERC20(sbt[i]).balanceOf(_user)*coefficient[i] +ReputationPoint ; 
 
         }
         return ReputationPoint;
