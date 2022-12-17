@@ -4,8 +4,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "./ERC2981PerTokenRoyalties.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -14,9 +12,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./interface/ISbt003.sol";
 import "./interface/IFireSeed.sol";
 
-
-
-contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties,DefaultOperatorFilterer, Ownable{
+contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
     bytes4 private constant _INTERFACE_ID_ERC2981 = 0x2a55205a;
     mapping(address => bool) public isRecommender;
     mapping(address => address) public recommender;
@@ -59,16 +55,7 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties,DefaultO
         return recommender[usr];
     }
     
-     function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        virtual
-        override(ERC1155, ERC2981Base)
-        returns (bool)
-    {
-        return super.supportsInterface(interfaceId);
-    }
-   
+  
     function changeFeeReceiver(address payable receiver) external onlyOwner {
       feeReceiver = receiver;
     }
@@ -120,7 +107,6 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties,DefaultO
 
     }
 }
-        _setTokenRoyalty(_idTracker.current(), owner(), _royaltyValue);
         ownerOfId[msg.sender].push(_idTracker.current());
         _idTracker.increment();
     }
@@ -163,18 +149,7 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties,DefaultO
                 ids.length == royaltyValues.length,
             'ERC1155: Arrays length mismatch'
         );
-
         _mintBatch(to, ids, amounts, '');
-
-        for (uint256 i; i < ids.length; i++) {
-            if (royaltyValues[i] > 0) {
-                _setTokenRoyalty(
-                    ids[i],
-                    royaltyRecipients[i],
-                    royaltyValues[i]
-                );
-            }
-        }
     }
 
     function setApprovalForAll(address operator, bool approved) public override onlyAllowedOperatorApproval(operator) {
@@ -243,7 +218,7 @@ contract FireSeed is ERC1155 ,ReentrancyGuard ,ERC2981PerTokenRoyalties,DefaultO
 
 }
 
-contract FireSoul is ERC721,ReentrancyGuard,Ownable{
+contract FireSoul is ERC721,Ownable{
     string public baseURI;
     string public baseExtension = ".json";
     address public FireSeedAddress;
