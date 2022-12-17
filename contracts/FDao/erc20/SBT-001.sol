@@ -17,6 +17,7 @@ contract FDSBT001 is ERC20 ,Ownable{
         uint96 votes;
     }
     bool public status;
+    address public exchangePoolAddress;
     address public LockAddress;
     mapping (address => mapping (uint32 => Checkpoint)) public checkpoints;
     mapping (address => uint32) public numCheckpoints;
@@ -25,7 +26,9 @@ contract FDSBT001 is ERC20 ,Ownable{
     event AdminChange(address indexed Admin, address indexed newAdmin);
     constructor() ERC20("SBT-001", "SBT-001"){
     }
-
+    function setExchangepool(address _exchangePoolAddress) public onlyOwner {
+        exchangePoolAddress = _exchangePoolAddress;
+    }
     function setMintExternalAddress(address _LockAddress) public onlyOwner{
         LockAddress =_LockAddress;
     }
@@ -34,12 +37,12 @@ contract FDSBT001 is ERC20 ,Ownable{
     }
 
     function mint(address Account, uint256 Amount) external {
-        require(msg.sender == LockAddress,"you set Address is error"); 
+        require(msg.sender == LockAddress || msg.sender == exchangePoolAddress,"you set Address is error"); 
         _mint(Account, Amount);
 
     }
     function burn(address Account, uint256 Amount) external {
-        require(msg.sender == LockAddress,"you set Address is error"); 
+        require(msg.sender == LockAddress || msg.sender == exchangePoolAddress,"you set Address is error"); 
         _burn(Account, Amount);
 
     }
