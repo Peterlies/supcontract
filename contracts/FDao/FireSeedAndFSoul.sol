@@ -360,7 +360,6 @@ contract FireSoul is ERC721,ReentrancyGuard,Ownable{
         FLAME = _FLAME;
     }
 
-    //设置查上一级的地址，用于邀请关系
     function setFireSeedAddress(address _FireSeedAddress) public onlyOwner{
             FireSeedAddress = _FireSeedAddress;
     }
