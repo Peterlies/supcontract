@@ -668,6 +668,8 @@ interface ISbt003 {
     uint[] public  coefficient;
     address public sbt003;
 
+    address[] public UserHaveFID;
+
     mapping(address => uint256) public UserFID;
     mapping(address => bool) public haveFID;
     mapping(address => uint256[]) public sbtTokenAmount; 
@@ -746,6 +748,7 @@ interface ISbt003 {
         require(IERC721(userContract).balanceOf(msg.sender) != 0 ,"you haven't passport");
         fireseed.burnFireSeed(msg.sender,_tokenId ,1);
         _mint(msg.sender, FID);
+        UserHaveFID.push(msg.sender);
         UserFID[msg.sender] = FID;
         haveFID[msg.sender] = true;
         address _Soul = address(new Soul(msg.sender , address(this)));
@@ -757,7 +760,9 @@ interface ISbt003 {
         }
         FID++;
     }
-
+    function getUserHaveFIDLength() public view returns(uint256) {
+        return UserHaveFID.length;
+    }
     function getSoulAccount(address _user) external view returns(address){
         return UserToSoul[_user];
     }
