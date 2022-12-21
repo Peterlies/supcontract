@@ -108,7 +108,7 @@ contract PrivateExchangePool is Ownable {
 
 	function withDrawLock(uint256 id_,address user_, uint256 amount_) public {
 		require(amount_ <= this.getUserExtractable(user_,id_), "you must check getUserExtractable()");
-		require(userLocks[user_][id_].amount != 0,"you have withDraw");
+		require(userLocks[user_][id_].amount != 0,"no amount to withDraw");
 		ILockForPrivateExchangePool(lock).withDraw(user_, amount_);
 		ISbt001(sbt001).burn(msg.sender, amount_);
 		userLocks[user_][id_].startTime = block.timestamp;

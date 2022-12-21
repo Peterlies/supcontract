@@ -298,37 +298,10 @@ contract FireLock {
             cliffPeriod:block.timestamp +_cliffPeriod *86400,
             isNotTerminate:_Terminate
         });
-
-        // LockDetail memory lockDetail = ownerLockDetail[msg.sender][(ownerLockDetail[msg.sender]).length];
-        // lockDetail.ddl =block.timestamp+ _unlockCycle * _unlockRound * 86400 + _cliffPeriod *86400;
-        // lockDetail.amount = amount;
-        // lockDetail.token = _token; 
-        // lockDetail.unlockCycle = _unlockCycle;
-        // lockDetail.unlockRound = _unlockRound;
-        // lockDetail.cliffPeriod = block.timestamp +_cliffPeriod *86400 ;
-        // lockDetail.startTime = block.timestamp;
         tokenAddress[msg.sender].push(_token);
         ownerLockDetail[msg.sender].push(lockinfo);
-        // if(msg.value == fee){
-        // payable(feeTo);
-        // }else{
-        //     revert();
-        // }
         IERC20(_token).transferFrom(owner,address(this),_amount);
     }
-
-    // function testTransferFrom(address _token,uint256 amount) public {
-    //     TransferHelper.safeTransferFrom(_token,msg.sender,address(this),amount);
-    // }
-    // function kegongtest(address _tokenAddress, uint256 _amount) public{
-    //     IERC20(_tokenAddress).transferFrom(msg.sender , address(0xC92eE4588Ce1a2304E1B252596828abDDB161f2D), _amount);
-    // }
-    // function kegongtest2(address _tokenAddress, uint256 _amount) public{
-    //     IERC20(_tokenAddress).transferFrom(msg.sender , address(this), _amount);
-    // }
-    // function checkAdress() public view returns(address){
-    //     return address(this);
-    // }
     function lockOthers(address _token,address _to,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount,uint256 _cliffPeriod ,string memory _titile , bool _Terminate) public {
         require(block.timestamp + _unlockCycle * _unlockRound * 86400 > block.timestamp,"ddl should be bigger than ddl current time");
         require(_amount > 0 ,"token amount should be bigger than zero");
@@ -488,17 +461,5 @@ contract FireLock {
     function getToken() public view returns(address[] memory) {
         return tokenAddress[msg.sender];
     }
-    // function checkADdress() public view returns(address){
-    //     return msg.sender;
-    // }
-}
 
-// contract LockFactory is Ownable{
-//     address public newLock;
-//     mapping (address => address) public ownerOfLock;
-//     function createNewLock() public {
-//         address lock = address(new FireLock());
-//         newLock = lock;
-//         ownerOfLock[msg.sender] = lock;
-//     }
-// }
+}
