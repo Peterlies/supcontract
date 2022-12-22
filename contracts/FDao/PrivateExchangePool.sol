@@ -14,12 +14,11 @@ contract PrivateExchangePool is Ownable {
 	
 	struct userLock{
 		uint256 amount;
-		uint256 startTime;
-		uint256 endTime;
+		uint256 startBlock;
+		uint256 endBlock;
 	}
-	uint256 private lockTime = 31536000;	
+	uint256 private lockBlock = 2628000;
 	ERC20 fdt;
-    
 	address payable public feeReceiver;
 	address payable public rainbowCityFundation;
 	address payable public devAndOperation;
@@ -99,7 +98,7 @@ contract PrivateExchangePool is Ownable {
 		payable (IFireSeed(fireSeed).upclass(IFireSeed(fireSeed).upclass(IFireSeed(fireSeed).upclass(msg.sender)))).transfer(msg.value*2/100);
 		fdt.transfer(msg.sender, msg.value*getLatesPrice()/10**8 * 1000/salePrice * 3/10);
 		fdt.transfer(lock, msg.value*getLatesPrice()/10**8 * 1000/salePrice * 7/10);
-		userLock memory info = userLock({amount:msg.value*getLatesPrice()/10**8 * 1000/salePrice *7/10, startTime:block.timestamp, endTime:block.timestamp + lockTime});
+		userLock memory info = userLock({amount:msg.value*getLatesPrice()/10**8 * 1000/salePrice *7/10, startBlock:block.number, endBlock:block.number + lockBlock});
 		userLocks[msg.sender].push(info);
 		userTotalBuy[msg.sender] += msg.value;
 		ISbt001(sbt001).mint(msg.sender, msg.value*getLatesPrice()/10**8 * 1000/salePrice * 7/10);
@@ -111,24 +110,22 @@ contract PrivateExchangePool is Ownable {
 		require(userLocks[user_][id_].amount != 0,"no amount to withDraw");
 		ILockForPrivateExchangePool(lock).withDraw(user_, amount_);
 		ISbt001(sbt001).burn(msg.sender, amount_);
-		userLocks[user_][id_].startTime = block.timestamp;
+		userLocks[user_][id_].startBlock = block.number;
 		userLocks[user_][id_].amount -=  amount_;
 
 	}
 	function getUserBuyLength(address _user) external view returns(uint256) {
 		return userLocks[_user].length;
 	}
-	function getUserLockEndTime(address _user, uint256 lockId) external view returns(uint256) {
-		return userLocks[_user][lockId].endTime;
+	function getUserLockEndBlock(address _user, uint256 lockId) external view returns(uint256) {
+		return userLocks[_user][lockId].endBlock;
 	}
-	function getUserLockStartTime(address _user, uint256 lockId) external view returns(uint256) {
-		return userLocks[_user][lockId].startTime;
+	function getUserLockStartBlock(address _user, uint256 lockId) external view returns(uint256) {
+		return userLocks[_user][lockId].startBlock;
 	}
 	function getUserExtractable(address _user, uint256 lockId) external view returns(uint256) {
-		return userLocks[_user][lockId].amount * (block.timestamp - userLocks[_user][lockId].startTime)/lockTime;
+		return userLocks[_user][lockId].amount * (block.number - userLocks[_user][lockId].startBlock)/lockBlock;
 	}
-
-
 	function getLatesPrice() public view returns (uint256) {
 		(
 			,
