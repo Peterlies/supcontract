@@ -35,7 +35,7 @@ contract cityNode is ERC1155, Ownable {
     address public AutoAddLPAddress;
     address public EcologicalIncomeDividendAddress;
     uint[] public WeightFactor = [10,15];
-        uint[] public cable;
+    uint[] public cable;
 
     mapping(address => uint256) public reputationPoints;
     mapping(address => bool) public isCityNodeUser;
@@ -65,9 +65,7 @@ contract cityNode is ERC1155, Ownable {
     cityNodeInFo[] public cityNodeInFos;
     joinCityNodeMemberInfo[] public joinCityNodeMemberInfos;
     constructor() ERC1155("test") {
-
     }
-
     function checkIsCityNode(address account , uint256 amount) external  returns(bool) {
         userTax[account] = amount + userTax[account];
         return isCityNodeUser[account]; 
@@ -82,8 +80,6 @@ contract cityNode is ERC1155, Ownable {
         }
         return totalAmountOfCityNode;
     }
-
-
     function setFIDServe() public view returns(uint256){
         return FID.balanceOf(msg.sender);
     }
@@ -114,8 +110,6 @@ contract cityNode is ERC1155, Ownable {
         }
         return t;
     }
-
-
     function setPause() public onlyOwner {
         contractStatus = !contractStatus;   
     }
@@ -168,9 +162,7 @@ contract cityNode is ERC1155, Ownable {
         // require(contractStatus,"Status is false");
         // require(checkTotalReputationPoints() > 100000*10*18,"not enough");
         // require(cityNodeNum <= ctiyNodeId, "the cityNode has been created");
-        
         address nodeTreasury = address(new CityNodeTreasury());
-
         _mint(msg.sender,ctiyNodeId,1,"test");
          cityNodeCreater[msg.sender] = true;
          cityNodeMember[cityNodeNum].push(msg.sender);
@@ -180,7 +172,6 @@ contract cityNode is ERC1155, Ownable {
          cityNodeTotalReputationPoints[cityNodeNum][msg.sender] = checkTotalReputationPoints();
          ctiyNodeId++;
     }
-
     function joinCityNode(uint256 cityNodeNum) public {
         require(contractStatus,"Status is false");
         require(cityNodeCreater[msg.sender] == false, "you are already a creator");
@@ -202,8 +193,6 @@ contract cityNode is ERC1155, Ownable {
         require(cityNodeCreater[msg.sender] == true, "you are not a owner");
         _burn(_nodeUser, CityNodeUserNum[msg.sender], 1);
     }
-    
-
     function quitCityNode() public{
         require(contractStatus,"Status is false");
         require(isCityNodeUser[msg.sender] == true,"you haven't join any citynode");
@@ -212,13 +201,11 @@ contract cityNode is ERC1155, Ownable {
     }
     function lightCityNode() public {
         require(contractStatus,"Status is false");
-        // for(uint i = 0 ; i < )     
       if(_checkBatchTotalReputationPoints(cityNodeMember[CityNodeUserNum[msg.sender]]) >= 1000000*10**18){
           isNotLightCity[CityNodeUserNum[msg.sender]] = true;
       }else{
           return;
       }
-
     }
     function createCityNodeProposal(string memory _proposal) public {
         require(contractStatus,"Status is false");
@@ -234,9 +221,7 @@ contract cityNode is ERC1155, Ownable {
         require(cityNodeCreater[msg.sender] == true , "you are not creater");
         require(msg.value == 100000000000000000);
         payable(msg.sender).transfer(msg.value);
-        
     }
-
       function safeTransferFrom(
         address from,
         address to,
@@ -298,10 +283,6 @@ contract cityNode is ERC1155, Ownable {
                 cable[i+1] = checkSBT003(i);
             }
         }
-    }
-    //
-    function DistributionOfBonuses() public {
-        
     }
     //城市节点排行榜
     mapping(uint => uint) public cityNodeRank;

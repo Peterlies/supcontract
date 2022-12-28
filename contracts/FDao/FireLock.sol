@@ -52,15 +52,6 @@ contract FireLock {
     IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3);
     uniswapV2Router = _uniswapV2Router;
     }
-
-
-    // function setFeeTo(address payable _feeTo) public onlyOwner {
-    //     feeTo = _feeTo;
-    // }
-    // function setFee(uint256 _fee) public onlyOwner{
-    //     fee = _fee;
-    // }
-
     function lock(address _token,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount,uint256 _cliffPeriod ,string memory _titile , bool _Terminate) public payable  {
         require(block.timestamp + _unlockCycle * _unlockRound * 86400 > block.timestamp,"ddl should be bigger than ddl current time");
         require(_amount > 0 ,"token amount should be bigger than zero");
@@ -200,7 +191,6 @@ contract FireLock {
         adminAndOwner[_to] = msg.sender;
         alreadyChange =true;
         isChangedOwner[_to] = alreadyChange;
-        
     }
     function changeLockNumber(address[] memory _to) public {
         if(!isChangedOwner[msg.sender]){
@@ -240,5 +230,4 @@ contract FireLock {
     function getToken() public view returns(address[] memory) {
         return tokenAddress[msg.sender];
     }
-
 }

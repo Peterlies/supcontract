@@ -20,9 +20,7 @@ contract Guild is ERC1155,Ownable {
     }
     guildInFo[] public guildInFos;
     constructor()ERC1155("uri") {
-
     }
-
     function Whitelist(address user) public onlyOwner{
         isnotWhitelistUser[user] = true;
     }
@@ -46,17 +44,15 @@ contract Guild is ERC1155,Ownable {
     }
 
     function joinGuild(uint256 _guildId) public {
-        // require();
         require(_guildId <= 10 , "guildId is error");
         _mint(msg.sender ,_guildId, 1 , "test");
         userGuildNum[msg.sender] = _guildId;
     }
-
     function addguildManagers(address[3] memory manager) public  {
         require(isnotcreater[userGuildNum[msg.sender]][msg.sender] == true, "you are not manager" );
         guildInFoOWner[msg.sender][userGuildNum[msg.sender]][userGuildNum[msg.sender]].guildManager = manager;
     }
-         function safeTransferFrom(
+    function safeTransferFrom(
         address from,
         address to,
         uint256 id,

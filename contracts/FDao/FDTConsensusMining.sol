@@ -22,7 +22,6 @@ contract FDTConsensusMining is Ownable {
     mapping(address => uint256) public award;
     
     constructor() {
-
     }
     function setUSDTAddress(address _USDT) public  onlyOwner{
         USDT = _USDT;

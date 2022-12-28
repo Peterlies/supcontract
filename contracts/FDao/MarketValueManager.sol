@@ -9,7 +9,6 @@ interface ICityNode{
     function checkTotalReputationPointsExternal(address user)external view returns(uint256);
 }
 contract MarketValueManager is Ownable {
-
     IERC20 public BNB;
     address public token;
     uint256 public cooldown;
