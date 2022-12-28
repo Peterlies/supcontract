@@ -11,10 +11,8 @@ import "./interface/IUniswapV2Router02.sol";
 import "./interface/IFireSeed.sol";
 import "./interface/IUniswapV2Pair.sol";
 import "./interface/IUniswapV2Factory.sol";
+import "./interface/GetWarp.sol";
 
-interface GetWarp {
-    function withdraw(address user) external ;
-}
 contract FireDaoToken is ERC20 ,Ownable{
     using SafeMath for uint256;
 	mapping(address => address) inviter;
