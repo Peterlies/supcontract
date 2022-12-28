@@ -3,16 +3,8 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-
-
-interface IFDSBT001 {
-    function mintExternal(address User, uint256 mintAmount) external;
-    function burnExternal(address User, uint256 mintAmount) external;
-}
-interface IFDSBT006{
-    function mintExternal(address User, uint256 mintAmount) external;
-    function burnExternal(address User, uint256 mintAmount) external;
-}
+import "./interface/ISbt001.sol";
+import "./interface/ISbt006.sol";
 
 contract FDTLockMining is Ownable {
     uint256 public Id;
@@ -99,7 +91,7 @@ contract FDTLockMining is Ownable {
             coefficient:inputEndTime
         });
 
-        IFDSBT001(FDSBT001Address).mintExternal(msg.sender, amount*inputEndTime);
+        ISbt001(FDSBT001Address).mint(msg.sender, amount*inputEndTime);
         StakeInfos[msg.sender].push(info);
         FDSBT001Amount[msg.sender] = amount*inputEndTime + FDSBT001Amount[msg.sender];
         StakeUser.push(msg.sender);
@@ -114,7 +106,7 @@ contract FDTLockMining is Ownable {
         require(!Status,"Status is error");
 
         IERC20(LPTokenAddress).transfer(address(this), amount);
-        IFDSBT006(FDSBT006Address).mintExternal(msg.sender,amount* inputTime);
+        ISbt006(FDSBT006Address).mint(msg.sender,amount* inputTime);
         LPStakeInfo memory LPinfo = LPStakeInfo({
             user:msg.sender,
             startStakeTime:block.timestamp,
@@ -129,7 +121,7 @@ contract FDTLockMining is Ownable {
     function withdrawLP(uint256 order ) public {
         require(LPStakeInfos[msg.sender][order].stakeAmount > 0 , "you haven't amount");
         IERC20(LPTokenAddress).transfer(msg.sender, LPStakeInfos[msg.sender][order].stakeAmount );
-        IFDSBT006(FDSBT006Address).burnExternal(msg.sender , LPStakeInfos[msg.sender][order].coefficient*LPStakeInfos[msg.sender][order].stakeAmount);
+        ISbt006(FDSBT006Address).burn(msg.sender , LPStakeInfos[msg.sender][order].coefficient*LPStakeInfos[msg.sender][order].stakeAmount);
 
     }
     
@@ -156,7 +148,7 @@ contract FDTLockMining is Ownable {
             if(StakeInfos[msg.sender][i].user == msg.sender) {
                 if(block.timestamp > StakeInfos[msg.sender][i].endStakeTime){
                     IERC20(flame).transfer(msg.sender, StakeInfos[msg.sender][i].stakeAmount);
-                    IFDSBT001(FDSBT001Address).burnExternal(msg.sender,StakeInfos[msg.sender][i].stakeAmount* StakeInfos[msg.sender][i].coefficient);
+                    ISbt001(FDSBT001Address).burn(msg.sender,StakeInfos[msg.sender][i].stakeAmount* StakeInfos[msg.sender][i].coefficient);
                 }
             }
         }

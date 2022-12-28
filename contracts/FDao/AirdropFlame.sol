@@ -7,11 +7,6 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./interface/IFireSoul.sol";
 import "./interface/IFireSeed.sol";
 
-interface IFireSeedAndFSoul{
-    function checkFID(address user) external view returns(bool);
-    }
-    
-
 contract airdropFlame is Ownable{
     ERC20 flame;
     address public controlStatus;

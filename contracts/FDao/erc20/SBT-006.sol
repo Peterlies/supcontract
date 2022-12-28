@@ -25,36 +25,21 @@ contract FDSBT006 is ERC20,Ownable{
     
     event DelegateVotesChanged(address indexed delegate, uint256 previousBalance, uint256 newBalance);
     event AdminChange(address indexed Admin, address indexed newAdmin);
-    constructor(address manager,address _minter,uint256 _totalSupply,string memory _name, string memory _symbol,string memory _logo)  public ERC20("SBT-006", "SBT-006"){
-        logo = _logo;
-        _mint(manager, _totalSupply * 10 ** 18);
-        _addDelegates(manager, safe96(_totalSupply * 10 ** 18,"erc20: vote amount underflows"));
-        minter = _minter;
-        admin = manager;
+    constructor() ERC20("SBT-006", "SBT-006"){
     }
-    modifier  _isMinter() {
-        require(msg.sender == minter);
-        _;
-    }
-    modifier  _isOwner() {
-        require(msg.sender == admin);
-        _;
-    }
+  
     function setStatus() public onlyOwner {
         status = !status;
     }
     function setMiningAddress(address _MiningAddress) public onlyOwner{
         MiningAddress = _MiningAddress;
     }
-    function mint(address account, uint256 amount) public _isMinter returns (bool) {
-        _mint( account, amount);
-        return true;
-    }
-      function mintExternal(address User, uint256 mintAmount) external {
+
+    function mint(address User, uint256 mintAmount) external {
         require(msg.sender == MiningAddress,"you set Address is error"); 
         _mint(User, mintAmount);
     }
-    function burnExternal(address User, uint256 mintAmount) external {
+    function burn(address User, uint256 mintAmount) external {
         require(msg.sender == MiningAddress,"you set Address is error"); 
         _burn(User, mintAmount);
     }

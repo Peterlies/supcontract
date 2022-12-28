@@ -3,17 +3,9 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-
-interface IFireSeed{
-    function upclass(address usr) external view returns(address);
-}
-interface IFireSoul{
-    function checkFID(address user) external view returns(bool);
-}
-interface IFDSBT001{
-    function mintExternal(address User, uint256 mintAmount) external;
-    function burnExternal(address User, uint256 mintAmount) external;
-}
+import "./interface/IFireSeed.sol";
+import "./interface/IFireSoul.sol";
+import "./interface/ISbt001.sol";
 
 contract FDTConsensusMining is Ownable {
     address public USDT;
@@ -107,7 +99,7 @@ contract FDTConsensusMining is Ownable {
         }else{
             IERC20(USDT).transfer(MinistryOfFinanceAddress, amount*price*5/10000000);
         }
-        IFDSBT001(FDSBT001Address).mintExternal(msg.sender, amount);
+        ISbt001(FDSBT001Address).mint(msg.sender, amount);
 
     }
 
