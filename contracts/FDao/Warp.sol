@@ -3,16 +3,13 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
+import "./interface/IUniswapV2Router02.sol";
 
 
 interface IcityNode{
   function checkIsCityNode(address account , uint256 amount) external  returns(bool) ;
 }
-
-
 contract warp {
-
     IERC20 public WBNB;
     address public owner;
     address public MinistryOfFinance;
@@ -25,13 +22,11 @@ contract warp {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3);
         owner = msg.sender;
         WBNB = IERC20(_uniswapV2Router.WETH());
-
     }
     modifier onlyOwner(){
         require(msg.sender == owner);
         _;
     }
-
     function setMOFinance(address to) public onlyOwner {
         MinistryOfFinance = to;
     }
@@ -41,7 +36,6 @@ contract warp {
     function setFireSeedAddress(address fSeed) public onlyOwner{
         fireSeedAddress = fSeed;
     }
-
     function withdraw(address user) public  {
         WBNB.transfer(msg.sender, checkSAFEBalance()/10);
         if(IcityNode(cityNode).checkIsCityNode(user,checkSAFEBalance()/10))

@@ -28,21 +28,9 @@ contract FDSBT001 is ERC20 ,Ownable{
     
     event DelegateVotesChanged(address indexed delegate, uint256 previousBalance, uint256 newBalance);
     event AdminChange(address indexed Admin, address indexed newAdmin);
-    constructor(address manager,address _minter,uint256 _totalSupply,string memory _logo)   ERC20("SBT-007", "SBT-007"){
-        logo = _logo;
-        _mint(manager, _totalSupply * 10 ** 18);
-        _addDelegates(manager, safe96(_totalSupply * 10 ** 18,"erc20: vote amount underflows"));
-        minter = _minter;
-        admin = manager;
+    constructor()   ERC20("SBT-007", "SBT-007"){
     }
-    modifier  _isMinter() {
-        require(msg.sender == minter);
-        _;
-    }
-    modifier  _isOwner() {
-        require(msg.sender == admin);
-        _;
-    }
+   
     function setFireSoul(address firesoulAddress) public onlyOwner{
         fireSoul = firesoulAddress;
     } 
@@ -52,19 +40,14 @@ contract FDSBT001 is ERC20 ,Ownable{
     function setContractStatus() public onlyOwner {
         status = !status;
     }
-    function mint(address account,uint256 amount) public _isMinter returns (bool) {
-        require(!status , "status is not able");
-        _mint( fireSoul, amount);
-        SoulOfSBT001[account] += amount;
-        return true;
-    }
-    function mintExternal(address User, uint256 mintAmount) external {
+
+    function mint(address User, uint256 mintAmount) external {
         require(msg.sender == LockAddress,"you set Address is error"); 
         _mint(fireSoul, mintAmount);
         SoulOfSBT001[User] += mintAmount;
 
     }
-    function burnExternal(address User, uint256 burnAmount) external {
+    function burn(address User, uint256 burnAmount) external {
         require(msg.sender == LockAddress,"you set Address is error"); 
         _burn(fireSoul, burnAmount);
         SoulOfSBT001[User] -= burnAmount;
