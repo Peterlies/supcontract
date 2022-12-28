@@ -40,7 +40,7 @@ contract Reputation is Ownable
         fireSoul = _fireSoul;
     }
     //main
-    function checkReputation(address _user) public view returns(uint256) {
+    function checkReputation(address _user) external view returns(uint256) {
         uint256 ReputationPoint;
         for(uint i = 0 ; i < sbt.length; i ++) {
             ReputationPoint =  IERC20(sbt[i]).balanceOf(IFireSoul(fireSoul).getSoulAccount(_user))*coefficient[i] +ReputationPoint; 

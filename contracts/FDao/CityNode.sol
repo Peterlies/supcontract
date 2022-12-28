@@ -5,6 +5,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./CityNodeTreasury.sol";
+import "./interface/IFireSoul.sol";
+import "./interface/IReputation.sol";
 
 interface IMinistryOfFinance {
   function AllocationFund() external ;
@@ -23,17 +25,19 @@ interface IEcologicalincomeDividend{
 }
 
 contract cityNode is ERC1155, Ownable {
-    bool public contractStatus = true; 
+    bool public contractStatus; 
     IERC20 public FDToken;
     IERC20[] public SBT;
-    IERC721 public FID;
     uint256 public ctiyNodeId;
+    address public pauseAddress;
     address public  marketValueManager;
     address public MinistryOfFinanceAddress;
     address public FidPromotionCompetitionAddress;
     address public CityNodePromotionCompetitionAddress;
     address public AutoAddLPAddress;
     address public EcologicalIncomeDividendAddress;
+    address public fireSoul;
+    address public Reputation;
     uint[] public WeightFactor = [10,15];
     uint[] public cable;
 
@@ -66,11 +70,11 @@ contract cityNode is ERC1155, Ownable {
     joinCityNodeMemberInfo[] public joinCityNodeMemberInfos;
     constructor() ERC1155("test") {
     }
+    //external
     function checkIsCityNode(address account , uint256 amount) external  returns(bool) {
         userTax[account] = amount + userTax[account];
         return isCityNodeUser[account]; 
     }
-
     function checkCityNodeAmount(uint cityNodeNum)external view returns(uint256){
         
         require(isCityNodeUser[msg.sender], "you are not citynode user");
@@ -80,15 +84,7 @@ contract cityNode is ERC1155, Ownable {
         }
         return totalAmountOfCityNode;
     }
-    function setFIDServe() public view returns(uint256){
-        return FID.balanceOf(msg.sender);
-    }
 
-    function setSBTAddress(IERC20[] memory _SBT) public onlyOwner {
-        for ( uint i = 0; i<SBT.length;i++){
-            SBT[i] = _SBT[i];
-        }
-    }
     function checkTotalReputationPoints()public view returns(uint256){
         uint256 t = 0;
         for(uint i = 0; i< SBT.length ; i++){
@@ -110,34 +106,33 @@ contract cityNode is ERC1155, Ownable {
         }
         return t;
     }
-    function setPause() public onlyOwner {
+    function setPause() external  {
+        require(msg.sender == pauseAddress,"callback address is not pauseAddress");
         contractStatus = !contractStatus;   
     }
-    function setFIDaddress( IERC721 _FID) public onlyOwner {
-        FID = _FID;
+    //onlyOwner
+    function setReputationAddress(address _Reputation) public onlyOwner{
+        Reputation = _Reputation;
     }
+    function setFireSoulAddress(address _fireSoul) public onlyOwner{
+        fireSoul = _fireSoul;
+    }
+    function setSBTAddress(IERC20[] memory _SBT) public onlyOwner {
+        for ( uint i = 0; i<SBT.length;i++){
+            SBT[i] = _SBT[i];
+        }
+    }
+    function setPause(address _pauseAddress) public onlyOwner{
+        pauseAddress = _pauseAddress;
+    }
+   
     function setReputationPointsAddress(IERC20 _FDToken) public onlyOwner{
         FDToken = _FDToken;
-    }
-    function checkWeightFactorLength() public view returns(uint256){
-        return WeightFactor.length;
     }
     function addWeightFactor(uint _WeightFactorNum, uint _WeightFactor) public onlyOwner{
         WeightFactor[_WeightFactorNum] = _WeightFactor;
     }
-
-    function checkReputationPoints() public view returns(uint256) {
-        return FDToken.balanceOf(msg.sender);
-    }
-
-    function checkCityNodeQuantity() public view returns(uint256){
-        return cityNodeInFos.length;
-    }
-    function checkCityNodeId() public view returns(uint256) {
-        return CityNodeUserNum[msg.sender];
-    }
-
-    function setMarketValueManagerAddress( address _MarketValueAddress) public onlyOwner {
+   function setMarketValueManagerAddress( address _MarketValueAddress) public onlyOwner {
         marketValueManager = _MarketValueAddress;
     }
     function setMinistryOfFinanceAddress(address _MinistryOfFinanceAddress) public onlyOwner{
@@ -156,11 +151,25 @@ contract cityNode is ERC1155, Ownable {
     function setEcologicalIncomeDividendAddress(address _EcologicalIncomeDividendAddress) public onlyOwner{
         EcologicalIncomeDividendAddress = _EcologicalIncomeDividendAddress;
     }
+    //view
+    function checkWeightFactorLength() public view returns(uint256){
+        return WeightFactor.length;
+    }
+    function checkReputationPoints() public view returns(uint256) {
+        return FDToken.balanceOf(msg.sender);
+    }
 
+    function checkCityNodeQuantity() public view returns(uint256){
+        return cityNodeInFos.length;
+    }
+    function checkCityNodeId() public view returns(uint256) {
+        return CityNodeUserNum[msg.sender];
+    }
+    //main
     function createCityNode(uint256 cityNodeNum,string memory cityNodeName) public {
-        // require(setFIDServe() == 1 , "you haven't FID,plz burn fireseed to create"); 
-        // require(contractStatus,"Status is false");
-        // require(checkTotalReputationPoints() > 100000*10*18,"not enough");
+        require(IFireSoul(fireSoul).checkFID(msg.sender) , "you haven't FID,plz burn fireseed to create"); 
+        require(!contractStatus,"Status is false");
+        require(IReputation(Reputation).checkReputation(msg.sender) > 100000*10*18,"not enough");
         // require(cityNodeNum <= ctiyNodeId, "the cityNode has been created");
         address nodeTreasury = address(new CityNodeTreasury());
         _mint(msg.sender,ctiyNodeId,1,"test");
@@ -173,7 +182,7 @@ contract cityNode is ERC1155, Ownable {
          ctiyNodeId++;
     }
     function joinCityNode(uint256 cityNodeNum) public {
-        require(contractStatus,"Status is false");
+        require(!contractStatus,"Status is false");
         require(cityNodeCreater[msg.sender] == false, "you are already a creator");
         require(isCityNodeUser[msg.sender] == false, "you are already join a cityNode");
         require(cityNodeNum > ctiyNodeId, "you input error");
@@ -189,18 +198,18 @@ contract cityNode is ERC1155, Ownable {
         
     }
     function deleteCityNodeUser(address _nodeUser) public {
-        require(contractStatus,"Status is false");
+        require(!contractStatus,"Status is false");
         require(cityNodeCreater[msg.sender] == true, "you are not a owner");
         _burn(_nodeUser, CityNodeUserNum[msg.sender], 1);
     }
     function quitCityNode() public{
-        require(contractStatus,"Status is false");
+        require(!contractStatus,"Status is false");
         require(isCityNodeUser[msg.sender] == true,"you haven't join any citynode");
         _burn(msg.sender,CityNodeUserNum[msg.sender],1);
         isCityNodeUser[msg.sender] = false;
     }
     function lightCityNode() public {
-        require(contractStatus,"Status is false");
+        require(!contractStatus,"Status is false");
       if(_checkBatchTotalReputationPoints(cityNodeMember[CityNodeUserNum[msg.sender]]) >= 1000000*10**18){
           isNotLightCity[CityNodeUserNum[msg.sender]] = true;
       }else{
@@ -208,7 +217,7 @@ contract cityNode is ERC1155, Ownable {
       }
     }
     function createCityNodeProposal(string memory _proposal) public {
-        require(contractStatus,"Status is false");
+        require(!contractStatus,"Status is false");
         require(isCityNodeUser[msg.sender] == true,"you haven't join any citynode");
         require(checkTotalReputationPoints() > 10000*10*18,"not enough");
         require(block.timestamp - NumberInfo[msg.sender][CityNodeUserNum[msg.sender]].joinCityNodeTime > 2678400,"you haven't make a proposal" );
@@ -216,7 +225,7 @@ contract cityNode is ERC1155, Ownable {
     }
 
     function FundAllocation() public payable {
-        require(contractStatus,"Status is false");
+        require(!contractStatus,"Status is false");
         require(isNotLightCity[CityNodeUserNum[msg.sender]] ==true , "you cityNode don't light");
         require(cityNodeCreater[msg.sender] == true , "you are not creater");
         require(msg.value == 100000000000000000);
