@@ -22,6 +22,8 @@ contract FDSBT001 is ERC20 ,Ownable{
     address public admin;
     address public LockAddress;
     address public fireSoul;
+    address public fireSeed;
+    address public passPort;
     mapping(address => uint256) public SoulOfSBT001;
     mapping (address => mapping (uint32 => Checkpoint)) public checkpoints;
     mapping (address => uint32) public numCheckpoints;
@@ -34,6 +36,12 @@ contract FDSBT001 is ERC20 ,Ownable{
     function setFireSoul(address firesoulAddress) public onlyOwner{
         fireSoul = firesoulAddress;
     } 
+    function setFireSeed(address _fireSeed) public onlyOwner {
+        fireSeed = _fireSeed;
+    }
+    function setPassPort(address _passPort) public onlyOwner {
+        passPort = _passPort;
+    }
     function setMintExternalAddress(address _LockAddress) public onlyOwner{
         LockAddress =_LockAddress;
     }
@@ -41,17 +49,13 @@ contract FDSBT001 is ERC20 ,Ownable{
         status = !status;
     }
 
-    function mint(address User, uint256 mintAmount) external {
-        require(msg.sender == LockAddress,"you set Address is error"); 
-        _mint(fireSoul, mintAmount);
-        SoulOfSBT001[User] += mintAmount;
-
+    function mint(address account, uint256 amount) external {
+        require(msg.sender == LockAddress || msg.sender == fireSeed || msg.sender ==passPort,"you set Address is error"); 
+        _mint(account, amount);
     }
-    function burn(address User, uint256 burnAmount) external {
-        require(msg.sender == LockAddress,"you set Address is error"); 
-        _burn(fireSoul, burnAmount);
-        SoulOfSBT001[User] -= burnAmount;
-
+    function burn(address account, uint256 amount) external {
+        require(msg.sender == LockAddress || msg.sender == fireSeed || msg.sender ==passPort,"you set Address is error"); 
+        _burn(account, amount);
     }
     
     function checkSBT001Amount(address user) external view returns(uint256) {

@@ -10,7 +10,9 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "operator-filter-registry/src/DefaultOperatorFilterer.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./interface/ISbt003.sol";
+import "./interface/ISbt007.sol";
 import "./interface/IFireSeed.sol";
+import "./interface/IFireSoul.sol";
 
 contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
 
@@ -25,6 +27,16 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
         uint256 cacheAmount;
     }
 
+    bool public FeeStatus;
+    address payable public feeReceiver;
+    address public Sbt007;
+    address public fireSoul;
+    uint public fee;
+    address[] public _accountList;
+    uint256 public currentSendAmount;
+    string public constant name = "FireSeed";
+    string public constant symbol = "FireSeed";
+    uint256 public constant FireSeedToken = 0;
     mapping(address => bool) public isRecommender;
     mapping(address => address) public recommender;
     mapping(address => address[]) public recommenderInfo;
@@ -32,23 +44,15 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
     mapping(address => uint256[]) public ownerOfId; 
     mapping(address => accountInfo) public _accountAirdrop;
 
-    bool public FeeStatus;
-    address payable public feeReceiver;
-    uint public fee;
-    address[] public _accountList;
-    uint256 public currentSendAmount;
-    string public constant name = "FireSeed";
-    string public constant symbol = "FireSeed";
-    uint256 public constant FireSeedToken = 0;
-    uint256 public _royaltyValue = 250;
-
-
 constructor() ERC1155("https://bafybeiblhsbd5x7rw5ezzr6xoe6u2jpyqexbfbovdao2vj5i3c25vmm7d4.ipfs.nftstorage.link/0.json") {
     _mint(msg.sender, _idTracker.current(), 1, "");
     _idTracker.increment();
 }
 
     //onlyOwner
+    function setSbt007(address _Sbt007) public onlyOwner{
+        Sbt007 = _Sbt007;
+    }
     function changeFeeReceiver(address payable receiver) external onlyOwner {
       feeReceiver = receiver;
     }
@@ -65,7 +69,9 @@ constructor() ERC1155("https://bafybeiblhsbd5x7rw5ezzr6xoe6u2jpyqexbfbovdao2vj5i
     function delWhiteListUser(address _user) public onlyOwner{
         WhiteList[_user] = false;
     }
-
+    function setFireSoul(address _fireSoul) public onlyOwner {
+        fireSoul = _fireSoul;
+    }
     //main
 function mintWithETH(
         uint256 amount
@@ -73,7 +79,6 @@ function mintWithETH(
         if(FeeStatus == false){
         _mint(msg.sender, _idTracker.current(), amount, '');
         }else{
-
         if(WhiteList[msg.sender] && amount <= 1000) {
         _mint(msg.sender, _idTracker.current(), amount, '');
         }else{
@@ -95,6 +100,9 @@ function mintWithETH(
         }else{
         require(msg.value == fee);
         feeReceiver.transfer(fee);
+        }
+        if(IFireSoul(fireSoul).checkFID(msg.sender)){
+            ISbt007(Sbt007).mint(IFireSoul(fireSoul).getSoulAccount(msg.sender),amount *10 **  19);
         }
         _mint(msg.sender, _idTracker.current(), amount, '');
 
@@ -367,14 +375,11 @@ constructor(FireSeed _fireseed, address _userContract,address _sbt003) ERC721("F
         require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: caller is not token owner nor approved");
         _safeTransfer(from, to, tokenId, data);
     }
-
-  
 }
 
 contract Soul {
     address public owner;
     address public create;
-    address[] public sbt;
     constructor(address _owner, address _create) {
         owner = _owner;
         create = _create;

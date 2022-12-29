@@ -7,6 +7,22 @@ import "./interface/ISbt001.sol";
 import "./interface/ISbt006.sol";
 
 contract FDTLockMining is Ownable {
+    struct LPStakeInfo {
+        address user;
+        uint256 startStakeTime;
+        uint256 endStakeTime;
+        uint256 stakeAmount;
+        bool isFristStake;
+        uint256 coefficient;
+    }
+    struct StakeInfo {
+        address user;
+        uint256 startStakeTime;
+        uint256 endStakeTime;
+        uint256 stakeAmount;
+        bool isFristStake;
+        uint256 coefficient;
+    }
     uint256 public Id;
     address public FDTAddress;
     address public flame;
@@ -24,22 +40,6 @@ contract FDTLockMining is Ownable {
     mapping(address => uint256) public GrandTotal;
     uint256 public BounsTime;
     uint256 public FlameAmount;
-    struct LPStakeInfo {
-        address user;
-        uint256 startStakeTime;
-        uint256 endStakeTime;
-        uint256 stakeAmount;
-        bool isFristStake;
-        uint256 coefficient;
-    }
-    struct StakeInfo {
-        address user;
-        uint256 startStakeTime;
-        uint256 endStakeTime;
-        uint256 stakeAmount;
-        bool isFristStake;
-        uint256 coefficient;
-    }
     StakeInfo[] public _StakeInfos;
     LPStakeInfo[] public _LPStakeInfos;
 

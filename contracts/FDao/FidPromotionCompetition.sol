@@ -6,6 +6,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interface/IUniswapV2Router02.sol";
 import "./interface/IReputation.sol";
 contract FidPromotionCompetition is Ownable{
+    struct userInfo{
+        address user;
+        uint256 initFund;
+        uint256 time;
+        bool    isNotList;
+    }
     IUniswapV2Router02 public uniswapV2Router;
     address public sbt;
     address public newWeek;
@@ -19,18 +25,12 @@ contract FidPromotionCompetition is Ownable{
     mapping(address => uint256) public exchangeFund;
     bool public Status;
     address public pauseControlAddress;
-    struct userInfo{
-        address user;
-        uint256 initFund;
-        uint256 time;
-        bool    isNotList;
-    }
     mapping(string => address) public CompetitionAddress;
     constructor() {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         uniswapV2Router = _uniswapV2Router;
     }
-
+    //onlyOwner
     function initial(string memory _week,string memory _moon,string memory _year) public onlyOwner{
         address Week =address( new weekPool());
         address Moon =address( new moonPool());
@@ -55,7 +55,6 @@ contract FidPromotionCompetition is Ownable{
     function setSBTAddress(address _sbt) public onlyOwner{
         sbt = _sbt;
     }
-
     function setPoolStatus() public onlyOwner {
        weekPool(newWeek).setStatus();
        moonPool(newMoon).setStatus();
@@ -67,10 +66,7 @@ contract FidPromotionCompetition is Ownable{
     function setPauseControlAddress(address _pauseControlAddress) public onlyOwner{
         pauseControlAddress =_pauseControlAddress;
     }
-
-    function jionWeekRank() public {
-        
-    }
+    //main
     function setContractsStatus() external {
         require(msg.sender == pauseControlAddress,"address is error");
         Status = !Status;
@@ -102,7 +98,7 @@ contract FidPromotionCompetition is Ownable{
 }
 
 contract weekPool{
-    bool public status = true;
+    bool public status;
     IUniswapV2Router02 public uniswapV2Router;
     constructor(){
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
@@ -112,15 +108,13 @@ contract weekPool{
         status = !status;
     } 
     function AllocateFunds() external  {
-        require(status == true ,"status is false");
-        //奖励部分
+        require(!status ,"status is false");
         IERC20(uniswapV2Router.WETH()).transfer(msg.sender,10**17);
     }
 }
 
 contract moonPool{
     bool public status;
-
     IUniswapV2Router02 public uniswapV2Router;
     constructor(){
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
@@ -130,14 +124,12 @@ contract moonPool{
         status = !status;
     } 
         function AllocateFunds() external  {
-        require(status == true ,"status is false");
-        //奖励部分
+        require(!status ,"status is false");
         IERC20(uniswapV2Router.WETH()).transfer(msg.sender,10**17);
     }
 }
 contract yearPool{
     bool public status;
-
     IUniswapV2Router02 public uniswapV2Router;
     constructor(){
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
@@ -145,11 +137,10 @@ contract yearPool{
     }
     function setStatus() external {
         status = !status;
-    } 
+    }
     
     function AllocateFunds() external  {
-        require(status == true ,"status is false");
-        //奖励部分
+        require(!status ,"status is false");
         IERC20(uniswapV2Router.WETH()).transfer(msg.sender,10**17);
     }
 }
