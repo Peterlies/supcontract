@@ -4,16 +4,8 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interface/IUniswapV2Router02.sol";
-
-
-interface ICityNode{
-    function checkTotalReputationPointsExternal(address user)external view returns(uint256);
-}
-
-
+import "./interface/IReputation.sol";
 contract FidPromotionCompetition is Ownable{
-
-
     IUniswapV2Router02 public uniswapV2Router;
     address public sbt;
     address public newWeek;
@@ -22,10 +14,9 @@ contract FidPromotionCompetition is Ownable{
     address public cityNode;
     address public cityNodeAddress;
     address public SBT003Address;
+    address public Reputation;
     mapping(address => userInfo) public addressToInfo;
     mapping(address => uint256) public exchangeFund;
-
-
     bool public Status;
     address public pauseControlAddress;
     struct userInfo{
@@ -34,11 +25,8 @@ contract FidPromotionCompetition is Ownable{
         uint256 time;
         bool    isNotList;
     }
-
     mapping(string => address) public CompetitionAddress;
-
     constructor() {
-
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         uniswapV2Router = _uniswapV2Router;
     }
@@ -90,7 +78,7 @@ contract FidPromotionCompetition is Ownable{
     
     function distribute() external {
         require(!Status, "status is error");
-        require(ICityNode(cityNode).checkTotalReputationPointsExternal(msg.sender) > 100000*10*18 ,"Reputation Points is not enough");
+        require(IReputation(Reputation).checkReputation(msg.sender) > 100000*10*18 ,"Reputation Points is not enough");
         weekPool(newWeek).AllocateFunds();
         moonPool(newMoon).AllocateFunds();
         yearPool(newYear).AllocateFunds();
@@ -111,10 +99,7 @@ contract FidPromotionCompetition is Ownable{
 
         addressToInfo[msg.sender].isNotList = true;
     }
-    
 }
-
-
 
 contract weekPool{
     bool public status = true;
@@ -126,13 +111,11 @@ contract weekPool{
     function setStatus() external {
         status = !status;
     } 
-    
     function AllocateFunds() external  {
         require(status == true ,"status is false");
         //奖励部分
         IERC20(uniswapV2Router.WETH()).transfer(msg.sender,10**17);
     }
-
 }
 
 contract moonPool{
@@ -146,15 +129,11 @@ contract moonPool{
       function setStatus() external {
         status = !status;
     } 
-    
         function AllocateFunds() external  {
         require(status == true ,"status is false");
         //奖励部分
-
         IERC20(uniswapV2Router.WETH()).transfer(msg.sender,10**17);
     }
-
-
 }
 contract yearPool{
     bool public status;
