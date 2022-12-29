@@ -14,8 +14,8 @@ contract airdropFlame is Ownable{
     address public FireSoulAddress;
     address public FireSeedAddress;
     mapping(address => bool) public blackList;
-constructor () {
-}
+    constructor () {
+    }
     //onlyOwner
     function setFireSoulAddress(address _FireSoulAddress) public onlyOwner{
         FireSoulAddress = _FireSoulAddress;

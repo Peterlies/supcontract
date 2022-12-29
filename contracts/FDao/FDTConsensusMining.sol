@@ -23,6 +23,7 @@ contract FDTConsensusMining is Ownable {
     
     constructor() {
     }
+    //onlyOwner
     function setUSDTAddress(address _USDT) public  onlyOwner{
         USDT = _USDT;
     }
@@ -44,10 +45,10 @@ contract FDTConsensusMining is Ownable {
     function setMinistryOfFinanceAddress(address _MinistryOfFinanceAddress) public onlyOwner{
         MinistryOfFinanceAddress = _MinistryOfFinanceAddress;
     }
+    //main
     function setStatus() external {
         Status = !Status;
     }
-
     function ConsensusMining(uint256 amount) public {
         require(!Status ,"Contract Status is error");
         uint choose;
@@ -60,7 +61,6 @@ contract FDTConsensusMining is Ownable {
         IERC20(USDT).transfer(address(this), netxRounds*(price+1)/100000);
         IERC20(FDT).transfer(msg.sender, amountRemaining);
         IERC20(FDT).transfer(msg.sender, netxRounds);
-
         eachRound = netxRounds;
         price++;
         choose = 1;
@@ -76,7 +76,6 @@ contract FDTConsensusMining is Ownable {
         eachRound = eachRound + amount;
         choose = 2;
         }
-
         if( IFireSoul(FireSoulAddress).checkFID(msg.sender) && choose == 1 && IFireSeed(FireSeedAddress).upclass(msg.sender) != address(0) && IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender)) != address(0)){
         IERC20(USDT).transfer(msg.sender,(amountRemaining*price + netxRounds*(price+1))*35/100000000);
         IERC20(USDT).transfer(IFireSeed(FireSeedAddress).upclass(msg.sender), (amountRemaining*price + netxRounds*(price+1))/10000000);
@@ -87,7 +86,6 @@ contract FDTConsensusMining is Ownable {
         }else {
             IERC20(USDT).transfer(MinistryOfFinanceAddress, (amountRemaining*price/100000 +netxRounds*(price+1)/100000)*5/100 );
         }
-        
         if(IFireSoul(FireSoulAddress).checkFID(msg.sender) &&  choose == 2 && IFireSeed(FireSeedAddress).upclass(msg.sender) != address(0) && IFireSeed(FireSeedAddress).upclass(IFireSeed(FireSeedAddress).upclass(msg.sender)) != address(0) ){
         IERC20(USDT).transfer(msg.sender,amount*price*35/100000000);
         IERC20(USDT).transfer(IFireSeed(FireSeedAddress).upclass(msg.sender), amount*price/10000000);
@@ -99,7 +97,5 @@ contract FDTConsensusMining is Ownable {
             IERC20(USDT).transfer(MinistryOfFinanceAddress, amount*price*5/10000000);
         }
         ISbt001(FDSBT001Address).mint(msg.sender, amount);
-
     }
-
 }

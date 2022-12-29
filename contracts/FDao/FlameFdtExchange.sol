@@ -19,7 +19,6 @@ contract FlameFdtExchange is Ownable{
     mapping(address => uint256) public userAmount;
     mapping(address => uint256) public lockStart;
     constructor() {
-
     }
     function setFlameAndFdtAddress(address _Flame, ERC20 _Fdt) public onlyOwner {
         Flame = _Flame;
@@ -44,11 +43,9 @@ contract FlameFdtExchange is Ownable{
         require(amount > 10000 *10**18, "amount is not enough");
         ISbt001(sbt001).mint(msg.sender, amount);
         ISbt002(sbt002).mint(msg.sender, amount/10);
-
         userAmount[msg.sender] = amount;
         lockStart[msg.sender] = block.timestamp;
     }
-    
     function withdraw() public {
         require(!contractStatus , "status is error");
         require(block.timestamp > lockStart[msg.sender]);
@@ -56,7 +53,6 @@ contract FlameFdtExchange is Ownable{
         ISbt001(sbt001).burn(msg.sender,userAmount[msg.sender] * (block.timestamp - lockStart[msg.sender])/lockEnd);
     }
     function AvailableQuota() public view returns(uint256){
-
         return userAmount[msg.sender] * (block.timestamp - lockStart[msg.sender])/lockEnd;
     }
 

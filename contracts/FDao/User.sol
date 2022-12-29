@@ -25,7 +25,6 @@ contract Users is IUsers,ERC721URIStorage {
       usernameExists["admin"] = true;
       _mint(admin, 1);
    }
-
    modifier checkUsername(string memory username) {
        bytes memory bStr = bytes(username);
         for (uint i = 0; i < bStr.length; i++) {
@@ -53,7 +52,6 @@ contract Users is IUsers,ERC721URIStorage {
       _setTokenURI(id, tokenURI);
       emit Register(id,trueUsername,msg.sender,email,block.timestamp);
    }
-
    function changeUserInfo(string memory information) external {
       require(userInfo[msg.sender].id != 0,'This user does not exist');
       User storage user = userInfo[msg.sender];
@@ -63,7 +61,6 @@ contract Users is IUsers,ERC721URIStorage {
    function getUserCount() external view override returns(uint) {
       return users.length;
    }
-
    function setFee(uint fees) public {
       require(msg.sender == owner ,'no access');
       require(fees <= 100000000000000000,'The maximum fee is 0.1ETH');
@@ -83,28 +80,23 @@ contract Users is IUsers,ERC721URIStorage {
         }
         return string(bLower);
     }
-
    function setFeeOn(bool set) public {
      require(msg.sender == owner ,'no access');
       feeOn = set;
    }
-
    function setUsernameLimitLength(uint min,uint max) public {
       require(msg.sender == owner ,'no access');
       minUsernameLength = min;
       maxUsernameLength = max;
    }
-
    function changeFeeReceiver(address payable receiver) external {
       require(msg.sender == owner ,'no access');
       feeReceiver = receiver;
    }
-
    function changeOwner(address account) public {
       require(msg.sender == owner ,'no access');
       owner = account;
    }
-
    function _transfer(
         address from,
         address to,
@@ -115,7 +107,6 @@ contract Users is IUsers,ERC721URIStorage {
        tokenId;
        revert("ERC721:No transfer allowed");
     }
-
    function _existsLetter(string memory username) internal pure  returns(bool)  {
        bytes memory bStr = bytes(username);
         for (uint i = 0; i < bStr.length; i++) {
