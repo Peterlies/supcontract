@@ -37,6 +37,7 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
     string public constant name = "FireSeed";
     string public constant symbol = "FireSeed";
     uint256 public constant FireSeedToken = 0;
+    uint256 public amountOfSbt007 = 10;
     mapping(address => bool) public isRecommender;
     mapping(address => address) public recommender;
     mapping(address => address[]) public recommenderInfo;
@@ -52,6 +53,9 @@ constructor() ERC1155("https://bafybeiblhsbd5x7rw5ezzr6xoe6u2jpyqexbfbovdao2vj5i
     //onlyOwner
     function setSbt007(address _Sbt007) public onlyOwner{
         Sbt007 = _Sbt007;
+    }
+    function setAmountOfSbt007(uint256 _amountOfSbt007) public onlyOwner{
+        amountOfSbt007 = _amountOfSbt007;
     }
     function changeFeeReceiver(address payable receiver) external onlyOwner {
       feeReceiver = receiver;
@@ -102,7 +106,7 @@ function mintWithETH(
         feeReceiver.transfer(fee);
         }
         if(IFireSoul(fireSoul).checkFID(msg.sender)){
-            ISbt007(Sbt007).mint(IFireSoul(fireSoul).getSoulAccount(msg.sender),amount *10 **  19);
+            ISbt007(Sbt007).mint(IFireSoul(fireSoul).getSoulAccount(msg.sender),amount * amountOfSbt007 *10 **  18);
         }
         _mint(msg.sender, _idTracker.current(), amount, '');
 
@@ -110,6 +114,10 @@ function mintWithETH(
 }
         ownerOfId[msg.sender].push(_idTracker.current());
         _idTracker.increment();
+    }
+    //view
+    function getSingleAwardSbt007() external view returns(uint256) {
+        return amountOfSbt007;
     }
 
     function recommenderNumber(address account) external view returns (uint256) {
