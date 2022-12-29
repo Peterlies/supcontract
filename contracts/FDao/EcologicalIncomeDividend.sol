@@ -14,7 +14,6 @@ contract EcologicalIncomeDividend is Ownable {
     uint256 public intervalTime;
     address public Reputation;
     IUniswapV2Router02 public uniswapV2Router;
-
     constructor(address roter){
       IUniswapV2Router02  _uniswapV2Router = IUniswapV2Router02(roter);
         uniswapV2Router = _uniswapV2Router;

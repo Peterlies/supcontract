@@ -14,9 +14,7 @@ contract FDTLockMining is Ownable {
     address public FDSBT006Address;
     bool public Status;
     address public controlAddress;
-    
     address public LPTokenAddress;
-
     mapping(address => mapping(uint256 => uint256)) userStakeInfo;
     mapping(address => StakeInfo[]) public StakeInfos;
     mapping(address => LPStakeInfo[]) public LPStakeInfos;
@@ -76,10 +74,7 @@ contract FDTLockMining is Ownable {
 
     function stakeMining(uint256 amount, uint256 inputEndTime ) public {
         require(!Status,"Status is error");
-
-        
         require(inputEndTime == 0 || inputEndTime == 1 || inputEndTime == 3 || inputEndTime == 6 || inputEndTime == 12 || inputEndTime == 24 || inputEndTime == 36 , "input type error");
-        
         IERC20(FDTAddress).transfer(address(this), amount);
         userStakeInfo[msg.sender][block.timestamp] = amount;
         StakeInfo memory info = StakeInfo({
@@ -90,7 +85,6 @@ contract FDTLockMining is Ownable {
             isFristStake:true,
             coefficient:inputEndTime
         });
-
         ISbt001(FDSBT001Address).mint(msg.sender, amount*inputEndTime);
         StakeInfos[msg.sender].push(info);
         FDSBT001Amount[msg.sender] = amount*inputEndTime + FDSBT001Amount[msg.sender];
@@ -104,7 +98,6 @@ contract FDTLockMining is Ownable {
     }
     function LockLP(uint256 amount , uint256 inputTime) public {
         require(!Status,"Status is error");
-
         IERC20(LPTokenAddress).transfer(address(this), amount);
         ISbt006(FDSBT006Address).mint(msg.sender,amount* inputTime);
         LPStakeInfo memory LPinfo = LPStakeInfo({
@@ -122,16 +115,13 @@ contract FDTLockMining is Ownable {
         require(LPStakeInfos[msg.sender][order].stakeAmount > 0 , "you haven't amount");
         IERC20(LPTokenAddress).transfer(msg.sender, LPStakeInfos[msg.sender][order].stakeAmount );
         ISbt006(FDSBT006Address).burn(msg.sender , LPStakeInfos[msg.sender][order].coefficient*LPStakeInfos[msg.sender][order].stakeAmount);
-
     }
     
     function ReceiveAward() internal {
         for(uint i = 0 ;i< _StakeInfos.length ; i++){
         // IERC20(flame).transfer(_StakeInfos[i].user,_StakeInfos[i].stakeAmount/(IERC20(FDTAddress).balanceOf(address(this)))*(FlameAmount/BounsTime));
         GrandTotal[_StakeInfos[i].user] = _StakeInfos[i].stakeAmount/(IERC20(FDTAddress).balanceOf(address(this)))*(FlameAmount/BounsTime) + GrandTotal[_StakeInfos[i].user];
-        
         }
-
     }
     function ReceiveAwardOfLockLP() internal{
         for(uint i = 0 ; i< _LPStakeInfos.length; i++){
@@ -143,7 +133,6 @@ contract FDTLockMining is Ownable {
     function UserWithdrawFDT(uint256 order)public {
         require(!Status,"Status is error");
         require(StakeInfos[msg.sender][order].stakeAmount > 0 ,"you havent amount");
-
         for(uint i = 0 ; i < StakeInfos[msg.sender].length ; i++) {
             if(StakeInfos[msg.sender][i].user == msg.sender) {
                 if(block.timestamp > StakeInfos[msg.sender][i].endStakeTime){
@@ -153,5 +142,4 @@ contract FDTLockMining is Ownable {
             }
         }
     }
-
 }

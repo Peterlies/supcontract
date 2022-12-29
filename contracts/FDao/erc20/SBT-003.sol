@@ -59,7 +59,6 @@ contract FDSBT003 is ERC20,Ownable{
    
     function getCurrentVotes(address account) external view returns (uint96) {
         require(!status, "status is false");
-
         uint32 nCheckpoints = numCheckpoints[account];
         return nCheckpoints > 0 ? checkpoints[account][nCheckpoints - 1].votes : 0;
     }

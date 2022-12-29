@@ -17,7 +17,6 @@ contract FdtFlameLock is Ownable{
     mapping(address => uint256) public FLAMElocked;
     mapping(address => uint256) public FLAMEUserAmount;
     constructor() {
-
     }
     function setTokenAddress(address _FdtAddress, address _falmeAddress) public onlyOwner {
         FdtAddress = _FdtAddress;
