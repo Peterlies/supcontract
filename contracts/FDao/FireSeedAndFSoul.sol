@@ -26,7 +26,7 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
         uint256 incomeAmount;
         uint256 cacheAmount;
     }
-
+    event passFireSeed(address indexed from, address indexed to, uint256  tokenId, uint256  amount, uint256 indexed transferTime);
     bool public FeeStatus;
     address payable public feeReceiver;
     address public Sbt007;
@@ -44,7 +44,7 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
     mapping(address => bool) public WhiteList;
     mapping(address => uint256[]) public ownerOfId; 
     mapping(address => accountInfo) public _accountAirdrop;
-
+//set SBT007,amountOf007, fireSoulAddress, Fee, feeReceiver
 constructor() ERC1155("https://bafybeiblhsbd5x7rw5ezzr6xoe6u2jpyqexbfbovdao2vj5i3c25vmm7d4.ipfs.nftstorage.link/0.json") {
     _mint(msg.sender, _idTracker.current(), 1, "");
     _idTracker.increment();
@@ -184,6 +184,7 @@ function mintWithETH(
              recommender[to] = from;
              recommenderInfo[from].push(to);
              isRecommender[to] = true;
+             emit passFireSeed(from, to, tokenId, amount, block.timestamp);
          }
          accountInfo storage info = _accountAirdrop[to];
          if (!info.isAccount) {
@@ -198,7 +199,7 @@ function mintWithETH(
 		       break;
 	       }
        }
-                ownerOfId[to].push(tokenId);
+        ownerOfId[to].push(tokenId);
 
         super.safeTransferFrom(from, to, tokenId, amount, data);
     }
@@ -253,7 +254,7 @@ contract FireSoul is ERC721,Ownable{
     mapping(address => bool) public haveFID;
     mapping(address => uint256[]) public sbtTokenAmount; 
     mapping(address => address) public UserToSoul;
-       
+       //set fireSeed, BaseUri, sbt003
 constructor(FireSeed _fireseed, address _userContract,address _sbt003) ERC721("FireSoul", "FireSoul"){
     fireseed = _fireseed;
     userContract = _userContract;

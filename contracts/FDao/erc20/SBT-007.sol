@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 
-contract FDSBT001 is ERC20 ,Ownable{
+contract FDSBT007 is ERC20 ,Ownable{
     using SafeMath for uint256;
 
     string public logo;
@@ -24,12 +24,12 @@ contract FDSBT001 is ERC20 ,Ownable{
     address public fireSoul;
     address public fireSeed;
     address public passPort;
-    mapping(address => uint256) public SoulOfSBT001;
     mapping (address => mapping (uint32 => Checkpoint)) public checkpoints;
     mapping (address => uint32) public numCheckpoints;
     
     event DelegateVotesChanged(address indexed delegate, uint256 previousBalance, uint256 newBalance);
     event AdminChange(address indexed Admin, address indexed newAdmin);
+    //set fireSeed, fireSoul
     constructor()   ERC20("SBT-007", "SBT-007"){
     }
    
@@ -58,9 +58,6 @@ contract FDSBT001 is ERC20 ,Ownable{
         _burn(account, amount);
     }
     
-    function checkSBT001Amount(address user) external view returns(uint256) {
-        return SoulOfSBT001[user];
-    }
 
     function transfer(address recipient, uint256 amount) public virtual override returns (bool) {
         require(!status , "status is not able");
