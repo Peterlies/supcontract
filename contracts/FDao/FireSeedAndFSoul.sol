@@ -26,7 +26,7 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
         uint256 incomeAmount;
         uint256 cacheAmount;
     }
-    event passFireSeed(address indexed from, address indexed to, uint256  tokenId, uint256  amount, uint256 indexed transferTime);
+    event passFireSeed(address  from, address  to, uint256  tokenId, uint256  amount, uint256  transferTime);
     bool public FeeStatus;
     address payable public feeReceiver;
     address public Sbt007;
@@ -255,7 +255,7 @@ contract FireSoul is ERC721,Ownable{
     mapping(address => uint256[]) public sbtTokenAmount; 
     mapping(address => address) public UserToSoul;
        //set fireSeed, BaseUri, sbt003
-constructor(FireSeed _fireseed, address _userContract,address _sbt003) ERC721("FireSoul", "FireSoul"){
+    constructor(FireSeed _fireseed, address _userContract,address _sbt003) ERC721("FireSoul", "FireSoul"){
     fireseed = _fireseed;
     userContract = _userContract;
 	sbt003 = _sbt003;
