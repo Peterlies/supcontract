@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: MIT
-
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -15,16 +14,21 @@ import "./interface/GetWarp.sol";
 
 contract FireDaoToken is ERC20 ,Ownable{
     using SafeMath for uint256;
-	mapping(address => address) inviter;
-    mapping(address => address) inviterPrepare;
-    IUniswapV2Router02 public uniswapV2Router;
+    struct accountInfo {
+        bool isAccount;
+        uint256 settleTime;
+        uint256 incomeTime;
+        uint256 incomeAmount;
+        uint256 cacheAmount;
+    }
     address public  uniswapV2Pair;
     address _tokenOwner;
     address public FID;
     address public  MinistryOfFinance;
-
+	mapping(address => address) inviter;
+    mapping(address => address) inviterPrepare;
+    IUniswapV2Router02 public uniswapV2Router;
     IFireSeed public fireSeed;
-
     IERC20 public USDT;
     IERC20 public WBNB;
     IERC20 public pair;
@@ -37,52 +41,28 @@ contract FireDaoToken is ERC20 ,Ownable{
     mapping(address => bool) private _isExcludedFromFees;
     bool public swapAndLiquifyEnabled = true;
     uint256 public startTime;
-
     uint256[3] public distributeRates = [5e3, 2e3, 5e2];
-
-
     uint256 private intervalTime = 0;
     uint256 private currentTime;
     uint8  _tax = 5 ;
     uint256 public _currentSupply;
-
-
     mapping(address => bool) public isRecommender;
     mapping(address => address) public recommender;
     mapping(address => address[]) public recommenderInfo;
-
-    struct accountInfo {
-        bool isAccount;
-        uint256 settleTime;
-        uint256 incomeTime;
-        uint256 incomeAmount;
-        uint256 cacheAmount;
-    }
-
     address public _bnbPool;
     address[] buyUser;
     mapping(address => bool) public havePush;
-
     event UpdateUniswapV2Router(address indexed newAddress, address indexed oldAddress);
     event ExcludeFromFees(address indexed account, bool isExcluded);
     event ExcludeMultipleAccountsFromFees(address[] accounts, bool isExcluded);
-    event SwapAndSendTo(
-        address target,
-        uint256 amount,
-        string to
-    );
-    event SwapAndLiquify(
-        uint256 tokensSwapped,
-        uint256 ethReceived
-    );
+    event SwapAndSendTo(address target,uint256 amount,string to);
+    event SwapAndLiquify(uint256 tokensSwapped,uint256 ethReceived);
 
     constructor(address tokenOwner) ERC20("Fire Dao Token", "FDT") {
-        
         //mainnet    
         // IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
         //testnet
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
-
         address _uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
         .createPair(address(this), _uniswapV2Router.WETH());
         _approve(address(this), address(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D), 10**34);
@@ -119,7 +99,6 @@ contract FireDaoToken is ERC20 ,Ownable{
         emit ExcludeFromFees(account, excluded);
     }
 	
-     //排除出分红，enable为true是永久禁止分红，false是不禁止
     function excludeFromShare(address account, bool enable) public onlyOwner{
 
         for(uint i = 0; i < buyUser.length; i++){
@@ -183,32 +162,6 @@ contract FireDaoToken is ERC20 ,Ownable{
         require(tax <=5 , 'tax too big');
         _tax = tax;
     }
-
-    // function setPayAble() public {
-    //     // payable(msg.sender);
-    // }
-
-    // function recommenderNumber(address account) external view returns (uint256) {
-    //     return recommenderInfo[account].length;
-    // }
-
-    // function _beforeTransfer(
-    //         address from,
-    //         address to
-    // ) internal {
-    //     if (recommender[to] == address(0) && !from.isContract() && !to.isContract() && recommender[from] != to && !isRecommender[to]) {
-    //         recommender[to] = from;
-    //         recommenderInfo[from].push(to);
-    //         isRecommender[to] = true;
-    //     }
-    //     accountInfo storage info = _accountAirdrop[to];
-    //     if (!info.isAccount && !to.isContract()) {
-    //         _accountList.push(to);
-    //         info.isAccount = true;
-    //     }
-    // }
-
-
 
     function _transfer(
         address from,
@@ -326,43 +279,7 @@ contract FireDaoToken is ERC20 ,Ownable{
     uint256 public ldxindex;
 
     function _splitOtherTokenSecond(uint256 thisAmount) private {
-        // uint256 buySize = buyUser.length;
-        // if(buySize>0){
-        //     address user;
-        //     uint256 totalAmount = pair.totalSupply();
-        //     uint256 rate;
-        //     if(buySize >20){
-        //         for(uint256 i=0;i<20;i++){
-        //             ldxindex = ldxindex.add(1);
-        //             if(ldxindex >= buySize){ldxindex = 0;}
-        //             user = buyUser[ldxindex];
-        //             if(balanceOf(user) >= 0){
-        //                 rate = pair.balanceOf(user).mul(1000000).div(totalAmount);
-        //                 uint256 amountUsdt = thisAmount.mul(rate).div(1000000);
-        //                 if(amountUsdt>10**13){
-        //                     USDT.transfer(user,amountUsdt);
-        //                 }
-        //             }
-        //         }
-        //     }else{
-        //         for(uint256 i=0;i<buySize;i++){
-        //             user = buyUser[i];
-        //             if(balanceOf(user) >= 0){
-        //                 rate = pair.balanceOf(user).mul(1000000).div(totalAmount);
-        //                 uint256 amountUsdt = thisAmount.mul(rate).div(1000000);
-        //                 if(amountUsdt>10**13){
-        //                     USDT.transfer(user,amountUsdt);
-        //                 }
-        //             }
-        //         }
-        //     }
-        // }
-
-        // for(uint256 i = 0; i <  distributeRates.length;i++ ){
-
-        // }
 	    address[] memory user = new address[](3);
-
         user[0] = fireSeed.upclass(msg.sender);
         user[1] = fireSeed.upclass(user[0]);
         user[2] = fireSeed.upclass(user[1]);
