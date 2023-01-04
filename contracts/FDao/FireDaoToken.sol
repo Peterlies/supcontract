@@ -11,6 +11,7 @@ import "./interface/IFireSeed.sol";
 import "./interface/IUniswapV2Pair.sol";
 import "./interface/IUniswapV2Factory.sol";
 import "./interface/GetWarp.sol";
+import "./interface/IMinistryOfFinance.sol";
 
 contract FireDaoToken is ERC20 ,Ownable{
     using SafeMath for uint256;
@@ -24,7 +25,7 @@ contract FireDaoToken is ERC20 ,Ownable{
     address public  uniswapV2Pair;
     address _tokenOwner;
     address public FID;
-    address public  MinistryOfFinance;
+    address public  ministryOfFinance;
 	mapping(address => address) inviter;
     mapping(address => address) inviterPrepare;
     IUniswapV2Router02 public uniswapV2Router;
@@ -146,8 +147,8 @@ contract FireDaoToken is ERC20 ,Ownable{
         FID = _FID;
     }
 
-    function setMinistryOfFinance(address _MinistryOfFinance ) public onlyOwner{
-        MinistryOfFinance = _MinistryOfFinance;
+    function setMinistryOfFinance(address _ministryOfFinance ) public onlyOwner{
+        ministryOfFinance = _ministryOfFinance;
     }
 
     function isExcludedFromFees(address account) public view returns (bool) {
@@ -186,7 +187,7 @@ contract FireDaoToken is ERC20 ,Ownable{
                 swapAndLiquifyEnabled
             ) {
                 swapping = true;
-                currentTime = block.timestamp;//更新时间
+                currentTime = block.timestamp;
                 uint256 tokenAmount = balanceOf(address(this));
                 swapAndLiquifyV3(tokenAmount);
                 swapping = false;
@@ -249,7 +250,6 @@ contract FireDaoToken is ERC20 ,Ownable{
     }
     
     function swapTokensForOther(uint256 tokenAmount) private {
-        // generate the uniswap pair path of token -> weth
 		address[] memory path = new address[](2);
         path[0] = address(this);
         // path[1] = address(0x55d398326f99059fF775485246999027B3197955);//mainnet
@@ -294,11 +294,13 @@ contract FireDaoToken is ERC20 ,Ownable{
                         WBNB.transfer(user[i], thisAmount.mul(distributeRates[i]).div(100));
                         }
                      }else{
+                        uint total = 0;
                     for(uint256 i = 0; i < distributeRates.length; i++){
-                         WBNB.transfer(MinistryOfFinance,thisAmount.mul(distributeRates[i]).div(100));
+                         WBNB.transfer(ministryOfFinance,thisAmount.mul(distributeRates[i]).div(100));
+                         total += thisAmount.mul(distributeRates[i]).div(100);
                     }
-                 }
-    
+                    IMinistryOfFinance(ministryOfFinance).setSourceOfIncome(1, total);
+        }
     }
 
     function _splitOtherToken() public {

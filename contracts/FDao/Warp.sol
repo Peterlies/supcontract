@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./interface/IUniswapV2Router02.sol";
+import "./interface/IMinistryOfFinance.sol";
 
 
 interface IcityNode{
@@ -12,7 +13,7 @@ interface IcityNode{
 contract warp {
     IERC20 public WBNB;
     address public owner;
-    address public MinistryOfFinance;
+    address public ministryOfFinance;
     address public cityNode;
     address public fireSeedAddress;
     constructor () {
@@ -27,8 +28,9 @@ contract warp {
         require(msg.sender == owner);
         _;
     }
-    function setMOFinance(address to) public onlyOwner {
-        MinistryOfFinance = to;
+    //onlyOwner
+    function setMinistryOFinance(address _ministryOfFinance) public onlyOwner {
+        ministryOfFinance = _ministryOfFinance;
     }
     function setCityNode(address cNode) public onlyOwner{
         cityNode = cNode;
@@ -36,20 +38,22 @@ contract warp {
     function setFireSeedAddress(address fSeed) public onlyOwner{
         fireSeedAddress = fSeed;
     }
+    //main
     function withdraw(address user) public  {
-        WBNB.transfer(msg.sender, checkSAFEBalance()/10);
-        if(IcityNode(cityNode).checkIsCityNode(user,checkSAFEBalance()/10))
-        {
-        WBNB.transfer(cityNode, checkSAFEBalance()/10);
-        WBNB.transfer(MinistryOfFinance, checkSAFEBalance()/10*8);
+        WBNB.transfer(msg.sender, balance()/10);
+        if(IcityNode(cityNode).checkIsCityNode(user,balance()/10)){
+        WBNB.transfer(cityNode, balance()/10);
+        WBNB.transfer(ministryOfFinance, balance()/10*8);
+        IMinistryOfFinance(ministryOfFinance).setSourceOfIncome(1, balance()/10*8);
         }else{
-        WBNB.transfer(MinistryOfFinance, checkSAFEBalance()/10*9);
+        WBNB.transfer(ministryOfFinance, balance()/10*9);
+        IMinistryOfFinance(ministryOfFinance).setSourceOfIncome(1, balance()/10*9);
         }
     }
-    function checkSAFEBalance() public view returns(uint256){
+    function balance() public view returns(uint256){
         return WBNB.balanceOf(address(this));
     }
     function withdrawAll() public onlyOwner{
-        WBNB.transfer(msg.sender,checkSAFEBalance());
+        WBNB.transfer(msg.sender,balance());
     }
 }
