@@ -6,16 +6,20 @@ import "./FireLock.sol";
 
 contract FireLockFactory is Ownable{
 
-    address public currentLockAddress;
+    address  currentLock;
     address[] public lockList;
+    mapping(address => address )  currentLockAddress;
     mapping(address => address[]) public ownerLock; 
     constructor(){
-
     }
     function createLock() public { 
-        currentLockAddress = address(new FireLock());
-        ownerLock[msg.sender].push(currentLockAddress);
-        lockList.push(currentLockAddress);
+        currentLock = address(new FireLock());
+        ownerLock[msg.sender].push(currentLock);
+        currentLockAddress[msg.sender] = currentLock;
+        lockList.push(currentLock);
+    }
+    function getUserCurrentLock() public view returns(address) {
+        return currentLockAddress[msg.sender];
     }
     function getOwnerLockLenglength() public view returns(uint256){
         return ownerLock[msg.sender].length;

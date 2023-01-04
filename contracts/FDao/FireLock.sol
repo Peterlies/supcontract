@@ -20,7 +20,6 @@ contract FireLock {
         address token;
         uint256 cliffPeriod;
     }
-
     struct groupLockDetail{
         string LockTitle;
         uint256 ddl;
@@ -38,6 +37,7 @@ contract FireLock {
     }
     address public feeTo;
     uint256 public fee;
+    address public user;
     mapping(address => address[]) tokenAddress;
     mapping(address => LockDetail[]) public ownerLockDetail;
     mapping(uint256 => address[]) public groupMumber;
@@ -47,15 +47,20 @@ contract FireLock {
     bool alreadyChange;
     mapping(address => bool) isChangedOwner;
     mapping(address => uint256[]) public UsergroupLockNum;
+    modifier onlyUser{
+        require(msg.sender == user ,"you are not the lock owner");
+        _;
+    }
 
-    constructor() {
+    constructor(address _user) {
+    user = _user;
     IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3);
     uniswapV2Router = _uniswapV2Router;
     }
-    function lock(address _token,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount,uint256 _cliffPeriod ,string memory _titile , bool _Terminate) public payable  {
+
+    function lock(address _token,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount,uint256 _cliffPeriod ,string memory _titile , bool _Terminate) public   {
         require(block.timestamp + _unlockCycle * _unlockRound * 86400 > block.timestamp,"ddl should be bigger than ddl current time");
         require(_amount > 0 ,"token amount should be bigger than zero");
-        
         address owner = msg.sender;
         LockDetail memory lockinfo = LockDetail({
             LockTitle:_titile,
@@ -72,10 +77,10 @@ contract FireLock {
         ownerLockDetail[msg.sender].push(lockinfo);
         IERC20(_token).transferFrom(owner,address(this),_amount);
     }
+
     function lockOthers(address _token,address _to,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount,uint256 _cliffPeriod ,string memory _titile , bool _Terminate) public {
         require(block.timestamp + _unlockCycle * _unlockRound * 86400 > block.timestamp,"ddl should be bigger than ddl current time");
         require(_amount > 0 ,"token amount should be bigger than zero");
-        
         address owner = msg.sender;
         LockDetail memory lockinfo = LockDetail({
             LockTitle:_titile,
@@ -152,7 +157,7 @@ contract FireLock {
         IERC20(token).transfer(msg.sender , adminGropLockDetail[msg.sender][_lockId].amount);
     }
 
-    function unlock(address _token) public{
+    function unlock(address _token) public onlyUser {
         uint len = ownerLockDetail[msg.sender].length;
         for(uint i = 0; i < len - 1; i++ ){
             if(ownerLockDetail[msg.sender][i].token == _token){
@@ -183,7 +188,7 @@ contract FireLock {
             }
         }else{revert();}
     }
-    function changeLockAdmin(address  _to, uint _index) public {
+    function changeLockAdmin(address  _to, uint _index) public onlyUser{
         require(msg.sender == adminGropLockDetail[msg.sender][index].admin,"you are not admin");
         require(!isChangedOwner[_to], "you already change");
         require(adminGropLockDetail[msg.sender][index].isNotchange ,"you can't turn on isNotchange when you create ");
