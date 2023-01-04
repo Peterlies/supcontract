@@ -25,6 +25,9 @@ contract MinistryOfFinance is Ownable {
         uniswapV2Router = _uniswapV2Router;
     }
     //onlyOwner
+    function setFirePassport(address _firePassport) public onlyOwner {
+        firePassport = _firePassport;
+    }
     function setReputation(address _Reputation) public onlyOwner {
         Reputation = _Reputation;
     }
