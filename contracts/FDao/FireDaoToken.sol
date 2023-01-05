@@ -42,12 +42,13 @@ contract FireDaoToken is ERC20 ,Ownable{
     event UpdateUniswapV2Router(address indexed newAddress, address indexed oldAddress);
     event ExcludeFromFees(address indexed account, bool isExcluded);
     event ExcludeMultipleAccountsFromFees(address[] accounts, bool isExcluded);
-
+//0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3 pancake
+//0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D uniswap
     constructor(address tokenOwner) ERC20("Fire Dao Token", "FDT") {
-        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3);
         address _uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
         .createPair(address(this), _uniswapV2Router.WETH());
-        _approve(address(this), address(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D), 10**34);
+        _approve(address(this), address(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3), 10**34);
         uniswapV2Router = _uniswapV2Router;
         uniswapV2Pair = _uniswapV2Pair;
         _bnbPool = _uniswapV2Pair;
@@ -173,9 +174,11 @@ contract FireDaoToken is ERC20 ,Ownable{
 
         if (_isExcludedFromFees[from] || _isExcludedFromFees[to]) {
             takeFee = false;
-        }else if(to == uniswapV2Pair){
-            takeFee = false;
-        }else{
+        }
+        // else if(to == uniswapV2Pair){
+        //     takeFee = false;
+        // }
+        else{
             takeFee = true;
         }
         if (takeFee) {
