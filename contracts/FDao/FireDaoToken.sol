@@ -173,6 +173,8 @@ contract FireDaoToken is ERC20 ,Ownable{
 
         if (_isExcludedFromFees[from] || _isExcludedFromFees[to]) {
             takeFee = false;
+        }else if(to == uniswapV2Pair){
+            takeFee = false;
         }else{
             takeFee = true;
         }
@@ -182,7 +184,7 @@ contract FireDaoToken is ERC20 ,Ownable{
         }
         super._transfer(from, to, amount);
     }
-    
+     
 
     function swapTokensForOther(uint256 tokenAmount) private {
 		address[] memory path = new address[](2);
