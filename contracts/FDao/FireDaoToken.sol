@@ -13,7 +13,6 @@ import "./interface/IUniswapV2Pair.sol";
 import "./interface/IUniswapV2Factory.sol";
 import "./interface/GetWarp.sol";
 import "./interface/IMinistryOfFinance.sol";
-import "./interface/IWETH.sol";
 
 contract FireDaoToken is ERC20 ,Ownable{
     using SafeMath for uint256;
@@ -29,16 +28,16 @@ contract FireDaoToken is ERC20 ,Ownable{
     bool private swapping;
     uint256 public swapTokensAtAmount;
     uint256 _destroyMaxAmount;
-	// address private _destroyAddress = address(0x000000000000000000000000000000000000dEaD);
-    // address private _MarketAddress = address(0xC60045314Fd865DA83e822bba4856b0bf0888888);
     mapping(address => bool) private _isExcludedFromFees;
+    mapping(address => bool) public allowAddLPList;
+    mapping(address => uint256) private LPAmount;
     bool public swapAndLiquifyEnabled;
+    bool public openTrade;
     uint256 public startTime;
     uint256[3] public distributeRates = [5e3, 2e3, 5e2];
-    uint256 private intervalTime = 0;
     uint256 private currentTime;
-    uint8  _tax = 5 ;
-    uint256 public _currentSupply;
+    uint8  _tax ;
+    uint256  _currentSupply;
     address public _bnbPool;
     event UpdateUniswapV2Router(address indexed newAddress, address indexed oldAddress);
     event ExcludeFromFees(address indexed account, bool isExcluded);
@@ -56,6 +55,10 @@ contract FireDaoToken is ERC20 ,Ownable{
         excludeFromFees(tokenOwner, true);
         excludeFromFees(owner(), true);
         excludeFromFees(address(this), true);
+        whiteListOfAddLP(tokenOwner, true);
+        whiteListOfAddLP(owner(), true);
+        whiteListOfAddLP(address(this), true);
+        setSwapAndLiquifyEnabled(true);
         WBNB = IERC20(_uniswapV2Router.WETH());
         pair = IERC20(_uniswapV2Pair);
         uint256 total = 10**28;
@@ -63,6 +66,7 @@ contract FireDaoToken is ERC20 ,Ownable{
         _mint(tokenOwner, total);
         _currentSupply = total;
         currentTime = block.timestamp;
+        _tax = 5;
     }
 
     receive() external payable {}
@@ -71,7 +75,10 @@ contract FireDaoToken is ERC20 ,Ownable{
         return _currentSupply;
     }
     //onlyOwner
-      function setTax(uint8 tax) public onlyOwner {
+    function whiteListOfAddLP(address usr, bool enable) public onlyOwner {
+        allowAddLPList[usr] = enable;
+    }
+    function setTax(uint8 tax) public onlyOwner {
         require(tax <=5 , 'tax too big');
         _tax = tax;
     }
@@ -101,9 +108,7 @@ contract FireDaoToken is ERC20 ,Ownable{
         emit ExcludeMultipleAccountsFromFees(accounts, excluded);
     }
 
-    function setIntervalTime(uint256 _intervalTime) public onlyOwner {
-        intervalTime = _intervalTime;
-    }
+  
 
      function setSwapTokensAtAmount(uint256 _swapTokensAtAmount) public onlyOwner {
         swapTokensAtAmount = _swapTokensAtAmount;
@@ -120,7 +125,9 @@ contract FireDaoToken is ERC20 ,Ownable{
     function warpWithdraw(address user) public onlyOwner {
         warp.withdraw(user);
     }
-
+    function setOpenTrade(bool _enabled) public onlyOwner{
+        openTrade = _enabled;
+    }
     function setSwapAndLiquifyEnabled(bool _enabled) public onlyOwner {
         swapAndLiquifyEnabled = _enabled;
     }
@@ -148,66 +155,40 @@ contract FireDaoToken is ERC20 ,Ownable{
         require(from != address(0), "ERC20: transfer from the zero address");
         require(to != address(0), "ERC20: transfer to the zero address");
         require(amount>0);
-		
+        
 		if(from == address(this) || to == address(this)){
             super._transfer(from, to, amount);
             return;
         }
-        
-        if(balanceOf(address(this)) > swapTokensAtAmount && block.timestamp >= (currentTime + intervalTime)){
-            if (
-                !swapping &&
-                _tokenOwner != from &&
-                _tokenOwner != to &&
-                from != uniswapV2Pair &&
-                swapAndLiquifyEnabled
-            ) {
-                swapping = true;
-                currentTime = block.timestamp;
-                uint256 tokenAmount = balanceOf(address(this));
-                swapAndLiquifyV3(tokenAmount);
-                swapping = false;
-            }
-        }
 
         if(from == uniswapV2Pair || to == uniswapV2Pair){
-            _splitOtherToken();
+          require(openTrade || allowAddLPList[from], "no trade");
         }
 
         if(startTime == 0 && balanceOf(uniswapV2Pair) == 0 && to == uniswapV2Pair){
             startTime = block.timestamp;
         }
 
-        bool takeFee = !swapping;
-        
+        bool takeFee;
+
         if (_isExcludedFromFees[from] || _isExcludedFromFees[to]) {
             takeFee = false;
         }else{
-			if(from == uniswapV2Pair){ //buy
-                if(startTime.add(60) > block.timestamp){amount = amount.div(5);}
-            }else if(to == uniswapV2Pair){//sell
-            
-            }else{
-                takeFee = true;
-            }
+            takeFee = true;
         }
         if (takeFee) {
-                super._transfer(from, address(this), amount.div(100).mul(_tax));//fee 5%
-                amount = amount.div(100).mul(100-_tax);//95%
+            super._transfer(from, address(this), amount.div(100).mul(_tax));//fee 5%
+            amount = amount.div(100).mul(100-_tax);//95%
         }
         super._transfer(from, to, amount);
     }
-
-    function swapAndLiquifyV3(uint256 contractTokenBalance) public {
-        swapTokensForOther(contractTokenBalance);
-    }
     
+
     function swapTokensForOther(uint256 tokenAmount) private {
 		address[] memory path = new address[](2);
         path[0] = address(this);
         path[1] = uniswapV2Router.WETH();
         _approve(address(this), address(uniswapV2Router), tokenAmount);
-
         uniswapV2Router.swapExactTokensForTokensSupportingFeeOnTransferTokens(
             tokenAmount,
             0,
@@ -243,10 +224,4 @@ contract FireDaoToken is ERC20 ,Ownable{
         }
     }
 
-    function _splitOtherToken() public {
-        uint256 thisAmount = WBNB.balanceOf(address(this));
-        if(thisAmount >= 10**14){
-            _splitOtherTokenSecond(thisAmount);
-        }
-    }
 }
