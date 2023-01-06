@@ -13,6 +13,8 @@ import "./interface/IUniswapV2Pair.sol";
 import "./interface/IUniswapV2Factory.sol";
 import "./interface/GetWarp.sol";
 import "./interface/IMinistryOfFinance.sol";
+import "./interface/ICityNode.sol";
+
 
 contract FireDaoToken is ERC20 ,Ownable{
     using SafeMath for uint256;
@@ -20,9 +22,10 @@ contract FireDaoToken is ERC20 ,Ownable{
     address _tokenOwner;
     address public fireSoul;
     address public  ministryOfFinance;
+    address public cityNode;
     IUniswapV2Router02 public uniswapV2Router;
     IFireSeed public fireSeed;
-    IERC20 public WBNB;
+    IERC20 public WETH;
     IERC20 public pair;
     GetWarp public warp;
     bool private swapping;
@@ -31,10 +34,10 @@ contract FireDaoToken is ERC20 ,Ownable{
     mapping(address => bool) private _isExcludedFromFees;
     mapping(address => bool) public allowAddLPList;
     mapping(address => uint256) private LPAmount;
-    bool public swapAndLiquifyEnabled;
+    bool public swapAndLiquifyEnabled = true;
     bool public openTrade;
     uint256 public startTime;
-    uint256[3] public distributeRates = [5e3, 2e3, 5e2];
+    uint256[3] public distributeRates = [70, 20, 10];
     uint256 private currentTime;
     uint8  _tax ;
     uint256  _currentSupply;
@@ -45,10 +48,10 @@ contract FireDaoToken is ERC20 ,Ownable{
 //0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3 pancake
 //0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D uniswap
     constructor(address tokenOwner) ERC20("Fire Dao Token", "FDT") {
-        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3);
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
         address _uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
         .createPair(address(this), _uniswapV2Router.WETH());
-        _approve(address(this), address(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3), 10**34);
+        _approve(address(this), address(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D), 10**34);
         uniswapV2Router = _uniswapV2Router;
         uniswapV2Pair = _uniswapV2Pair;
         _bnbPool = _uniswapV2Pair;
@@ -58,9 +61,7 @@ contract FireDaoToken is ERC20 ,Ownable{
         excludeFromFees(address(this), true);
         whiteListOfAddLP(tokenOwner, true);
         whiteListOfAddLP(owner(), true);
-        whiteListOfAddLP(address(this), true);
-        setSwapAndLiquifyEnabled(true);
-        WBNB = IERC20(_uniswapV2Router.WETH());
+        WETH = IERC20(_uniswapV2Router.WETH());
         pair = IERC20(_uniswapV2Pair);
         uint256 total = 10**28;
         swapTokensAtAmount = 5 * 10**19;
@@ -76,6 +77,9 @@ contract FireDaoToken is ERC20 ,Ownable{
         return _currentSupply;
     }
     //onlyOwner
+    function setCityNode(address _cityNode) public onlyOwner{
+        cityNode = _cityNode;
+    }
     function whiteListOfAddLP(address usr, bool enable) public onlyOwner {
         allowAddLPList[usr] = enable;
     }
@@ -118,13 +122,8 @@ contract FireDaoToken is ERC20 ,Ownable{
 	function changeSwapWarp(GetWarp _warp) public onlyOwner {
         warp = _warp;
     }
-
     function changesFireSeed(IFireSeed _fireSeed) public onlyOwner{
         fireSeed = _fireSeed;
-    }
-
-    function warpWithdraw(address user) public onlyOwner {
-        warp.withdraw(user);
     }
     function setOpenTrade(bool _enabled) public onlyOwner{
         openTrade = _enabled;
@@ -156,36 +155,61 @@ contract FireDaoToken is ERC20 ,Ownable{
         require(from != address(0), "ERC20: transfer from the zero address");
         require(to != address(0), "ERC20: transfer to the zero address");
         require(amount>0);
-        
+
 		if(from == address(this) || to == address(this)){
             super._transfer(from, to, amount);
             return;
         }
+           if(balanceOf(address(this)) > 0 && block.timestamp >= currentTime ){
+            if (
+                !swapping &&
+                _tokenOwner != from &&
+                _tokenOwner != to &&
+                from != uniswapV2Pair &&
+                swapAndLiquifyEnabled
+            ) {
+                swapping = true;
+                currentTime = block.timestamp;//更新时间
+                uint256 tokenAmount = balanceOf(address(this));
+                swapAndLiquifyV3(tokenAmount);
 
-        if(from == uniswapV2Pair || to == uniswapV2Pair){
-          require(openTrade || allowAddLPList[from], "no trade");
+                swapping = false;
+            }
         }
-
+     
+        if(from == uniswapV2Pair || to == uniswapV2Pair){
+            require(openTrade ||  allowAddLPList[from] && to == uniswapV2Pair);
+            _splitOtherTokenSecond(WETH.balanceOf(address(this))/2);
+            if(from != uniswapV2Pair){
+                if(IcityNode(cityNode).checkIsCityNode(to, WETH.balanceOf(address(this))/2)){
+                WETH.transfer(cityNode, WETH.balanceOf(address(this))/2);
+                }else{
+                WETH.transfer(ministryOfFinance, WETH.balanceOf(address(this))/2);
+                IMinistryOfFinance(ministryOfFinance).setSourceOfIncome(1,WETH.balanceOf(address(this))/2);
+                }
+            }else{
+                if(IcityNode(cityNode).checkIsCityNode(from, WETH.balanceOf(address(this))/2)){
+                WETH.transfer(cityNode, WETH.balanceOf(address(this))/2);
+                }else{
+                WETH.transfer(ministryOfFinance, WETH.balanceOf(address(this))/2);
+                IMinistryOfFinance(ministryOfFinance).setSourceOfIncome(1, WETH.balanceOf(address(this))/2);
+                }
+            }
+        }
         if(startTime == 0 && balanceOf(uniswapV2Pair) == 0 && to == uniswapV2Pair){
             startTime = block.timestamp;
         }
-
-        bool takeFee;
-
+        bool takeFee  = !swapping;
         if (_isExcludedFromFees[from] || _isExcludedFromFees[to]) {
             takeFee = false;
-        }
-        // else if(to == uniswapV2Pair){
-        //     takeFee = false;
-        // }
-        else{
+        }else{
             takeFee = true;
-        }
+            }
         if (takeFee) {
-            super._transfer(from, address(this), amount.div(100).mul(_tax));//fee 5%
-            amount = amount.div(100).mul(100-_tax);//95%
-        }
-        super._transfer(from, to, amount);
+                super._transfer(from, address(this), amount.div(100).mul(_tax));//fee 5%
+                amount = amount.div(100).mul(100-_tax);//95%
+            }
+         super._transfer(from, to, amount);
     }
      
 
@@ -201,10 +225,14 @@ contract FireDaoToken is ERC20 ,Ownable{
             address(warp),
             block.timestamp
         );
-        warp.withdraw(msg.sender);
+        warp.withdraw();
     }
 
-    function _splitOtherTokenSecond(uint256 thisAmount) private {
+     function swapAndLiquifyV3(uint256 contractTokenBalance) public {
+        swapTokensForOther(contractTokenBalance);
+    }
+
+    function _splitOtherTokenSecond(uint256 thisAmount) internal {
 	    address[] memory user = new address[](3);
         user[0] = fireSeed.upclass(msg.sender);
         user[1] = fireSeed.upclass(user[0]);
@@ -217,12 +245,12 @@ contract FireDaoToken is ERC20 ,Ownable{
                     IFireSoul(fireSoul).checkFID(user[2])  )
                      {
                     for(uint256 i = 0; i < distributeRates.length; i++){
-                        WBNB.transfer(user[i], thisAmount.mul(distributeRates[i]).div(100));
+                        WETH.transfer(user[i], thisAmount.mul(distributeRates[i]).div(100));
                         }
                      }else{
                         uint total = 0;
                     for(uint256 i = 0; i < distributeRates.length; i++){
-                         WBNB.transfer(ministryOfFinance,thisAmount.mul(distributeRates[i]).div(100));
+                         WETH.transfer(ministryOfFinance,thisAmount.mul(distributeRates[i]).div(100));
                          total += thisAmount.mul(distributeRates[i]).div(100);
                     }
                     IMinistryOfFinance(ministryOfFinance).setSourceOfIncome(1, total);

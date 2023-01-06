@@ -4,5 +4,5 @@ pragma solidity ^0.8.0;
 
 
 interface GetWarp {
-    function withdraw(address user) external ;
+    function withdraw() external ;
 }
