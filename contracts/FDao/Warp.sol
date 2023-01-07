@@ -38,7 +38,7 @@ contract warp {
     function withdraw() external  {
         WETH.transfer(msg.sender, balance()/10*2);
         WETH.transfer(ministryOfFinance, balance()/10*8);
-        IMinistryOfFinance(ministryOfFinance).setSourceOfIncome(1, balance()/10*9);
+        IMinistryOfFinance(ministryOfFinance).setSourceOfIncome(1, balance()/10*8);
     }
     function balance() public view returns(uint256){
         return WETH.balanceOf(address(this));
