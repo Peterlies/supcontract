@@ -19,9 +19,11 @@ contract MinistryOfFinance is Ownable {
     mapping(address => uint256) public AllocationFundUserTime;
     mapping(uint => uint256[]) sourceOfIncome;
     IUniswapV2Router02 public uniswapV2Router;
+    //0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3 pancake
+    //0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D uniswap
     constructor() {
         //mainnet
-        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
         uniswapV2Router = _uniswapV2Router;
     }
     //onlyOwner
@@ -58,6 +60,9 @@ contract MinistryOfFinance is Ownable {
     function getSourceOfIncome(uint num) public view returns(uint256[] memory){
         return sourceOfIncome[num];
     }
+    function getWETHBalance() public view returns(uint256){
+        return IERC20(uniswapV2Router.WETH()).balanceOf(address(this));
+    }
     //main
     function setDistributionRatioExternal(uint i, uint rate) external {
         require(msg.sender == GovernanceAddress,"callback Address is error");
@@ -79,6 +84,7 @@ contract MinistryOfFinance is Ownable {
         require(IReputation(Reputation).checkReputation(msg.sender) > 100000*10*18 ,"Reputation Points is not enough");
         require( block.timestamp > intervalTime + 1800,"AllocationFund need interval 30 minute");
         require( block.timestamp >  AllocationFundUserTime[msg.sender] + 43200 ,"wallet need 12 hours to callback that");
+        require(getWETHBalance() > 0, "the balance of WETH is error");
         for(uint i = 0 ; i < AllocationFundAddress.length; i ++){
         IERC20(uniswapV2Router.WETH()).transfer(AllocationFundAddress[i],distributionRatio[i]/100);
         }

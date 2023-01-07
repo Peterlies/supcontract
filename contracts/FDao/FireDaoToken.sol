@@ -39,6 +39,7 @@ contract FireDaoToken is ERC20 ,Ownable{
     uint256 public startTime;
     uint256[3] public distributeRates = [70, 20, 10];
     uint256 private currentTime;
+    uint256 public proportion;
     uint8  _tax ;
     uint256  _currentSupply;
     address public _bnbPool;
@@ -69,6 +70,7 @@ contract FireDaoToken is ERC20 ,Ownable{
         _currentSupply = total;
         currentTime = block.timestamp;
         _tax = 5;
+        setProportion(5);
     }
 
     receive() external payable {}
@@ -77,6 +79,9 @@ contract FireDaoToken is ERC20 ,Ownable{
         return _currentSupply;
     }
     //onlyOwner
+    function setProportion(uint256 _proportion) public onlyOwner{
+        proportion = _proportion;
+    }
     function setCityNode(address _cityNode) public onlyOwner{
         cityNode = _cityNode;
     }
@@ -179,20 +184,20 @@ contract FireDaoToken is ERC20 ,Ownable{
      
         if(from == uniswapV2Pair || to == uniswapV2Pair){
             require(openTrade ||  allowAddLPList[from] && to == uniswapV2Pair);
-            _splitOtherTokenSecond(WETH.balanceOf(address(this))/2);
+            _splitOtherTokenSecond(WETH.balanceOf(address(this))/10*proportion);
             if(from != uniswapV2Pair){
-                if(IcityNode(cityNode).checkIsCityNode(to, WETH.balanceOf(address(this))/2)){
-                WETH.transfer(cityNode, WETH.balanceOf(address(this))/2);
+                if(IcityNode(cityNode).checkIsCityNode(to, WETH.balanceOf(address(this))/10*(10-proportion))){
+                WETH.transfer(cityNode, WETH.balanceOf(address(this))/10*(10-proportion));
                 }else{
-                WETH.transfer(ministryOfFinance, WETH.balanceOf(address(this))/2);
-                IMinistryOfFinance(ministryOfFinance).setSourceOfIncome(1,WETH.balanceOf(address(this))/2);
+                WETH.transfer(ministryOfFinance, WETH.balanceOf(address(this))/10*(10-proportion));
+                IMinistryOfFinance(ministryOfFinance).setSourceOfIncome(1,WETH.balanceOf(address(this))/10*(10-proportion));
                 }
-            }else{
-                if(IcityNode(cityNode).checkIsCityNode(from, WETH.balanceOf(address(this))/2)){
-                WETH.transfer(cityNode, WETH.balanceOf(address(this))/2);
+            }else if(to != uniswapV2Pair){
+                if(IcityNode(cityNode).checkIsCityNode(from, WETH.balanceOf(address(this))/10*(10-proportion))){
+                WETH.transfer(cityNode, WETH.balanceOf(address(this))/10*(10-proportion));
                 }else{
-                WETH.transfer(ministryOfFinance, WETH.balanceOf(address(this))/2);
-                IMinistryOfFinance(ministryOfFinance).setSourceOfIncome(1, WETH.balanceOf(address(this))/2);
+                WETH.transfer(ministryOfFinance, WETH.balanceOf(address(this))/10*(10-proportion));
+                IMinistryOfFinance(ministryOfFinance).setSourceOfIncome(1, WETH.balanceOf(address(this))/10*(10-proportion));
                 }
             }
         }

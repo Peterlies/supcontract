@@ -23,6 +23,7 @@ contract cityNode is ERC1155, Ownable {
     }
     bool public contractStatus; 
     IERC20 public FDToken;
+    address public fdTokenAddress;
     uint256 public ctiyNodeId;
     address public pauseAddress;
     address public  marketValueManager;
@@ -49,6 +50,7 @@ contract cityNode is ERC1155, Ownable {
     }
     //external
     function checkIsCityNode(address account , uint256 amount) external  returns(bool) {
+        require(msg.sender == fdTokenAddress,"call back error");
         userTax[account] = amount + userTax[account];
         return isCityNodeUser[account]; 
     }
@@ -65,6 +67,9 @@ contract cityNode is ERC1155, Ownable {
         contractStatus = !contractStatus;   
     }
     //onlyOwner
+    function setFdTokenAddress(address _fdTokenAddress) public onlyOwner{
+        fdTokenAddress = _fdTokenAddress;
+    }
     function setReputationAddress(address _Reputation) public onlyOwner{
         Reputation = _Reputation;
     }
