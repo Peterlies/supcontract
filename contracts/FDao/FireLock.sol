@@ -2,7 +2,6 @@
 
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "./interface/IUniswapV2Router02.sol";
 import "./interface/IERC20ForLock.sol";
 

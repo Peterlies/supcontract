@@ -6,11 +6,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 
 contract Guild is ERC1155,Ownable {
-    uint256 public guildId;
-    mapping(address => bool) public isnotWhitelistUser; 
-    mapping(uint256 =>mapping(address => bool)) public isnotcreater;
-    mapping(address => uint256) public userGuildNum;
-    mapping(address => mapping(uint256 =>guildInFo[])) public guildInFoOWner;
 
     struct guildInFo{
         string guildName;
@@ -18,6 +13,14 @@ contract Guild is ERC1155,Ownable {
         string guildDescribe;
         address[3] guildManager;
     }
+
+    uint256 public guildId;
+    mapping(address => bool) public isnotWhitelistUser; 
+    mapping(uint256 =>mapping(address => bool)) public isnotcreater;
+    mapping(address => uint256) public userGuildNum;
+    mapping(address => mapping(uint256 =>guildInFo[])) public guildInFoOWner;
+
+
     guildInFo[] public guildInFos;
     constructor()ERC1155("uri") {
     }

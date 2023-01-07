@@ -170,13 +170,6 @@ contract cityNode is ERC1155, Ownable {
         proposal[msg.sender] = _proposal;
     }
 
-    function FundAllocation() public payable {
-        require(!contractStatus,"Status is false");
-        require(isNotLightCity[CityNodeUserNum[msg.sender]] ==true , "you cityNode don't light");
-        require(cityNodeCreater[msg.sender] == true , "you are not creater");
-        require(msg.value == 100000000000000000);
-        payable(msg.sender).transfer(msg.value);
-    }
       function safeTransferFrom(
         address from,
         address to,

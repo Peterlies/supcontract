@@ -16,6 +16,8 @@ contract MinistryOfFinance is Ownable {
     address public Reputation;
     address public GovernanceAddress;
     address public firePassport;
+    address public fireDaoToken;
+    address public warp;
     mapping(address => uint256) public AllocationFundUserTime;
     mapping(uint => uint256[]) sourceOfIncome;
     IUniswapV2Router02 public uniswapV2Router;
@@ -27,6 +29,12 @@ contract MinistryOfFinance is Ownable {
         uniswapV2Router = _uniswapV2Router;
     }
     //onlyOwner
+    function setWarp(address _warp) public onlyOwner{
+        warp = _warp;
+    }
+    function setFireDaoToken(address _fireDaoToken) public onlyOwner{
+        fireDaoToken = _fireDaoToken;
+    }
     function setFirePassport(address _firePassport) public onlyOwner {
         firePassport = _firePassport;
     }
@@ -51,7 +59,7 @@ contract MinistryOfFinance is Ownable {
     }
     //getSource
     function setSourceOfIncome(uint num, uint256 amount) external {
-        require(msg.sender == firePassport);
+        require(msg.sender == warp || msg.sender == firePassport || msg.sender == fireDaoToken);
         sourceOfIncome[num].push(amount);
     }
     function getSourceOfIncomeLength(uint num) public view returns(uint256){
