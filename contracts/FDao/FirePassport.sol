@@ -28,10 +28,10 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
       feeReceiver = _feeReceiver;
        ministryOfFinance = _ministryOfFinance;
       weth = _weth;
-      User memory user = User({PID:1,account:admin,username:"admin",information:"",joinTime:block.timestamp});
+      User memory user = User({PID:1,account:admin,username:"FireKun",information:"",joinTime:block.timestamp});
       users.push(user);
       userInfo[admin] = user;
-      usernameExists["admin"] = true;
+      usernameExists["FireKun"] = true;
       _mint(admin, 1);
    }
  
