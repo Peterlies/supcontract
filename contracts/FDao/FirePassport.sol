@@ -1,10 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "./interface/IFirePassport.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "./interface/IUsers.sol";
+import "./interface/IWETH.sol";
+import "./interface/IMinistryOfFinance.sol";
+import "./lib/TransferHelper.sol";
 
-contract Users is IUsers,ERC721URIStorage {
+contract FirePassport is IFirePassport,ERC721URIStorage {
    mapping(address => User) public userInfo;
    mapping(string => bool) public override usernameExists;
    User[] public users;
@@ -15,16 +18,21 @@ contract Users is IUsers,ERC721URIStorage {
    uint public minUsernameLength = 4;
    uint public maxUsernameLength = 30;
    address public admin = 0x161E76814E44072798E658B5F3cd25f1f000Ab61;
-   address payable  public feeReceiver;
-   constructor(address payable _feeReceiver) ERC721("Fire Passport", "Fire Passport") {
+    address public weth;
+   address public feeReceiver;
+    address public ministryOfFinance;
+   constructor(address  _feeReceiver,address _weth,address _ministryOfFinance) ERC721("Fire Passport", "Fire Passport") {
       owner = msg.sender;
       feeReceiver = _feeReceiver;
-      User memory user = User({id:1,account:admin,username:"admin",information:"",joinTime:block.timestamp});
+       ministryOfFinance = _ministryOfFinance;
+      weth = _weth;
+      User memory user = User({PID:1,account:admin,username:"admin",information:"",joinTime:block.timestamp});
       users.push(user);
       userInfo[admin] = user;
       usernameExists["admin"] = true;
       _mint(admin, 1);
    }
+
    modifier checkUsername(string memory username) {
        bytes memory bStr = bytes(username);
         for (uint i = 0; i < bStr.length; i++) {
@@ -40,27 +48,37 @@ contract Users is IUsers,ERC721URIStorage {
       require(userInfo[msg.sender].joinTime == 0,'already this user');
       require(bytes(username).length >=minUsernameLength && bytes(username).length < maxUsernameLength ,'Username length error');
       if(feeOn){
-         require(msg.value == fee);
-         feeReceiver.transfer(fee);
+          if(msg.value == 0) {
+              TransferHelper.safeTransferFrom(weth,msg.sender,feeReceiver,fee);
+          } else {
+              require(msg.value == fee,'Please send the correct number of ETH');
+              IWETH(weth).deposit{value: fee}();
+              IWETH(weth).transfer(feeReceiver,fee);
+          }
       }
       uint id = users.length + 1;
-      User memory user = User({id:id,account:msg.sender,username:username,information:information,joinTime:block.timestamp});
+      User memory user = User({PID:id,account:msg.sender,username:username,information:information,joinTime:block.timestamp});
       users.push(user);
       userInfo[msg.sender] = user;
       usernameExists[username] = true;
       _mint(msg.sender, id);
       _setTokenURI(id, tokenURI);
+       IMinistryOfFinance(ministryOfFinance).setSourceOfIncome(0,fee);
       emit Register(id,trueUsername,msg.sender,email,block.timestamp);
    }
+
    function changeUserInfo(string memory information) external {
-      require(userInfo[msg.sender].id != 0,'This user does not exist');
+      require(userInfo[msg.sender].PID != 0,'This user does not exist');
       User storage user = userInfo[msg.sender];
       user.information = information;
-      users[user.id - 1].information = information;
+      users[user.PID - 1].information = information;
    }
    function getUserCount() external view override returns(uint) {
       return users.length;
    }
+    function hasPID(address user) external view returns(bool){
+        return userInfo[user].PID !=0;
+    }
    function setFee(uint fees) public {
       require(msg.sender == owner ,'no access');
       require(fees <= 100000000000000000,'The maximum fee is 0.1ETH');
@@ -70,9 +88,7 @@ contract Users is IUsers,ERC721URIStorage {
         bytes memory bStr = bytes(str);
         bytes memory bLower = new bytes(bStr.length);
         for (uint i = 0; i < bStr.length; i++) {
-            // Uppercase character...
             if ((uint8(bStr[i]) >= 65) && (uint8(bStr[i]) <= 90)) {
-                // So we add 32 to make it lowercase
                 bLower[i] = bytes1(uint8(bStr[i]) + 32);
             } else {
                 bLower[i] = bStr[i];
@@ -80,23 +96,33 @@ contract Users is IUsers,ERC721URIStorage {
         }
         return string(bLower);
     }
+
    function setFeeOn(bool set) public {
      require(msg.sender == owner ,'no access');
       feeOn = set;
    }
+
    function setUsernameLimitLength(uint min,uint max) public {
       require(msg.sender == owner ,'no access');
       minUsernameLength = min;
       maxUsernameLength = max;
    }
-   function changeFeeReceiver(address payable receiver) external {
+
+   function changeFeeReceiver(address  receiver) external {
       require(msg.sender == owner ,'no access');
       feeReceiver = receiver;
    }
+
+    function changeMinistryOfFinance(address _ministryOfFinance) external {
+        require(msg.sender == owner ,'no access');
+        ministryOfFinance = _ministryOfFinance;
+    }
+
    function changeOwner(address account) public {
       require(msg.sender == owner ,'no access');
       owner = account;
    }
+
    function _transfer(
         address from,
         address to,
@@ -107,6 +133,7 @@ contract Users is IUsers,ERC721URIStorage {
        tokenId;
        revert("ERC721:No transfer allowed");
     }
+
    function _existsLetter(string memory username) internal pure  returns(bool)  {
        bytes memory bStr = bytes(username);
         for (uint i = 0; i < bStr.length; i++) {
