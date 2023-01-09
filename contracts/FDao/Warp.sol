@@ -13,11 +13,10 @@ contract warp {
     address public cityNode;
     address public fireSeedAddress;
     uint256 public proportion;
+    //0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3 pancake
+    //0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D uniswap
     constructor () {
-        //mainnet
-        // IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x10ED43C718714eb63d5aA57B78B54704E256024E);
-        //testnet
-        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3);
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
         owner = msg.sender;
         WETH = IERC20(_uniswapV2Router.WETH());
         setProportion(8);

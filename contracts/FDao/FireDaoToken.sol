@@ -25,7 +25,7 @@ contract FireDaoToken is ERC20 ,Ownable{
     address public  ministryOfFinance;
     address public cityNode;
     IUniswapV2Router02 public uniswapV2Router;
-    IFireSeed public fireSeed;
+    address public fireSeed;
     IERC20 public WETH;
     IERC20 public pair;
     GetWarp public warp;
@@ -65,6 +65,7 @@ contract FireDaoToken is ERC20 ,Ownable{
     event DelegateChanged(address indexed delegator, address indexed fromDelegate, address indexed toDelegate);
 //0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3 pancake
 //0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D uniswap
+// fireSeed ,fireSoul, MinistryOfFinance, CityNode, Warp
     constructor(address tokenOwner) ERC20("Fire Dao Token", "FDT") {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
         address _uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
@@ -142,7 +143,7 @@ contract FireDaoToken is ERC20 ,Ownable{
 	function changeSwapWarp(GetWarp _warp) public onlyOwner {
         warp = _warp;
     }
-    function changesFireSeed(IFireSeed _fireSeed) public onlyOwner{
+    function setFireSeed(address _fireSeed) public onlyOwner{
         fireSeed = _fireSeed;
     }
     function setOpenTrade(bool _enabled) public onlyOwner{
@@ -230,7 +231,8 @@ contract FireDaoToken is ERC20 ,Ownable{
                 amount = amount.div(100).mul(100-_tax);//95%
             }
          super._transfer(from, to, amount);
-         _moveDelegates(from, to, safe96(amount,""));
+        uint96 amount96 = safe96(amount,"");
+         _moveDelegates(from, to, amount96);
     }
      
 
@@ -255,9 +257,9 @@ contract FireDaoToken is ERC20 ,Ownable{
 
     function _splitOtherTokenSecond(uint256 thisAmount) internal {
 	    address[] memory user = new address[](3);
-        user[0] = fireSeed.upclass(msg.sender);
-        user[1] = fireSeed.upclass(user[0]);
-        user[2] = fireSeed.upclass(user[1]);
+        user[0] = IFireSeed(fireSeed).upclass(msg.sender);
+        user[1] = IFireSeed(fireSeed).upclass(user[0]);
+        user[2] = IFireSeed(fireSeed).upclass(user[1]);
         if(user[1] == address(0) || user[2] == address(0)){
             revert();
         }else if(IFireSoul(fireSoul).checkFID(msg.sender) && 
