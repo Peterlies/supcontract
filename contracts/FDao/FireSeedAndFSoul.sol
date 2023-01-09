@@ -292,14 +292,11 @@ contract FireSoul is ERC721,Ownable{
            return UsertotalPoints;
        }
 
-    function inputSbtTokenAmount(uint[] memory sbtAmount) external {
-        
-    }
 
     function _baseURI() internal view virtual override returns (string memory) {
         return baseURI;
     }
-     function tokenURI(uint256 tokenId)
+    function tokenURI(uint256 tokenId)
     public
     view
     virtual

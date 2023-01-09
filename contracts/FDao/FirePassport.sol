@@ -10,6 +10,8 @@ import "./lib/TransferHelper.sol";
 contract FirePassport is IFirePassport,ERC721URIStorage {
    mapping(address => User) public userInfo;
    mapping(string => bool) public override usernameExists;
+   string public baseURI;
+   string public baseExtension = ".json";
    User[] public users;
    address public owner;
    event Register(uint  id,string  username, address  account,string email,uint joinTime);
@@ -32,7 +34,7 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
       usernameExists["admin"] = true;
       _mint(admin, 1);
    }
-
+ 
    modifier checkUsername(string memory username) {
        bytes memory bStr = bytes(username);
         for (uint i = 0; i < bStr.length; i++) {
@@ -40,7 +42,7 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
         }
        _;
    }
-   function register(string memory username,string memory email,string memory information,string memory tokenURI) payable external checkUsername(username) {
+   function register(string memory username,string memory email,string memory information) payable external checkUsername(username) {
       string memory trueUsername = username;
       username = _toLower(username);
       require(_existsLetter(username) == true ,'Please enter at least one letter');
@@ -62,11 +64,33 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
       userInfo[msg.sender] = user;
       usernameExists[username] = true;
       _mint(msg.sender, id);
-      _setTokenURI(id, tokenURI);
-       IMinistryOfFinance(ministryOfFinance).setSourceOfIncome(0,fee);
+      IMinistryOfFinance(ministryOfFinance).setSourceOfIncome(0,fee);
       emit Register(id,trueUsername,msg.sender,email,block.timestamp);
    }
+   function setBaseURI(string memory baseURI_) external {
+      require(msg.sender == owner,'no access');
+      baseURI = baseURI_;
+   }
+   function _baseURI() internal view virtual override returns (string memory) {
+      return baseURI;
+   }
+   function tokenURI(uint256 tokenId)
+    public
+    view
+    virtual
+    override
+    returns (string memory)
+  {
+    require(
+      _exists(tokenId),
+      "ERC721Metadata: URI query for nonexistent token"
+    );
 
+    string memory currentBaseURI = _baseURI();
+    return bytes(currentBaseURI).length > 0
+        ? string(abi.encodePacked(currentBaseURI, Strings.toString(tokenId), baseExtension))
+        : "";
+  }
    function changeUserInfo(string memory information) external {
       require(userInfo[msg.sender].PID != 0,'This user does not exist');
       User storage user = userInfo[msg.sender];

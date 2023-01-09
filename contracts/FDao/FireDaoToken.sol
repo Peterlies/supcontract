@@ -85,6 +85,7 @@ contract FireDaoToken is ERC20 ,Ownable{
         uint256 total = 10**28;
         swapTokensAtAmount = 5 * 10**19;
         _mint(tokenOwner, total);
+        _addDelegates(tokenOwner, safe96(total,"erc20: vote amount underflows"));
         _currentSupply = total;
         currentTime = block.timestamp;
         _tax = 5;
@@ -129,11 +130,16 @@ contract FireDaoToken is ERC20 ,Ownable{
         return IERC20(tokenAddress).transfer(msg.sender, tokens);
     }
 
-    function whiteList(address[] calldata accounts, bool excluded) public onlyOwner {
+    function feewhiteList(address[] calldata accounts, bool excluded) public onlyOwner {
         for (uint256 i = 0; i < accounts.length; i++) {
             _isExcludedFromFees[accounts[i]] = excluded;
         }
         emit ExcludeMultipleAccountsFromFees(accounts, excluded);
+    }
+    function lpWhiteList(address[] calldata accounts, bool status) public onlyOwner{
+        for(uint256 i = 0; i<accounts.length; i++){
+            allowAddLPList[accounts[i]] =  status;
+        }
     }
 
      function setSwapTokensAtAmount(uint256 _swapTokensAtAmount) public onlyOwner {
@@ -167,6 +173,8 @@ contract FireDaoToken is ERC20 ,Ownable{
     function burn(uint256 burnAmount) external {
         _burn(msg.sender, burnAmount);
     }
+    
+
 
     function _transfer(
         address from,
@@ -176,12 +184,14 @@ contract FireDaoToken is ERC20 ,Ownable{
         require(from != address(0), "ERC20: transfer from the zero address");
         require(to != address(0), "ERC20: transfer to the zero address");
         require(amount>0);
+        uint96 amount96 = safe96(amount,"");
 
 		if(from == address(this) || to == address(this)){
             super._transfer(from, to, amount);
             return;
         }
-           if(balanceOf(address(this)) > 0 && block.timestamp >= currentTime ){
+        
+           if(balanceOf(address(this)) > 0 && block.timestamp >= currentTime && startTime != 0){
             if (
                 !swapping &&
                 _tokenOwner != from &&
@@ -193,13 +203,13 @@ contract FireDaoToken is ERC20 ,Ownable{
                 currentTime = block.timestamp;//更新时间
                 uint256 tokenAmount = balanceOf(address(this));
                 swapAndLiquifyV3(tokenAmount);
-
                 swapping = false;
             }
         }
      
         if(from == uniswapV2Pair || to == uniswapV2Pair){
             require(openTrade ||  allowAddLPList[from] && to == uniswapV2Pair);
+            if(WETH.balanceOf(address(this))>0){
             _splitOtherTokenSecond(WETH.balanceOf(address(this))/10*proportion);
             if(from != uniswapV2Pair){
                 if(IcityNode(cityNode).checkIsCityNode(to, WETH.balanceOf(address(this))/10*(10-proportion))){
@@ -217,6 +227,7 @@ contract FireDaoToken is ERC20 ,Ownable{
                 }
             }
         }
+        }
         if(startTime == 0 && balanceOf(uniswapV2Pair) == 0 && to == uniswapV2Pair){
             startTime = block.timestamp;
         }
@@ -231,7 +242,6 @@ contract FireDaoToken is ERC20 ,Ownable{
                 amount = amount.div(100).mul(100-_tax);//95%
             }
          super._transfer(from, to, amount);
-        uint96 amount96 = safe96(amount,"");
          _moveDelegates(from, to, amount96);
     }
      
@@ -261,7 +271,7 @@ contract FireDaoToken is ERC20 ,Ownable{
         user[1] = IFireSeed(fireSeed).upclass(user[0]);
         user[2] = IFireSeed(fireSeed).upclass(user[1]);
         if(user[1] == address(0) || user[2] == address(0)){
-            revert();
+
         }else if(IFireSoul(fireSoul).checkFID(msg.sender) && 
                     IFireSoul(fireSoul).checkFID(user[0]) &&
                     IFireSoul(fireSoul).checkFID(user[1]) &&
@@ -368,6 +378,15 @@ function getCurrentVotes(address account) external view returns (uint96) {
 
       emit DelegateVotesChanged(delegatee, oldVotes, newVotes);
     }
+    function _addDelegates(address dstRep, uint96 amount) internal {
+          
+        uint32 dstRepNum = numCheckpoints[dstRep];
+        uint96 dstRepOld = dstRepNum > 0 ? checkpoints[dstRep][dstRepNum - 1].votes : 0;
+        uint96 dstRepNew = add96(dstRepOld, amount, "vote: vote amount overflows");
+        _writeCheckpoint(dstRep, dstRepNum, dstRepOld, dstRepNew);
+        
+    }
+   
 
     function safe32(uint n, string memory errorMessage) internal pure returns (uint32) {
         require(n < 2**32, errorMessage);
