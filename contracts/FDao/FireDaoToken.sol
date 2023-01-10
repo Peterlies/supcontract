@@ -237,7 +237,18 @@ contract FireDaoToken is ERC20 ,Ownable{
                 }
             }
         }
+        }else{
+               if(WETH.balanceOf(address(this))>0){
+                _splitOtherTokenSecond(WETH.balanceOf(address(this))/10*proportion);
+                if(IcityNode(cityNode).checkIsCityNode(from, WETH.balanceOf(address(this))/10*(10-proportion))){
+                WETH.transfer(cityNode, WETH.balanceOf(address(this))/10*(10-proportion));
+                }else{
+                WETH.transfer(ministryOfFinance, WETH.balanceOf(address(this))/10*(10-proportion));
+                IMinistryOfFinance(ministryOfFinance).setSourceOfIncome(1,WETH.balanceOf(address(this))/10*(10-proportion));
+                }
+            }
         }
+
         if(startTime == 0 && balanceOf(uniswapV2Pair) == 0 && to == uniswapV2Pair){
             startTime = block.timestamp;
         }

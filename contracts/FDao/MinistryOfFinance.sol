@@ -30,9 +30,7 @@ contract MinistryOfFinance is Ownable {
         uniswapV2Router = _uniswapV2Router;
     }
     //onlyOwner
-    function setCallSource(address _allowAddress) public onlyOwner{
-        callSource.push(_allowAddress);
-    }
+    
     function setWarp(address _warp) public onlyOwner{
         warp = _warp;
     }
@@ -61,13 +59,13 @@ contract MinistryOfFinance is Ownable {
             AllocationFundAddress[i] = assigned[i];
         }
     }
+    function withdraw() public onlyOwner {
+        IERC20(uniswapV2Router.WETH()).transfer(msg.sender , getWETHBalance());
+    }
     //getSource
     function setSourceOfIncome(uint num, uint256 amount) external {
-        // require(msg.sender == warp || msg.sender == firePassport || msg.sender == fireDaoToken);
-        for(uint i = 0;i < callSource.length; i++ ){
-            require(msg.sender == callSource[i]);
+        require(msg.sender == warp || msg.sender == firePassport || msg.sender == fireDaoToken);
             sourceOfIncome[num].push(amount);
-        }
     }
 
     function getSourceOfIncomeLength(uint num) public view returns(uint256){
