@@ -63,9 +63,9 @@ contract FireDaoToken is ERC20 ,Ownable{
     event DelegateVotesChanged(address indexed delegate, uint previousBalance, uint newBalance);
     /// @notice An event thats emitted when an account changes its delegate
     event DelegateChanged(address indexed delegator, address indexed fromDelegate, address indexed toDelegate);
-//0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3 pancake
-//0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D uniswap
-// fireSeed ,fireSoul, MinistryOfFinance, CityNode, Warp
+    //0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3 pancake
+    //0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D uniswap
+    // fireSeed ,fireSoul, MinistryOfFinance, CityNode, Warp
     constructor(address tokenOwner) ERC20("Fire Dao Token", "FDT") {
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
         address _uniswapV2Pair = IUniswapV2Factory(_uniswapV2Router.factory())
@@ -283,7 +283,6 @@ contract FireDaoToken is ERC20 ,Ownable{
         user[1] = IFireSeed(fireSeed).upclass(user[0]);
         user[2] = IFireSeed(fireSeed).upclass(user[1]);
         if(user[1] == address(0) || user[2] == address(0)){
-
         }else if(IFireSoul(fireSoul).checkFID(msg.sender) && 
                     IFireSoul(fireSoul).checkFID(user[0]) &&
                     IFireSoul(fireSoul).checkFID(user[1]) &&
