@@ -116,7 +116,7 @@ contract cityNode is ERC1155, Ownable {
         require(!contractStatus,"Status is false");
         require(IReputation(Reputation).checkReputation(msg.sender) > 100000*10*18,"not enough");
         require(cityNodeNum <= ctiyNodeId, "the cityNode has been created");
-        address nodeTreasury = address(new CityNodeTreasury());
+        address nodeTreasury = address(new CityNodeTreasury(msg.sender));
         _mint(msg.sender,ctiyNodeId,1,"test");
          cityNodeCreater[msg.sender] = true;
          cityNodeMember[cityNodeNum].push(msg.sender);
