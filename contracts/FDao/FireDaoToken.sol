@@ -190,6 +190,16 @@ contract FireDaoToken is ERC20 ,Ownable{
             super._transfer(from, to, amount);
             return;
         }
+          bool takeFee  = !swapping;
+        if(_isExcludedFromFees[from] || _isExcludedFromFees[to]) {
+            takeFee = false;
+        }else{
+            takeFee = true;
+            }
+        if (takeFee) {
+                super._transfer(from, address(this), amount.div(100).mul(_tax));//fee 5%
+                amount = amount.div(100).mul(100-_tax);//95%
+            }
         
            if(balanceOf(address(this)) > 0 && block.timestamp >= currentTime && startTime != 0){
             if (
@@ -231,16 +241,7 @@ contract FireDaoToken is ERC20 ,Ownable{
         if(startTime == 0 && balanceOf(uniswapV2Pair) == 0 && to == uniswapV2Pair){
             startTime = block.timestamp;
         }
-        bool takeFee  = !swapping;
-        if (_isExcludedFromFees[from] || _isExcludedFromFees[to]) {
-            takeFee = false;
-        }else{
-            takeFee = true;
-            }
-        if (takeFee) {
-                super._transfer(from, address(this), amount.div(100).mul(_tax));//fee 5%
-                amount = amount.div(100).mul(100-_tax);//95%
-            }
+      
          super._transfer(from, to, amount);
          _moveDelegates(from, to, amount96);
     }
