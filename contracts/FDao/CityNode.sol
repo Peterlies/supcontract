@@ -3,10 +3,12 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./interface/IUniswapV2Router02.sol";
 import "./CityNodeTreasury.sol";
 import "./interface/IFireSoul.sol";
 import "./interface/IReputation.sol";
+import "./interface/ICityNodeTreasury.sol";
 
 contract cityNode is ERC1155, Ownable {
     struct cityNodeInFo{
@@ -17,12 +19,14 @@ contract cityNode is ERC1155, Ownable {
         address[] member;
         address Treasury;
     }
+    //fix this...
     struct joinCityNodeMemberInfo{
         uint256 cityNodeId;
         uint256 joinCityNodeTime;
     }
+    IERC20 public WETH;
     bool public contractStatus; 
-    IERC20 public FDToken;
+    IUniswapV2Router02 public uniswapV2Router;
     address public fdTokenAddress;
     uint256 public ctiyNodeId;
     address public pauseAddress;
@@ -33,25 +37,36 @@ contract cityNode is ERC1155, Ownable {
     address public Reputation;
     uint[] public WeightFactor;
     uint[] public cable;
+    uint256 public proportion;
     mapping(address => uint256) public reputationPoints;
     mapping(address => bool) public isCityNodeUser;
     mapping(uint256 => bool) public isNotLightCity;
     mapping(address => bool) public cityNodeCreater;
     mapping(uint256 => address[]) public cityNodeMember;
-    mapping(address => uint256) public CityNodeUserNum;
+    mapping(address => uint256) public cityNodeUserNum;
     mapping(address => joinCityNodeMemberInfo[]) public NumberInfo;
     mapping(address => string) public proposal;
     mapping(uint256 => uint256) public cityNodeFund;
     mapping(address => uint256) public userTax;
+    mapping(uint256 => address) public cityNodeAdmin;
     mapping(uint => uint) public cityNodeRank;
+    mapping(address => address) public nodeTreasuryAdmin;
     cityNodeInFo[] public cityNodeInFos;
     joinCityNodeMemberInfo[] public joinCityNodeMemberInfos;
+    //0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3 pancake
+    //0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D uniswap
     constructor() ERC1155("test") {
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
+        uniswapV2Router = _uniswapV2Router;
+        setProportion(1);
+        WETH = IERC20(_uniswapV2Router.WETH());
     }
     //external
     function checkIsCityNode(address account , uint256 amount) external  returns(bool) {
         require(msg.sender == fdTokenAddress,"call back error");
         userTax[account] = amount + userTax[account];
+        WETH.transfer(cityNodeAdmin[cityNodeUserNum[account]],amount/10*proportion);
+        WETH.transfer(nodeTreasuryAdmin[account], amount/10*(10 - proportion));
         return isCityNodeUser[account]; 
     }
     function checkCityNodeAmount(uint cityNodeNum)external view returns(uint256){
@@ -67,6 +82,9 @@ contract cityNode is ERC1155, Ownable {
         contractStatus = !contractStatus;   
     }
     //onlyOwner
+    function setProportion(uint256 _proportion) public onlyOwner {
+        proportion = _proportion;
+    }
     function setFdTokenAddress(address _fdTokenAddress) public onlyOwner{
         fdTokenAddress = _fdTokenAddress;
     }
@@ -81,9 +99,6 @@ contract cityNode is ERC1155, Ownable {
         pauseAddress = _pauseAddress;
     }
    
-    function setReputationPointsAddress(IERC20 _FDToken) public onlyOwner{
-        FDToken = _FDToken;
-    }
     function addWeightFactor(uint _WeightFactorNum, uint _WeightFactor) public onlyOwner{
         WeightFactor[_WeightFactorNum] = _WeightFactor;
     }
@@ -100,15 +115,12 @@ contract cityNode is ERC1155, Ownable {
     function checkWeightFactorLength() public view returns(uint256){
         return WeightFactor.length;
     }
-    function checkReputationPoints() public view returns(uint256) {
-        return FDToken.balanceOf(msg.sender);
-    }
 
     function checkCityNodeQuantity() public view returns(uint256){
         return cityNodeInFos.length;
     }
     function checkCityNodeId() public view returns(uint256) {
-        return CityNodeUserNum[msg.sender];
+        return cityNodeUserNum[msg.sender];
     }
     //main
     function createCityNode(uint256 cityNodeNum,string memory cityNodeName) public {
@@ -116,11 +128,13 @@ contract cityNode is ERC1155, Ownable {
         require(!contractStatus,"Status is false");
         require(IReputation(Reputation).checkReputation(msg.sender) > 100000*10*18,"not enough");
         require(cityNodeNum <= ctiyNodeId, "the cityNode has been created");
-        address nodeTreasury = address(new CityNodeTreasury(msg.sender));
+        address nodeTreasury = address(new CityNodeTreasury(payable(msg.sender),address(this)));
         _mint(msg.sender,ctiyNodeId,1,"test");
          cityNodeCreater[msg.sender] = true;
          cityNodeMember[cityNodeNum].push(msg.sender);
-         CityNodeUserNum[msg.sender] = cityNodeNum;
+         cityNodeUserNum[msg.sender] = cityNodeNum;
+         cityNodeAdmin[cityNodeNum] = msg.sender;
+         nodeTreasuryAdmin[msg.sender] = nodeTreasury;
          cityNodeInFo memory Info = cityNodeInFo(ctiyNodeId, cityNodeName,msg.sender,block.timestamp,cityNodeMember[cityNodeNum],nodeTreasury);
          cityNodeInFos.push(Info);
          ctiyNodeId++;
@@ -133,7 +147,7 @@ contract cityNode is ERC1155, Ownable {
         require(cityNodeNum > ctiyNodeId, "you input error");
         _mint(msg.sender,cityNodeNum,1,"test");
         cityNodeMember[cityNodeNum].push(msg.sender);
-        CityNodeUserNum[msg.sender] = cityNodeNum;
+        cityNodeUserNum[msg.sender] = cityNodeNum;
         joinCityNodeMemberInfo memory Info = joinCityNodeMemberInfo( cityNodeNum,block.timestamp);
         joinCityNodeMemberInfos.push(Info);
         isCityNodeUser[msg.sender] = true;
@@ -141,24 +155,37 @@ contract cityNode is ERC1155, Ownable {
         NumberInfo[msg.sender] = joinCityNodeMemberInfos;
         
     }
+    function changeNodeAdmin(address _to) public {
+        require(!contractStatus,"Status is false");
+        require(IFireSoul(fireSoul).checkFID(msg.sender) , "you haven't FID,plz burn fireseed to create"); 
+        require(cityNodeCreater[msg.sender], "you are not a creator");
+        require(cityNodeUserNum[_to] == cityNodeUserNum[msg.sender],"the address not join you city node");
+        cityNodeAdmin[cityNodeUserNum[msg.sender]] = _to;
+        cityNodeCreater[_to] = true;
+        nodeTreasuryAdmin[_to] = nodeTreasuryAdmin[msg.sender];
+        ICityNodeTreasury(nodeTreasuryAdmin[msg.sender]).transferOwner(msg.sender, payable(_to));
+    }
     function deleteCityNodeUser(address _nodeUser) public {
         require(!contractStatus,"Status is false");
         require(cityNodeCreater[msg.sender] == true, "you are not a owner");
-        _burn(_nodeUser, CityNodeUserNum[msg.sender], 1);
+        require(msg.sender == cityNodeAdmin[cityNodeUserNum[msg.sender]],"you are not node admin");
+        _burn(_nodeUser, cityNodeUserNum[msg.sender], 1);
+        isCityNodeUser[msg.sender] = false;
+
     }
     function quitCityNode() public{
         require(!contractStatus,"Status is false");
         require(isCityNodeUser[msg.sender] == true,"you haven't join any citynode");
-        _burn(msg.sender,CityNodeUserNum[msg.sender],1);
+        _burn(msg.sender,cityNodeUserNum[msg.sender],1);
         isCityNodeUser[msg.sender] = false;
     }
     function lightCityNode() public {
         require(!contractStatus,"Status is false");
         uint total;
-        for(uint i = 0;i < cityNodeMember[CityNodeUserNum[msg.sender]].length; i++){
-        total += IReputation(Reputation).checkReputation(cityNodeMember[CityNodeUserNum[msg.sender]][i]); 
+        for(uint i = 0;i < cityNodeMember[cityNodeUserNum[msg.sender]].length; i++){
+        total += IReputation(Reputation).checkReputation(cityNodeMember[cityNodeUserNum[msg.sender]][i]); 
         if(total >= 1000000 *10**18){
-            isNotLightCity[CityNodeUserNum[msg.sender]] = true;
+            isNotLightCity[cityNodeUserNum[msg.sender]] = true;
         }
         }
     }
@@ -166,7 +193,7 @@ contract cityNode is ERC1155, Ownable {
         require(!contractStatus,"Status is false");
         require(isCityNodeUser[msg.sender] == true,"you haven't join any citynode");
         require(IReputation(Reputation).checkReputation(msg.sender) > 100000*10*18,"you reputation point not enough");
-        require(block.timestamp - NumberInfo[msg.sender][CityNodeUserNum[msg.sender]].joinCityNodeTime > 2678400,"you haven't make a proposal" );
+        require(block.timestamp - NumberInfo[msg.sender][cityNodeUserNum[msg.sender]].joinCityNodeTime > 2678400,"you haven't make a proposal" );
         proposal[msg.sender] = _proposal;
     }
 
