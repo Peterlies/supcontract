@@ -13,8 +13,10 @@ contract MinistryOfFinance is Ownable {
     uint[] public distributionRatio;
     bool public pause;
     address[] public callSource;
+    address public opensea;
     address public controlAddress;
     address public Reputation;
+    uint256 public ReputationAmount;
     address public GovernanceAddress;
     address public firePassport;
     address public fireDaoToken;
@@ -30,9 +32,11 @@ contract MinistryOfFinance is Ownable {
         uniswapV2Router = _uniswapV2Router;
     }
     //onlyOwner
-    
     function setWarp(address _warp) public onlyOwner{
         warp = _warp;
+    }
+    function setopensea(address _opensea) public onlyOwner{
+        opensea = _opensea;
     }
     function setFireDaoToken(address _fireDaoToken) public onlyOwner{
         fireDaoToken = _fireDaoToken;
@@ -64,8 +68,11 @@ contract MinistryOfFinance is Ownable {
     }
     //getSource
     function setSourceOfIncome(uint num, uint256 amount) external {
-        require(msg.sender == warp || msg.sender == firePassport || msg.sender == fireDaoToken);
-            sourceOfIncome[num].push(amount);
+        require(msg.sender == warp ||
+        msg.sender == firePassport ||
+        msg.sender == fireDaoToken || 
+        msg.sender == opensea);
+        sourceOfIncome[num].push(amount);
     }
 
     function getSourceOfIncomeLength(uint num) public view returns(uint256){
@@ -78,24 +85,28 @@ contract MinistryOfFinance is Ownable {
         return IERC20(uniswapV2Router.WETH()).balanceOf(address(this));
     }
     //main
+    function removeAddress(address _remAddr) public onlyOwner{
+
+    }
     function setDistributionRatioExternal(uint i, uint rate) external {
-        require(msg.sender == GovernanceAddress,"callback Address is error");
+        require(msg.sender == GovernanceAddress || msg.sender == owner(),"callback Address is error");
         distributionRatio[i] = rate;
+    }
+    function addAllocationFundAddressExternal(address assigned) external {
+        require(msg.sender == GovernanceAddress || msg.sender == owner(), "callback Address is error");
+        AllocationFundAddress.push(assigned);
     }
     function setStatus() external {
         require(msg.sender == controlAddress,"the callback address is error");
         pause = !pause;
     }
-
-    function addAllocationFundAddressExternal(address[] memory assigned) external {
-        require(msg.sender == GovernanceAddress, "callback Address is error");
-        for(uint i = 0 ; i<AllocationFundAddress.length ; i++){
-            AllocationFundAddress[i] = assigned[i];
-        }
+    function setReputationAmount(uint256 _amount) public onlyOwner{
+        ReputationAmount = _amount; 
     }
+    
     function AllocationFund() public {
         require(!pause, "contract is pause");
-        require(IReputation(Reputation).checkReputation(msg.sender) > 100000*10*18 ,"Reputation Points is not enough");
+        require(IReputation(Reputation).checkReputation(msg.sender) > ReputationAmount*10*18 || msg.sender ==owner() ,"Reputation Points is not enough");
         require( block.timestamp > intervalTime + 1800,"AllocationFund need interval 30 minute");
         require( block.timestamp >  AllocationFundUserTime[msg.sender] + 43200 ,"wallet need 12 hours to callback that");
         require(getWETHBalance() > 0, "the balance of WETH is error");

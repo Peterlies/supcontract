@@ -6,7 +6,7 @@ import "./interface/IUniswapV2Router02.sol";
 contract CityNodeTreasury  {
     IERC20 public WETH;
     address[] public AllocationFundAddress;
-    uint[] public rate;
+    uint256[] public rate;
     IUniswapV2Router02 public uniswapV2Router;
     address payable public admin;
     address public cityNode;
@@ -20,7 +20,6 @@ contract CityNodeTreasury  {
     constructor(address payable _admin, address _cityNode) {
         admin = _admin;
         cityNode = _cityNode;
-        //mainnet
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
         uniswapV2Router = _uniswapV2Router;
         WETH = IERC20(uniswapV2Router.WETH());
@@ -30,19 +29,28 @@ contract CityNodeTreasury  {
         require(msg.sender == cityNode && admin == _admin,"no access");
         admin = _to;
     }
-    function setAllocationRate(uint[] memory _rate) public onlyAdmin{
-        rate = _rate;
+    function addRate(uint _rate) public onlyAdmin{
+        rate.push(_rate);
     }
-    function addAllocationFundAddress(address[] memory assigned) public onlyAdmin {
-        for(uint i = 0 ; i < assigned.length ; i++){
-            AllocationFundAddress[i] = assigned[i];
-        }
+    function addAddress(address assigned) public onlyAdmin {
+        AllocationFundAddress.push(assigned);
+    }
+    function setAddress(uint256 num , address _add)public onlyAdmin{
+        AllocationFundAddress[num] = _add;
+    }
+    function setRate(uint256 num , uint256 _rate) public onlyAdmin {
+        rate[num] = _rate;
     }
     function AllocationAmount() public {
         for(uint i = 0 ; i < AllocationFundAddress.length;i++){
             IERC20(uniswapV2Router.WETH()).transfer(AllocationFundAddress[i],rate[i]);
         }
     }
+    function transferAmount(address _to,uint256 amount) public onlyAdmin {
+        require(getBalanceOfWeth()>0,"no amount");
+        WETH.transfer(_to, amount);
+    }
+
     function Destruct() public onlyAdmin {
         selfdestruct(admin);
         DestructStatus = true;
