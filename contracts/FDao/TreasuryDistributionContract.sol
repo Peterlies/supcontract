@@ -9,7 +9,7 @@ import "./interface/IUniswapV2Router02.sol";
 import "./interface/IReputation.sol";
 
 
-contract MinistryOfFinance is Ownable,Initializable,UUPSUpgradeable {
+contract TreasuryDistributionContract is Ownable,Initializable,UUPSUpgradeable {
     uint256 public intervalTime;
     address[] public AllocationFundAddress;
     uint[] public distributionRatio;
