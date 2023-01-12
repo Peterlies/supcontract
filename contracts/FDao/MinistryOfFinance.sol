@@ -22,7 +22,8 @@ contract MinistryOfFinance is Ownable {
     address public fireDaoToken;
     address public warp;
     mapping(address => uint256) public AllocationFundUserTime;
-    mapping(uint => uint256[]) sourceOfIncome;
+    mapping(uint =>mapping(uint => uint256[])) sourceOfIncome;
+    mapping(uint => address) public tokenList;
     IUniswapV2Router02 public uniswapV2Router;
     //0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3 pancake
     //0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D uniswap
@@ -32,6 +33,9 @@ contract MinistryOfFinance is Ownable {
         uniswapV2Router = _uniswapV2Router;
     }
     //onlyOwner
+    function setTokenList(uint tokenNum, address tokenAddr)public onlyOwner {
+        tokenList[tokenNum] = tokenAddr;
+    }
     function setWarp(address _warp) public onlyOwner{
         warp = _warp;
     }
@@ -67,27 +71,25 @@ contract MinistryOfFinance is Ownable {
         IERC20(uniswapV2Router.WETH()).transfer(msg.sender , getWETHBalance());
     }
     //getSource
-    function setSourceOfIncome(uint num, uint256 amount) external {
+    function setSourceOfIncome(uint num,uint tokenNum,uint256 amount) external {
         require(msg.sender == warp ||
         msg.sender == firePassport ||
         msg.sender == fireDaoToken || 
         msg.sender == opensea);
-        sourceOfIncome[num].push(amount);
+        sourceOfIncome[num][tokenNum].push(amount);
     }
 
-    function getSourceOfIncomeLength(uint num) public view returns(uint256){
-        return sourceOfIncome[num].length;
+    function getSourceOfIncomeLength(uint num,uint tokenNum) public view returns(uint256){
+        return sourceOfIncome[num][tokenNum].length;
     }
-    function getSourceOfIncome(uint num) public view returns(uint256[] memory){
-        return sourceOfIncome[num];
+    function getSourceOfIncome(uint num , uint tokenNum) public view returns(uint256[] memory){
+        return sourceOfIncome[num][tokenNum];
     }
     function getWETHBalance() public view returns(uint256){
         return IERC20(uniswapV2Router.WETH()).balanceOf(address(this));
     }
     //main
-    function removeAddress(address _remAddr) public onlyOwner{
-
-    }
+  
     function setDistributionRatioExternal(uint i, uint rate) external {
         require(msg.sender == GovernanceAddress || msg.sender == owner(),"callback Address is error");
         distributionRatio[i] = rate;
@@ -104,15 +106,21 @@ contract MinistryOfFinance is Ownable {
         ReputationAmount = _amount; 
     }
     
-    function AllocationFund() public {
+    function AllocationFund(uint _tokenNum) public {
         require(!pause, "contract is pause");
         require(IReputation(Reputation).checkReputation(msg.sender) > ReputationAmount*10*18 || msg.sender ==owner() ,"Reputation Points is not enough");
         require( block.timestamp > intervalTime + 1800,"AllocationFund need interval 30 minute");
         require( block.timestamp >  AllocationFundUserTime[msg.sender] + 43200 ,"wallet need 12 hours to callback that");
         require(getWETHBalance() > 0, "the balance of WETH is error");
+        if(_tokenNum == 1) {
         for(uint i = 0 ; i < AllocationFundAddress.length; i ++){
         IERC20(uniswapV2Router.WETH()).transfer(AllocationFundAddress[i],distributionRatio[i]/100);
         }
+    }else{
+        for(uint i = 0 ; i < AllocationFundAddress.length; i ++){
+        IERC20(tokenList[_tokenNum]).transfer(AllocationFundAddress[i],distributionRatio[i]/100);
+    }
+    }
         intervalTime = block.timestamp;
         AllocationFundUserTime[msg.sender] = block.timestamp;
         IERC20(uniswapV2Router.WETH()).transfer(msg.sender, 5 * 10**16);
