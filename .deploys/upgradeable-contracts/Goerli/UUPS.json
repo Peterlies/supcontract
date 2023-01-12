@@ -1,0 +1,512 @@
+{
+  "id": 5,
+  "network": "Goerli",
+  "deployments": {
+    "0xeaaA4C2BD4D84F0E85852D8246671F83b22b05ee": {
+      "date": "2023-01-12T05:56:51.764Z",
+      "contractName": "MinistryOfFinance",
+      "fork": "london",
+      "implementationAddress": "0xc8CAFFC66D3B767855bDe4148FE243A34207391b",
+      "layout": {
+        "storage": [
+          {
+            "astId": 7,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "_owner",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address"
+          },
+          {
+            "astId": 457,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "_initialized",
+            "offset": 20,
+            "slot": "0",
+            "type": "t_uint8"
+          },
+          {
+            "astId": 460,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "_initializing",
+            "offset": 21,
+            "slot": "0",
+            "type": "t_bool"
+          },
+          {
+            "astId": 1188,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "intervalTime",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 1191,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "AllocationFundAddress",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_array(t_address)dyn_storage"
+          },
+          {
+            "astId": 1194,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "distributionRatio",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_array(t_uint256)dyn_storage"
+          },
+          {
+            "astId": 1196,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "rate",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 1198,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "userTime",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 1200,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "pause",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_bool"
+          },
+          {
+            "astId": 1203,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "callSource",
+            "offset": 0,
+            "slot": "7",
+            "type": "t_array(t_address)dyn_storage"
+          },
+          {
+            "astId": 1205,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "opensea",
+            "offset": 0,
+            "slot": "8",
+            "type": "t_address"
+          },
+          {
+            "astId": 1207,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "controlAddress",
+            "offset": 0,
+            "slot": "9",
+            "type": "t_address"
+          },
+          {
+            "astId": 1209,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "Reputation",
+            "offset": 0,
+            "slot": "10",
+            "type": "t_address"
+          },
+          {
+            "astId": 1211,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "ReputationAmount",
+            "offset": 0,
+            "slot": "11",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 1213,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "GovernanceAddress",
+            "offset": 0,
+            "slot": "12",
+            "type": "t_address"
+          },
+          {
+            "astId": 1215,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "firePassport",
+            "offset": 0,
+            "slot": "13",
+            "type": "t_address"
+          },
+          {
+            "astId": 1217,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "fireDaoToken",
+            "offset": 0,
+            "slot": "14",
+            "type": "t_address"
+          },
+          {
+            "astId": 1219,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "warp",
+            "offset": 0,
+            "slot": "15",
+            "type": "t_address"
+          },
+          {
+            "astId": 1223,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "AllocationFundUserTime",
+            "offset": 0,
+            "slot": "16",
+            "type": "t_mapping(t_address,t_uint256)"
+          },
+          {
+            "astId": 1230,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "sourceOfIncome",
+            "offset": 0,
+            "slot": "17",
+            "type": "t_mapping(t_uint256,t_mapping(t_uint256,t_array(t_uint256)dyn_storage))"
+          },
+          {
+            "astId": 1234,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "tokenList",
+            "offset": 0,
+            "slot": "18",
+            "type": "t_mapping(t_uint256,t_address)"
+          },
+          {
+            "astId": 1237,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "uniswapV2Router",
+            "offset": 0,
+            "slot": "19",
+            "type": "t_contract(IUniswapV2Router02)2362"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "encoding": "inplace",
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_address)dyn_storage": {
+            "base": "t_address",
+            "encoding": "dynamic_array",
+            "label": "address[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_uint256)dyn_storage": {
+            "base": "t_uint256",
+            "encoding": "dynamic_array",
+            "label": "uint256[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "encoding": "inplace",
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(IUniswapV2Router02)2362": {
+            "encoding": "inplace",
+            "label": "contract IUniswapV2Router02",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "encoding": "mapping",
+            "key": "t_address",
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32",
+            "value": "t_uint256"
+          },
+          "t_mapping(t_uint256,t_address)": {
+            "encoding": "mapping",
+            "key": "t_uint256",
+            "label": "mapping(uint256 => address)",
+            "numberOfBytes": "32",
+            "value": "t_address"
+          },
+          "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)": {
+            "encoding": "mapping",
+            "key": "t_uint256",
+            "label": "mapping(uint256 => uint256[])",
+            "numberOfBytes": "32",
+            "value": "t_array(t_uint256)dyn_storage"
+          },
+          "t_mapping(t_uint256,t_mapping(t_uint256,t_array(t_uint256)dyn_storage))": {
+            "encoding": "mapping",
+            "key": "t_uint256",
+            "label": "mapping(uint256 => mapping(uint256 => uint256[]))",
+            "numberOfBytes": "32",
+            "value": "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)"
+          },
+          "t_uint256": {
+            "encoding": "inplace",
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "encoding": "inplace",
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "0xb9B3fa2ad502c551DA7DB4aF330dbd3731C5d755": {
+      "date": "2023-01-12T06:00:04.563Z",
+      "contractName": "MinistryOfFinance",
+      "fork": "london",
+      "implementationAddress": "0x397E6d4808754a0D6B3A9b3b54bB5B0665EBA624",
+      "layout": {
+        "storage": [
+          {
+            "astId": 7,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "_owner",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_address"
+          },
+          {
+            "astId": 457,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "_initialized",
+            "offset": 20,
+            "slot": "0",
+            "type": "t_uint8"
+          },
+          {
+            "astId": 460,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "_initializing",
+            "offset": 21,
+            "slot": "0",
+            "type": "t_bool"
+          },
+          {
+            "astId": 1188,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "intervalTime",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 1191,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "AllocationFundAddress",
+            "offset": 0,
+            "slot": "2",
+            "type": "t_array(t_address)dyn_storage"
+          },
+          {
+            "astId": 1194,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "distributionRatio",
+            "offset": 0,
+            "slot": "3",
+            "type": "t_array(t_uint256)dyn_storage"
+          },
+          {
+            "astId": 1196,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "rate",
+            "offset": 0,
+            "slot": "4",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 1198,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "userTime",
+            "offset": 0,
+            "slot": "5",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 1200,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "pause",
+            "offset": 0,
+            "slot": "6",
+            "type": "t_bool"
+          },
+          {
+            "astId": 1203,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "callSource",
+            "offset": 0,
+            "slot": "7",
+            "type": "t_array(t_address)dyn_storage"
+          },
+          {
+            "astId": 1205,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "opensea",
+            "offset": 0,
+            "slot": "8",
+            "type": "t_address"
+          },
+          {
+            "astId": 1207,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "controlAddress",
+            "offset": 0,
+            "slot": "9",
+            "type": "t_address"
+          },
+          {
+            "astId": 1209,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "Reputation",
+            "offset": 0,
+            "slot": "10",
+            "type": "t_address"
+          },
+          {
+            "astId": 1211,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "ReputationAmount",
+            "offset": 0,
+            "slot": "11",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 1213,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "GovernanceAddress",
+            "offset": 0,
+            "slot": "12",
+            "type": "t_address"
+          },
+          {
+            "astId": 1215,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "firePassport",
+            "offset": 0,
+            "slot": "13",
+            "type": "t_address"
+          },
+          {
+            "astId": 1217,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "fireDaoToken",
+            "offset": 0,
+            "slot": "14",
+            "type": "t_address"
+          },
+          {
+            "astId": 1219,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "warp",
+            "offset": 0,
+            "slot": "15",
+            "type": "t_address"
+          },
+          {
+            "astId": 1223,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "AllocationFundUserTime",
+            "offset": 0,
+            "slot": "16",
+            "type": "t_mapping(t_address,t_uint256)"
+          },
+          {
+            "astId": 1230,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "sourceOfIncome",
+            "offset": 0,
+            "slot": "17",
+            "type": "t_mapping(t_uint256,t_mapping(t_uint256,t_array(t_uint256)dyn_storage))"
+          },
+          {
+            "astId": 1234,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "tokenList",
+            "offset": 0,
+            "slot": "18",
+            "type": "t_mapping(t_uint256,t_address)"
+          },
+          {
+            "astId": 1237,
+            "contract": "contracts/FDao/MinistryOfFinance.sol:MinistryOfFinance",
+            "label": "uniswapV2Router",
+            "offset": 0,
+            "slot": "19",
+            "type": "t_contract(IUniswapV2Router02)2362"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "encoding": "inplace",
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_address)dyn_storage": {
+            "base": "t_address",
+            "encoding": "dynamic_array",
+            "label": "address[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_uint256)dyn_storage": {
+            "base": "t_uint256",
+            "encoding": "dynamic_array",
+            "label": "uint256[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "encoding": "inplace",
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_contract(IUniswapV2Router02)2362": {
+            "encoding": "inplace",
+            "label": "contract IUniswapV2Router02",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "encoding": "mapping",
+            "key": "t_address",
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32",
+            "value": "t_uint256"
+          },
+          "t_mapping(t_uint256,t_address)": {
+            "encoding": "mapping",
+            "key": "t_uint256",
+            "label": "mapping(uint256 => address)",
+            "numberOfBytes": "32",
+            "value": "t_address"
+          },
+          "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)": {
+            "encoding": "mapping",
+            "key": "t_uint256",
+            "label": "mapping(uint256 => uint256[])",
+            "numberOfBytes": "32",
+            "value": "t_array(t_uint256)dyn_storage"
+          },
+          "t_mapping(t_uint256,t_mapping(t_uint256,t_array(t_uint256)dyn_storage))": {
+            "encoding": "mapping",
+            "key": "t_uint256",
+            "label": "mapping(uint256 => mapping(uint256 => uint256[]))",
+            "numberOfBytes": "32",
+            "value": "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)"
+          },
+          "t_uint256": {
+            "encoding": "inplace",
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "encoding": "inplace",
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,16 +1,20 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./interface/IUniswapV2Router02.sol";
 import "./interface/IReputation.sol";
 
 
-contract MinistryOfFinance is Ownable {
+contract MinistryOfFinance is Ownable,Initializable,UUPSUpgradeable {
     uint256 public intervalTime;
     address[] public AllocationFundAddress;
     uint[] public distributionRatio;
+    uint private rate;
+    uint private userTime;
     bool public pause;
     address[] public callSource;
     address public opensea;
@@ -31,9 +35,33 @@ contract MinistryOfFinance is Ownable {
         //mainnet
         IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
         uniswapV2Router = _uniswapV2Router;
+        setUerIntverTime(43200);
     }
+    function initialize() initializer public {
+        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
+        uniswapV2Router = _uniswapV2Router;
+        setUerIntverTime(43200);
+    }
+    function _authorizeUpgrade(address) internal override onlyOwner {}
     //onlyOwner
+    function setUerIntverTime(uint256 _time) public onlyOwner{
+        userTime = _time;
+    }
+    function setTotalDistributionRatio(uint _rate) public onlyOwner{
+        rate = _rate;
+    }
+    function removeItemOfAddr(uint num) public onlyOwner{
+        require(num < AllocationFundAddress.length ,'input error');
+        AllocationFundAddress[num] = AllocationFundAddress[AllocationFundAddress.length - 1];
+        AllocationFundAddress.pop();
+    }
+    function removeItemOfRate(uint num) public onlyOwner{
+        require(num < distributionRatio.length,'input error');
+        distributionRatio[num] = distributionRatio[distributionRatio.length - 1];
+        distributionRatio.pop();
+    }
     function setTokenList(uint tokenNum, address tokenAddr)public onlyOwner {
+        require(tokenNum < 10,"input error");
         tokenList[tokenNum] = tokenAddr;
     }
     function setWarp(address _warp) public onlyOwner{
@@ -51,8 +79,8 @@ contract MinistryOfFinance is Ownable {
     function setReputation(address _Reputation) public onlyOwner {
         Reputation = _Reputation;
     }
-    function setDistributionRatio(uint i, uint rate) public onlyOwner{
-        distributionRatio[i] = rate;
+    function setDistributionRatio(uint i, uint _rate) public onlyOwner{
+        distributionRatio[i] = _rate;
     }
     function setControlAddress(address _controlAddress) public onlyOwner{
         controlAddress = _controlAddress;
@@ -90,39 +118,50 @@ contract MinistryOfFinance is Ownable {
     }
     //main
   
-    function setDistributionRatioExternal(uint i, uint rate) external {
+    function setDistributionRatioExternal(uint i, uint _rate) external {
         require(msg.sender == GovernanceAddress || msg.sender == owner(),"callback Address is error");
-        distributionRatio[i] = rate;
+        distributionRatio[i] = _rate;
     }
     function addAllocationFundAddressExternal(address assigned) external {
         require(msg.sender == GovernanceAddress || msg.sender == owner(), "callback Address is error");
         AllocationFundAddress.push(assigned);
     }
-    function setStatus() external {
-        require(msg.sender == controlAddress,"the callback address is error");
+    function setStatus() external onlyProxy() {
+        require(msg.sender == controlAddress || msg.sender == owner(),"the callback address is error");
         pause = !pause;
     }
     function setReputationAmount(uint256 _amount) public onlyOwner{
         ReputationAmount = _amount; 
     }
     
-    function AllocationFund(uint _tokenNum) public {
+    function AllocationFund(uint _tokenNum) public onlyProxy() {
         require(!pause, "contract is pause");
+        require(checkRate() == 100,'rate error');
         require(IReputation(Reputation).checkReputation(msg.sender) > ReputationAmount*10*18 || msg.sender ==owner() ,"Reputation Points is not enough");
-        require( block.timestamp > intervalTime + 1800,"AllocationFund need interval 30 minute");
-        require( block.timestamp >  AllocationFundUserTime[msg.sender] + 43200 ,"wallet need 12 hours to callback that");
+        require( block.timestamp > intervalTime + 3600,"AllocationFund need interval 30 minute");
+        require( block.timestamp >  AllocationFundUserTime[msg.sender] + userTime ,"wallet need 12 hours to callback that");
         require(getWETHBalance() > 0, "the balance of WETH is error");
         if(_tokenNum == 1) {
         for(uint i = 0 ; i < AllocationFundAddress.length; i ++){
-        IERC20(uniswapV2Router.WETH()).transfer(AllocationFundAddress[i],distributionRatio[i]/100);
+        IERC20(uniswapV2Router.WETH()).transfer(AllocationFundAddress[i],IERC20(uniswapV2Router.WETH()).balanceOf(address(this))*rate*distributionRatio[i]/100);
         }
     }else{
         for(uint i = 0 ; i < AllocationFundAddress.length; i ++){
-        IERC20(tokenList[_tokenNum]).transfer(AllocationFundAddress[i],distributionRatio[i]/100);
+        IERC20(tokenList[_tokenNum]).transfer(AllocationFundAddress[i],IERC20(tokenList[_tokenNum]).balanceOf(address(this))*rate*distributionRatio[i]/100);
     }
     }
         intervalTime = block.timestamp;
         AllocationFundUserTime[msg.sender] = block.timestamp;
         IERC20(uniswapV2Router.WETH()).transfer(msg.sender, 5 * 10**16);
+    }
+    function checkRate() public view returns(uint256){
+        uint256 num;
+        for(uint i = 0; i < distributionRatio.length;i++){
+            num += distributionRatio[i];
+        }
+        return num;
+    }
+    function getTokenBalance(uint num) public view returns(uint256) {
+        return IERC20(tokenList[num]).balanceOf(address(this));
     }
 }
