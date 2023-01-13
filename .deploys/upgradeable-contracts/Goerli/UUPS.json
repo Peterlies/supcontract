@@ -1669,15 +1669,15 @@
       }
     },
     "0x3555F80580131e8697331B35f959d1eBF1a44d39": {
-      "date": "2023-01-12T08:07:53.152Z",
-      "contractName": "TreasuryDistributionContractV2",
+      "date": "2023-01-13T06:10:29.146Z",
+      "contractName": "TreasuryDistributionContractV4",
       "fork": "london",
-      "implementationAddress": "0x5FBC6703A377462899692028f9799E610A025FB4",
+      "implementationAddress": "0x8D5B9Baf0D09198dD866bFAaDa82514c1cB1c80D",
       "layout": {
         "storage": [
           {
             "astId": 974,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "_initialized",
             "offset": 0,
             "slot": "0",
@@ -1685,7 +1685,7 @@
           },
           {
             "astId": 977,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "_initializing",
             "offset": 1,
             "slot": "0",
@@ -1693,7 +1693,7 @@
           },
           {
             "astId": 956,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "__gap",
             "offset": 0,
             "slot": "1",
@@ -1701,7 +1701,7 @@
           },
           {
             "astId": 1271,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "__gap",
             "offset": 0,
             "slot": "51",
@@ -1709,7 +1709,7 @@
           },
           {
             "astId": 1597,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "__gap",
             "offset": 0,
             "slot": "101",
@@ -1717,7 +1717,7 @@
           },
           {
             "astId": 1876,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "__gap",
             "offset": 0,
             "slot": "151",
@@ -1725,7 +1725,7 @@
           },
           {
             "astId": 184,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "_roles",
             "offset": 0,
             "slot": "201",
@@ -1733,7 +1733,7 @@
           },
           {
             "astId": 479,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "__gap",
             "offset": 0,
             "slot": "202",
@@ -1741,7 +1741,7 @@
           },
           {
             "astId": 33,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "_roleMembers",
             "offset": 0,
             "slot": "251",
@@ -1749,7 +1749,7 @@
           },
           {
             "astId": 143,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "__gap",
             "offset": 0,
             "slot": "252",
@@ -1757,7 +1757,7 @@
           },
           {
             "astId": 3597,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "intervalTime",
             "offset": 0,
             "slot": "301",
@@ -1765,7 +1765,7 @@
           },
           {
             "astId": 3600,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "AllocationFundAddress",
             "offset": 0,
             "slot": "302",
@@ -1773,7 +1773,7 @@
           },
           {
             "astId": 3603,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "distributionRatio",
             "offset": 0,
             "slot": "303",
@@ -1781,7 +1781,7 @@
           },
           {
             "astId": 3605,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "rate",
             "offset": 0,
             "slot": "304",
@@ -1789,7 +1789,7 @@
           },
           {
             "astId": 3607,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "userTime",
             "offset": 0,
             "slot": "305",
@@ -1797,7 +1797,7 @@
           },
           {
             "astId": 3609,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "pause",
             "offset": 0,
             "slot": "306",
@@ -1805,7 +1805,7 @@
           },
           {
             "astId": 3612,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "callSource",
             "offset": 0,
             "slot": "307",
@@ -1813,7 +1813,7 @@
           },
           {
             "astId": 3614,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "opensea",
             "offset": 0,
             "slot": "308",
@@ -1821,7 +1821,7 @@
           },
           {
             "astId": 3616,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "controlAddress",
             "offset": 0,
             "slot": "309",
@@ -1829,7 +1829,7 @@
           },
           {
             "astId": 3618,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "Reputation",
             "offset": 0,
             "slot": "310",
@@ -1837,7 +1837,7 @@
           },
           {
             "astId": 3620,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "ReputationAmount",
             "offset": 0,
             "slot": "311",
@@ -1845,7 +1845,7 @@
           },
           {
             "astId": 3622,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "GovernanceAddress",
             "offset": 0,
             "slot": "312",
@@ -1853,7 +1853,7 @@
           },
           {
             "astId": 3624,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "firePassport",
             "offset": 0,
             "slot": "313",
@@ -1861,7 +1861,7 @@
           },
           {
             "astId": 3626,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "fireDaoToken",
             "offset": 0,
             "slot": "314",
@@ -1869,7 +1869,7 @@
           },
           {
             "astId": 3628,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "warp",
             "offset": 0,
             "slot": "315",
@@ -1877,7 +1877,7 @@
           },
           {
             "astId": 3630,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "owner",
             "offset": 0,
             "slot": "316",
@@ -1885,7 +1885,7 @@
           },
           {
             "astId": 3634,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "AllocationFundUserTime",
             "offset": 0,
             "slot": "317",
@@ -1893,7 +1893,7 @@
           },
           {
             "astId": 3641,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "sourceOfIncome",
             "offset": 0,
             "slot": "318",
@@ -1901,7 +1901,7 @@
           },
           {
             "astId": 3645,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "tokenList",
             "offset": 0,
             "slot": "319",
@@ -1909,11 +1909,35 @@
           },
           {
             "astId": 3648,
-            "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
             "label": "uniswapV2Router",
             "offset": 0,
             "slot": "320",
-            "type": "t_contract(IUniswapV2Router02)4861"
+            "type": "t_contract(IUniswapV2Router02)4943"
+          },
+          {
+            "astId": 4414,
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
+            "label": "setAddr",
+            "offset": 0,
+            "slot": "321",
+            "type": "t_mapping(t_uint256,t_address)"
+          },
+          {
+            "astId": 4482,
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
+            "label": "setNewAddr",
+            "offset": 0,
+            "slot": "322",
+            "type": "t_mapping(t_uint256,t_address)"
+          },
+          {
+            "astId": 4514,
+            "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
+            "label": "asetNewAddra",
+            "offset": 0,
+            "slot": "323",
+            "type": "t_mapping(t_uint256,t_address)"
           }
         ],
         "types": {
@@ -1962,7 +1986,7 @@
             "label": "bytes32",
             "numberOfBytes": "32"
           },
-          "t_contract(IUniswapV2Router02)4861": {
+          "t_contract(IUniswapV2Router02)4943": {
             "encoding": "inplace",
             "label": "contract IUniswapV2Router02",
             "numberOfBytes": "20"
@@ -2029,7 +2053,7 @@
             "members": [
               {
                 "astId": 3079,
-                "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+                "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
                 "label": "_inner",
                 "offset": 0,
                 "slot": "0",
@@ -2044,7 +2068,7 @@
             "members": [
               {
                 "astId": 176,
-                "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+                "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
                 "label": "members",
                 "offset": 0,
                 "slot": "0",
@@ -2052,7 +2076,7 @@
               },
               {
                 "astId": 178,
-                "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+                "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
                 "label": "adminRole",
                 "offset": 0,
                 "slot": "1",
@@ -2067,7 +2091,7 @@
             "members": [
               {
                 "astId": 2760,
-                "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+                "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
                 "label": "_values",
                 "offset": 0,
                 "slot": "0",
@@ -2075,7 +2099,7 @@
               },
               {
                 "astId": 2764,
-                "contract": "contracts/FDao/TreasuryDistributionContractV2.sol:TreasuryDistributionContractV2",
+                "contract": "contracts/FDao/TreasuryDistributionContractV4.sol:TreasuryDistributionContractV4",
                 "label": "_indexes",
                 "offset": 0,
                 "slot": "1",

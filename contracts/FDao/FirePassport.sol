@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 import "./interface/IFirePassport.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "./interface/IWETH.sol";
-import "./interface/IMinistryOfFinance.sol";
+import "./interface/ITreasuryDistributionContract.sol";
 import "./lib/TransferHelper.sol";
 
 contract FirePassport is IFirePassport,ERC721URIStorage {
@@ -22,16 +22,17 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
    address public admin = 0x161E76814E44072798E658B5F3cd25f1f000Ab61;
     address public weth;
    address public feeReceiver;
-    address public ministryOfFinance;
-   constructor(address  _feeReceiver,address _weth,address _ministryOfFinance) ERC721("Fire Passport", "Fire Passport") {
+    address public treasuryDistributionContract;
+   constructor(address  _feeReceiver,address _weth,address _treasuryDistributionContract,string memory baseURI_) ERC721("Fire Passport", "Fire Passport") {
       owner = msg.sender;
       feeReceiver = _feeReceiver;
-       ministryOfFinance = _ministryOfFinance;
+        treasuryDistributionContract = _treasuryDistributionContract;
       weth = _weth;
       User memory user = User({PID:1,account:admin,username:"FireKun",information:"",joinTime:block.timestamp});
       users.push(user);
       userInfo[admin] = user;
-      usernameExists["FireKun"] = true;
+      usernameExists["firekun"] = true;
+      baseURI = baseURI_;
       _mint(admin, 1);
    }
  
@@ -64,7 +65,7 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
       userInfo[msg.sender] = user;
       usernameExists[username] = true;
       _mint(msg.sender, id);
-      IMinistryOfFinance(ministryOfFinance).setSourceOfIncome(0,fee);
+      ITreasuryDistributionContract(treasuryDistributionContract).setSourceOfIncome(0,fee);
       emit Register(id,trueUsername,msg.sender,email,block.timestamp);
    }
    function setBaseURI(string memory baseURI_) external {
@@ -100,7 +101,7 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
    function getUserCount() external view override returns(uint) {
       return users.length;
    }
-    function hasPID(address user) external view returns(bool){
+    function hasPID(address user) external override view returns(bool){
         return userInfo[user].PID !=0;
     }
    function setFee(uint fees) public {
@@ -137,9 +138,9 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
       feeReceiver = receiver;
    }
 
-    function changeMinistryOfFinance(address _ministryOfFinance) external {
+    function changetreasuryDistributionContract(address _treasuryDistributionContract) external {
         require(msg.sender == owner ,'no access');
-        ministryOfFinance = _ministryOfFinance;
+        treasuryDistributionContract = treasuryDistributionContract;
     }
 
    function changeOwner(address account) public {
@@ -160,10 +161,8 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
 
    function _existsLetter(string memory username) internal pure  returns(bool)  {
        bytes memory bStr = bytes(username);
-        for (uint i = 0; i < bStr.length; i++) {
-            if ((uint8(bStr[i]) >= 97) && (uint8(bStr[i]) <= 122)) {
-               return true;
-            }
+        if ((uint8(bStr[0]) >= 97) && (uint8(bStr[0]) <= 122)) {
+           return true;
         }
         return false;
    }
