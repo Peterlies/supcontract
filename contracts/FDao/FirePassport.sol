@@ -65,7 +65,7 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
       userInfo[msg.sender] = user;
       usernameExists[username] = true;
       _mint(msg.sender, id);
-      ITreasuryDistributionContract(treasuryDistributionContract).setSourceOfIncome(0,fee);
+      ITreasuryDistributionContract(treasuryDistributionContract).setSourceOfIncome(0,1,fee);
       emit Register(id,trueUsername,msg.sender,email,block.timestamp);
    }
    function setBaseURI(string memory baseURI_) external {
@@ -140,7 +140,7 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
 
     function changetreasuryDistributionContract(address _treasuryDistributionContract) external {
         require(msg.sender == owner ,'no access');
-        treasuryDistributionContract = treasuryDistributionContract;
+        treasuryDistributionContract = _treasuryDistributionContract;
     }
 
    function changeOwner(address account) public {
