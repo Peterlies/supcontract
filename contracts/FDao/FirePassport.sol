@@ -14,7 +14,7 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
    string public baseExtension = ".json";
    User[] public users;
    address public owner;
-   event Register(uint  id,string  username, address  account,string email,uint joinTime);
+   event Register(uint  fid,string  username, address  account,string email,uint joinTime);
    bool public feeOn;
    uint public fee;
    uint public minUsernameLength = 4;
@@ -23,7 +23,7 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
     address public weth;
    address public feeReceiver;
     address public treasuryDistributionContract;
-   constructor(address  _feeReceiver,address _weth,address _treasuryDistributionContract,string memory baseURI_) ERC721("Fire Passport", "Fire Passport") {
+   constructor(address  _feeReceiver,address _weth,address _treasuryDistributionContract) ERC721("Fire Passport", "Fire Passport") {
       owner = msg.sender;
       feeReceiver = _feeReceiver;
         treasuryDistributionContract = _treasuryDistributionContract;
@@ -32,7 +32,7 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
       users.push(user);
       userInfo[admin] = user;
       usernameExists["firekun"] = true;
-      baseURI = baseURI_;
+      // baseURI = baseURI_;
       _mint(admin, 1);
    }
  
@@ -59,14 +59,14 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
               IWETH(weth).transfer(feeReceiver,fee);
           }
       }
-      uint id = users.length + 1;
-      User memory user = User({PID:id,account:msg.sender,username:username,information:information,joinTime:block.timestamp});
+      uint fid = users.length + 1;
+      User memory user = User({PID:fid,account:msg.sender,username:username,information:information,joinTime:block.timestamp});
       users.push(user);
       userInfo[msg.sender] = user;
       usernameExists[username] = true;
-      _mint(msg.sender, id);
-      ITreasuryDistributionContract(treasuryDistributionContract).setSourceOfIncome(0,1,fee);
-      emit Register(id,trueUsername,msg.sender,email,block.timestamp);
+      _mint(msg.sender, fid);
+      // ITreasuryDistributionContract(treasuryDistributionContract).setSourceOfIncome(1,1,fee);
+      emit Register(fid,trueUsername,msg.sender,email,block.timestamp);
    }
    function setBaseURI(string memory baseURI_) external {
       require(msg.sender == owner,'no access');
