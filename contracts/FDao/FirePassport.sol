@@ -14,25 +14,25 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
    string public baseExtension = ".json";
    User[] public users;
    address public owner;
-   event Register(uint  fid,string  username, address  account,string email,uint joinTime);
+   event Register(uint  id,string  username, address  account,string email,uint joinTime);
    bool public feeOn;
    uint public fee;
    uint public minUsernameLength = 4;
    uint public maxUsernameLength = 30;
    address public admin = 0x161E76814E44072798E658B5F3cd25f1f000Ab61;
-    address public weth;
+   address public weth;
    address public feeReceiver;
-    address public treasuryDistributionContract;
-   constructor(address  _feeReceiver,address _weth,address _treasuryDistributionContract) ERC721("Fire Passport", "Fire Passport") {
+   address public treasuryDistributionContract;
+   bool public useTreasuryDistributionContract;
+   constructor(address  _feeReceiver,address _weth,string memory baseURI_) ERC721("Fire Passport", "Fire Passport") {
       owner = msg.sender;
       feeReceiver = _feeReceiver;
-        treasuryDistributionContract = _treasuryDistributionContract;
       weth = _weth;
       User memory user = User({PID:1,account:admin,username:"FireKun",information:"",joinTime:block.timestamp});
       users.push(user);
       userInfo[admin] = user;
       usernameExists["firekun"] = true;
-      // baseURI = baseURI_;
+      baseURI = baseURI_;
       _mint(admin, 1);
    }
  
@@ -59,14 +59,16 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
               IWETH(weth).transfer(feeReceiver,fee);
           }
       }
-      uint fid = users.length + 1;
-      User memory user = User({PID:fid,account:msg.sender,username:username,information:information,joinTime:block.timestamp});
+      uint id = users.length + 1;
+      User memory user = User({PID:id,account:msg.sender,username:username,information:information,joinTime:block.timestamp});
       users.push(user);
       userInfo[msg.sender] = user;
       usernameExists[username] = true;
-      _mint(msg.sender, fid);
-      // ITreasuryDistributionContract(treasuryDistributionContract).setSourceOfIncome(1,1,fee);
-      emit Register(fid,trueUsername,msg.sender,email,block.timestamp);
+      _mint(msg.sender, id);
+      if(useTreasuryDistributionContract) {
+         ITreasuryDistributionContract(treasuryDistributionContract).setSourceOfIncome(1,1,fee);
+      }
+      emit Register(id,trueUsername,msg.sender,email,block.timestamp);
    }
    function setBaseURI(string memory baseURI_) external {
       require(msg.sender == owner,'no access');
@@ -124,7 +126,12 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
 
    function setFeeOn(bool set) public {
      require(msg.sender == owner ,'no access');
-      feeOn = set;
+     feeOn = set;
+   }
+
+   function setTreasuryDistributionContractOn(bool set) external {
+      require(msg.sender == owner ,'no access');
+      useTreasuryDistributionContract = set;
    }
 
    function setUsernameLimitLength(uint min,uint max) public {
@@ -138,10 +145,10 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
       feeReceiver = receiver;
    }
 
-    function changetreasuryDistributionContract(address _treasuryDistributionContract) external {
-        require(msg.sender == owner ,'no access');
-        treasuryDistributionContract = _treasuryDistributionContract;
-    }
+   function setTreasuryDistributionContract(address _treasuryDistributionContract) external {
+      require(msg.sender == owner ,'no access');
+      treasuryDistributionContract = _treasuryDistributionContract;
+   }
 
    function changeOwner(address account) public {
       require(msg.sender == owner ,'no access');
