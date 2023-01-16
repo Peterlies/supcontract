@@ -14,7 +14,7 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
    string public baseExtension = ".json";
    User[] public users;
    address public owner;
-   event Register(uint  id,string  username, address  account,string email,uint joinTime);
+   event Register(uint  pid,string  username, address  account,string email,uint joinTime);
    bool public feeOn;
    uint public fee;
    uint public minUsernameLength = 4;
@@ -59,16 +59,16 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
               IWETH(weth).transfer(feeReceiver,fee);
           }
       }
-      uint id = users.length + 1;
-      User memory user = User({PID:id,account:msg.sender,username:username,information:information,joinTime:block.timestamp});
+      uint pid = users.length + 1;
+      User memory user = User({PID:pid,account:msg.sender,username:username,information:information,joinTime:block.timestamp});
       users.push(user);
       userInfo[msg.sender] = user;
       usernameExists[username] = true;
-      _mint(msg.sender, id);
+      _mint(msg.sender, pid);
       if(useTreasuryDistributionContract) {
          ITreasuryDistributionContract(treasuryDistributionContract).setSourceOfIncome(1,1,fee);
       }
-      emit Register(id,trueUsername,msg.sender,email,block.timestamp);
+      emit Register(pid,trueUsername,msg.sender,email,block.timestamp);
    }
    function setBaseURI(string memory baseURI_) external {
       require(msg.sender == owner,'no access');
