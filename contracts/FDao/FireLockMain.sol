@@ -122,7 +122,7 @@ contract FireLock {
         ownerLockDetail[_to].push(lockinfo);
         IERC20(_token).transferFrom(msg.sender,address(this),_amount);
     }
-      function groupLock(address _token, uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount , address[] memory _to, uint256[] memory _rate,string memory _titile,uint256 _cliffPeriod,bool _isNotTerminate) public {
+      function groupLock(address _token, uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount , address[] memory _to, uint256[] memory _rate,string memory _titile,uint256 _cliffPeriod,bool _isNotTerminate,bool _isNotChange) public {
       require(block.number + _unlockCycle * _unlockRound * oneDayBlock > block.number,"ddl should be bigger than ddl current time");
         require(_amount > 0 ,"token amount should be bigger than zero");
         uint LockId; 
@@ -137,7 +137,7 @@ contract FireLock {
         rate : _rate,
         token:_token,
         mumber:_to,
-        isNotchange:false,
+        isNotchange:_isNotChange,
         isNotTerminate:_isNotTerminate
         });
         groupTokenAddress[LockId].push(_token);
@@ -147,31 +147,7 @@ contract FireLock {
         IERC20(_token).transferFrom(msg.sender,address(this),_amount);
         LockId++;
     }
-     function groupLock_true(address _token, uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount , address[] memory _to,uint256[] memory _rate, string memory _titile,uint256 _cliffPeriod,bool _isNotTerminate) public {
-        require(block.number + _unlockCycle * _unlockRound * oneDayBlock > block.number,"ddl should be bigger than ddl current time");
-        require(_amount > 0 ,"token amount should be bigger than zero");
-        uint LockId; 
-        groupLockDetail memory _groupLockDetail = groupLockDetail({
-        LockTitle:_titile,
-        ddl:block.number+ _unlockCycle * _unlockRound * oneDayBlock + _cliffPeriod *oneDayBlock,
-        startTime:block.number,
-        admin:msg.sender,
-        amount:_amount,
-        unlockCycle:_unlockCycle,
-        unlockRound:_unlockRound,
-        rate : _rate,
-        token:_token,
-        mumber:_to,
-        isNotchange:false,
-        isNotTerminate:_isNotTerminate
-        });
-        groupTokenAddress[LockId].push(_token);
-        UsergroupLockNum[msg.sender].push(LockId);
-        adminGropLockDetail[msg.sender].push(_groupLockDetail);
-        groupMumber[LockId] = _to;
-        IERC20(_token).transferFrom(msg.sender,address(this),_amount);
-        LockId++;
-    }
+     
     function TerminateLock(uint256 _lockId,address token) public {
         require(ownerLockDetail[msg.sender][_lockId].isNotTerminate,"!isNotTerminate");
         IERC20(token).transfer(msg.sender , ownerLockDetail[msg.sender][_lockId].amount);
