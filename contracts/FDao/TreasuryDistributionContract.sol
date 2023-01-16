@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./interface/IUniswapV2Router02.sol";
 import "./interface/IReputation.sol";
@@ -18,6 +17,7 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
     bool public pause;
     address[] public callSource;
     address public opensea;
+    address public fireLock;
     address public controlAddress;
     address public Reputation;
     uint256 public ReputationAmount;
@@ -79,6 +79,9 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
     function setopensea(address _opensea) public onlyRole(DEFAULT_ADMIN_ROLE){
         opensea = _opensea;
     }
+    function setFireLock(address _fireLock) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        fireLock = _fireLock;
+    }
     function setFireDaoToken(address _fireDaoToken) public onlyRole(DEFAULT_ADMIN_ROLE){
         fireDaoToken = _fireDaoToken;
     }
@@ -112,6 +115,7 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
         require(msg.sender == warp ||
         msg.sender == firePassport ||
         msg.sender == fireDaoToken || 
+        msg.sender == fireLock||
         msg.sender == opensea);
         sourceOfIncome[num][tokenNum].push(amount);
     }

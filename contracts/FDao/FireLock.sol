@@ -36,7 +36,8 @@ contract FireLock {
     }
     address public feeTo;
     uint256 public fee;
-    address public user;
+    address public admin;
+    address public treasuryDistributionContract;
    uint256 public oneDayBlock = 7200;
     mapping(address => address[]) tokenAddress;
     mapping(address => LockDetail[]) public ownerLockDetail;
@@ -47,18 +48,21 @@ contract FireLock {
     bool alreadyChange;
     mapping(address => bool) isChangedOwner;
     mapping(address => uint256[]) public UsergroupLockNum;
-    modifier onlyUser{
-        require(msg.sender == user ,"you are not the lock owner");
+    modifier onlyAdmin{
+        require(msg.sender == admin ,"you are not the lock owner");
         _;
     }
     //0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3 pancake
     //0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D uniswap
 
     constructor() {
+    admin = msg.sender;
     IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
     uniswapV2Router = _uniswapV2Router;
     }
+    function setFee() public onlyAdmin {
 
+    }
     function lock(address _token,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount,uint256 _cliffPeriod ,string memory _titile , bool _Terminate) public   {
         require(block.number + _unlockCycle * _unlockRound * oneDayBlock > block.number,"ddl should be bigger than ddl current time");
         require(_amount > 0 ,"token amount should be bigger than zero");
