@@ -41,7 +41,7 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
     address[] public _accountList;
     uint256 public currentSendAmount;
     string public constant name = "FireSeed";
-    string public constant symbol = "FireSeed";
+    string public constant symbol = "FIRESEED";
     uint256 public constant FireSeedToken = 0;
     uint256 public amountOfSbt007;
     mapping(address => bool) public isRecommender;
