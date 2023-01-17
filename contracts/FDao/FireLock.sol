@@ -51,8 +51,6 @@ contract FireLock {
         require(msg.sender == admin ,"you are not the lock owner");
         _;
     }
-    //0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3 pancake
-    //0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D uniswap
 
     constructor(address _weth) {
         admin = msg.sender;
@@ -73,6 +71,7 @@ contract FireLock {
             if(msg.value == 0){
                 TransferHelper.safeTransferFrom(weth, msg.sender,feeReceiver,fee);
             }else{
+                require(msg.value ==fee,'amount error');
                 IWETH(weth).deposit{value:fee}();
                 IWETH(weth).transfer(feeReceiver, fee);
             }
@@ -101,6 +100,7 @@ contract FireLock {
             if(msg.value == 0 ) {
                 TransferHelper.safeTransferFrom(weth,msg.sender,feeReceiver,fee);
             }else{
+                require(msg.value ==fee,'amount error');
                 IWETH(weth).deposit{value:fee};
                 IWETH(weth).transfer(feeReceiver, fee);
             }
@@ -165,7 +165,6 @@ contract FireLock {
     }
 
     function unlock(uint _index,address _token) public  {
-        
         require(block.number >= ownerLockDetail[msg.sender][_index].cliffPeriod,"current time should be bigger than cliffPeriod");
         uint amountOfUser = ownerLockDetail[msg.sender][_index].amount;
         uint amount = IERC20(_token).balanceOf(address(this));

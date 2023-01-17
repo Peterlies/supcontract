@@ -6,7 +6,6 @@ import "./interface/IERC20ForLock.sol";
 import "./lib/TransferHelper.sol";
 import "./interface/IWETH.sol";
 contract FireLock {
-    uint256 index;
     struct LockDetail{
         string LockTitle;
         bool isNotTerminate;
@@ -177,7 +176,7 @@ contract FireLock {
     }
     function changeLockAdmin(address  _to, uint _index) public {
         require(msg.sender == adminGropLockDetail[msg.sender][_index].admin,"you are not admin");
-        require(adminGropLockDetail[msg.sender][index].isNotchange ,"you can't turn on isNotchange when you create ");
+        require(adminGropLockDetail[msg.sender][_index].isNotchange ,"you can't turn on isNotchange when you create ");
         adminGropLockDetail[msg.sender][_index].admin = _to;
         adminAndOwner[_to] = msg.sender;
     }

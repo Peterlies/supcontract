@@ -13,6 +13,9 @@ import "./interface/ISbt003.sol";
 import "./interface/ISbt007.sol";
 import "./interface/IFireSeed.sol";
 import "./interface/IFireSoul.sol";
+import "./lib/TransferHelper.sol";
+import "./interface/IWETH.sol";
+import "./interface/ITreasuryDistributionContract.sol";
 
 contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
 
@@ -28,7 +31,10 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
     }
     event passFireSeed(address  from, address  to, uint256  tokenId, uint256  amount, uint256  transferTime);
     bool public FeeStatus;
-    address payable public feeReceiver;
+    bool public useITreasuryDistributionContract;
+    address  public feeReceiver;
+    address public treasuryDistributionContract;
+    address public weth;
     address public Sbt007;
     address public fireSoul;
     uint public fee;
@@ -45,13 +51,14 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
     mapping(address => uint256[]) public ownerOfId; 
     mapping(address => accountInfo) public _accountAirdrop;
 //set SBT007,amountOf007, fireSoulAddress, Fee, feeReceiver
-constructor(address _Sbt007,address _fireSoul,address payable _feeReceiver) ERC1155("https://bafybeiblhsbd5x7rw5ezzr6xoe6u2jpyqexbfbovdao2vj5i3c25vmm7d4.ipfs.nftstorage.link/0.json") {
+constructor(address _Sbt007,address _fireSoul,address  _feeReceiver, address _weth) ERC1155("https://bafybeiblhsbd5x7rw5ezzr6xoe6u2jpyqexbfbovdao2vj5i3c25vmm7d4.ipfs.nftstorage.link/0.json") {
     _mint(msg.sender, _idTracker.current(), 1, "");
     _idTracker.increment();
     setSbt007(_Sbt007);
     setAmountOfSbt007(10);
     setFireSoul(_fireSoul);
     feeReceiver = _feeReceiver;
+    weth = _weth;
 }
 
     //onlyOwner
@@ -80,10 +87,17 @@ constructor(address _Sbt007,address _fireSoul,address payable _feeReceiver) ERC1
     function setFireSoul(address _fireSoul) public onlyOwner {
         fireSoul = _fireSoul;
     }
+    function setUseTreasuryDistributionContract(bool _set) public onlyOwner{
+        useITreasuryDistributionContract = _set;
+    }
+    function setTreasuryDistributionContract(address _treasuryDistributionContract) public onlyOwner{
+        treasuryDistributionContract=_treasuryDistributionContract;
+    }
     //main
 function mintWithETH(
         uint256 amount
     ) external payable {
+        uint256 _fee;
         if(FeeStatus == false){
         _mint(msg.sender, _idTracker.current(), amount, '');
         }else{
@@ -91,31 +105,35 @@ function mintWithETH(
         _mint(msg.sender, _idTracker.current(), amount, '');
         }else{
         if(amount > 50 && amount <=100) {
-        require(msg.value == fee/2);
-        feeReceiver.transfer(fee/2);
+             _fee = fee/2;
         }else if(amount < 50 && amount > 40){
-        require(msg.value == fee*6/10);
-        feeReceiver.transfer(fee*6/10);
+            _fee = fee*6/10;
         }else if(amount>30 && amount <40){
-        require(msg.value == fee*7/10);
-        feeReceiver.transfer(fee*7/10);
+            _fee = fee*7/10;
         }else if(amount >20 && amount < 30) {
-        require(msg.value == fee*8/10);
-        feeReceiver.transfer(fee*8/10);
+            _fee = fee*8/10;
         }else if(amount > 10 && amount <20 ) {
-        require(msg.value == fee*9/10);
-        feeReceiver.transfer(fee*9/10);
+            _fee = fee*9/10;
         }else{
-        require(msg.value == fee);
-        feeReceiver.transfer(fee);
+            _fee = fee;
         }
-        if(IFireSoul(fireSoul).checkFID(msg.sender)){
-            ISbt007(Sbt007).mint(IFireSoul(fireSoul).getSoulAccount(msg.sender),amount * amountOfSbt007 *10 **  18);
-        }
+        if(msg.value == 0){
+                 TransferHelper.safeTransferFrom(weth,msg.sender,feeReceiver,_fee);
+             }else{
+                 require(msg.value == fee,'Please send the correct number of ETH');
+                 IWETH(weth).deposit{value:_fee}();
+                 IWETH(weth).transfer(feeReceiver,_fee);
+             }
+             if(useITreasuryDistributionContract){
+                ITreasuryDistributionContract(treasuryDistributionContract).setSourceOfIncome(0,0,_fee);
+             }
         _mint(msg.sender, _idTracker.current(), amount, '');
 
     }
 }
+      if(IFireSoul(fireSoul).checkFID(msg.sender)){
+        ISbt007(Sbt007).mint(IFireSoul(fireSoul).getSoulAccount(msg.sender),amount * amountOfSbt007 *10 **  18);
+        }
         ownerOfId[msg.sender].push(_idTracker.current());
         _idTracker.increment();
     }
