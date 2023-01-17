@@ -2120,6 +2120,243 @@
           }
         }
       }
+    },
+    "0xBDBCf527169b9D2D1c441F1b252b2226C280B9Db": {
+      "date": "2023-01-17T02:35:27.080Z",
+      "contractName": "FireLockFeeTransfer",
+      "fork": "london",
+      "implementationAddress": "0xeA8A0584e443631c0d261BAb79d8214Fe2C10d55",
+      "layout": {
+        "storage": [
+          {
+            "astId": 974,
+            "contract": "contracts/FDao/FireLockFeeTransfer.sol:FireLockFeeTransfer",
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8"
+          },
+          {
+            "astId": 977,
+            "contract": "contracts/FDao/FireLockFeeTransfer.sol:FireLockFeeTransfer",
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool"
+          },
+          {
+            "astId": 956,
+            "contract": "contracts/FDao/FireLockFeeTransfer.sol:FireLockFeeTransfer",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 1271,
+            "contract": "contracts/FDao/FireLockFeeTransfer.sol:FireLockFeeTransfer",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 1597,
+            "contract": "contracts/FDao/FireLockFeeTransfer.sol:FireLockFeeTransfer",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 1876,
+            "contract": "contracts/FDao/FireLockFeeTransfer.sol:FireLockFeeTransfer",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "151",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 184,
+            "contract": "contracts/FDao/FireLockFeeTransfer.sol:FireLockFeeTransfer",
+            "label": "_roles",
+            "offset": 0,
+            "slot": "201",
+            "type": "t_mapping(t_bytes32,t_struct(RoleData)179_storage)"
+          },
+          {
+            "astId": 479,
+            "contract": "contracts/FDao/FireLockFeeTransfer.sol:FireLockFeeTransfer",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "202",
+            "type": "t_array(t_uint256)49_storage"
+          },
+          {
+            "astId": 33,
+            "contract": "contracts/FDao/FireLockFeeTransfer.sol:FireLockFeeTransfer",
+            "label": "_roleMembers",
+            "offset": 0,
+            "slot": "251",
+            "type": "t_mapping(t_bytes32,t_struct(AddressSet)3080_storage)"
+          },
+          {
+            "astId": 143,
+            "contract": "contracts/FDao/FireLockFeeTransfer.sol:FireLockFeeTransfer",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "252",
+            "type": "t_array(t_uint256)49_storage"
+          },
+          {
+            "astId": 3460,
+            "contract": "contracts/FDao/FireLockFeeTransfer.sol:FireLockFeeTransfer",
+            "label": "weth",
+            "offset": 0,
+            "slot": "301",
+            "type": "t_contract(IERC20)3445"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "encoding": "inplace",
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_bytes32)dyn_storage": {
+            "base": "t_bytes32",
+            "encoding": "dynamic_array",
+            "label": "bytes32[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_uint256)49_storage": {
+            "base": "t_uint256",
+            "encoding": "inplace",
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "base": "t_uint256",
+            "encoding": "inplace",
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_bool": {
+            "encoding": "inplace",
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "encoding": "inplace",
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_contract(IERC20)3445": {
+            "encoding": "inplace",
+            "label": "contract IERC20",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "encoding": "mapping",
+            "key": "t_address",
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32",
+            "value": "t_bool"
+          },
+          "t_mapping(t_bytes32,t_struct(AddressSet)3080_storage)": {
+            "encoding": "mapping",
+            "key": "t_bytes32",
+            "label": "mapping(bytes32 => struct EnumerableSetUpgradeable.AddressSet)",
+            "numberOfBytes": "32",
+            "value": "t_struct(AddressSet)3080_storage"
+          },
+          "t_mapping(t_bytes32,t_struct(RoleData)179_storage)": {
+            "encoding": "mapping",
+            "key": "t_bytes32",
+            "label": "mapping(bytes32 => struct AccessControlUpgradeable.RoleData)",
+            "numberOfBytes": "32",
+            "value": "t_struct(RoleData)179_storage"
+          },
+          "t_mapping(t_bytes32,t_uint256)": {
+            "encoding": "mapping",
+            "key": "t_bytes32",
+            "label": "mapping(bytes32 => uint256)",
+            "numberOfBytes": "32",
+            "value": "t_uint256"
+          },
+          "t_struct(AddressSet)3080_storage": {
+            "encoding": "inplace",
+            "label": "struct EnumerableSetUpgradeable.AddressSet",
+            "members": [
+              {
+                "astId": 3079,
+                "contract": "contracts/FDao/FireLockFeeTransfer.sol:FireLockFeeTransfer",
+                "label": "_inner",
+                "offset": 0,
+                "slot": "0",
+                "type": "t_struct(Set)2765_storage"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(RoleData)179_storage": {
+            "encoding": "inplace",
+            "label": "struct AccessControlUpgradeable.RoleData",
+            "members": [
+              {
+                "astId": 176,
+                "contract": "contracts/FDao/FireLockFeeTransfer.sol:FireLockFeeTransfer",
+                "label": "members",
+                "offset": 0,
+                "slot": "0",
+                "type": "t_mapping(t_address,t_bool)"
+              },
+              {
+                "astId": 178,
+                "contract": "contracts/FDao/FireLockFeeTransfer.sol:FireLockFeeTransfer",
+                "label": "adminRole",
+                "offset": 0,
+                "slot": "1",
+                "type": "t_bytes32"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(Set)2765_storage": {
+            "encoding": "inplace",
+            "label": "struct EnumerableSetUpgradeable.Set",
+            "members": [
+              {
+                "astId": 2760,
+                "contract": "contracts/FDao/FireLockFeeTransfer.sol:FireLockFeeTransfer",
+                "label": "_values",
+                "offset": 0,
+                "slot": "0",
+                "type": "t_array(t_bytes32)dyn_storage"
+              },
+              {
+                "astId": 2764,
+                "contract": "contracts/FDao/FireLockFeeTransfer.sol:FireLockFeeTransfer",
+                "label": "_indexes",
+                "offset": 0,
+                "slot": "1",
+                "type": "t_mapping(t_bytes32,t_uint256)"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_uint256": {
+            "encoding": "inplace",
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "encoding": "inplace",
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
     }
   }
 }
