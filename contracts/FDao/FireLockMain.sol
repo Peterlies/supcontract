@@ -119,10 +119,19 @@ contract FireLock {
         ownerLockDetail[_to].push(lockinfo);
         IERC20(_token).transferFrom(msg.sender,address(this),_amount);
     }
-      function groupLock(address _token, uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount , address[] memory _to, uint256[] memory _rate,string memory _titile,uint256 _cliffPeriod,bool _isNotTerminate,bool _isNotChange) public {
+      function groupLock(address _token, uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount , address[] memory _to, uint256[] memory _rate,string memory _titile,uint256 _cliffPeriod,bool _isNotTerminate,bool _isNotChange) public payable{
       require(block.number + _unlockCycle * _unlockRound * oneDayBlock > block.number,"ddl should be bigger than ddl current time");
         require(_amount > 0 ,"token amount should be bigger than zero");
         uint LockId; 
+        if(feeON){
+            if(msg.value == 0) {
+                TransferHelper.safeTransferFrom(weth,msg.sender,feeReceiver,fee);
+            }else{
+                require(msg.value == fee);
+                IWETH(weth).deposit{value:fee}();
+                IWETH(weth).transfer(feeReceiver,fee);
+            }
+        }
         groupLockDetail memory _groupLockDetail = groupLockDetail({
         LockTitle:_titile,
         ddl:block.number+ _unlockCycle * _unlockRound * oneDayBlock + _cliffPeriod *oneDayBlock,

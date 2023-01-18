@@ -47,21 +47,14 @@ contract FireLock {
     mapping(address => address) adminAndOwner;
     bool alreadyChange;
     mapping(address => uint256[]) public UsergroupLockNum;
-    modifier onlyAdmin{
-        require(msg.sender == admin ,"you are not the lock owner");
-        _;
-    }
+ 
 
-    constructor(address _weth) {
+    constructor(address _weth,uint256 _fee, bool _feeon) {
         admin = msg.sender;
         weth = _weth;
-    }
-    function setFee(uint256 _fee) public onlyAdmin {
-        require(_fee < 100000000000000000);
         fee = _fee;
-    }
-    function setFeeOn() public onlyAdmin {
-        feeON=!feeON;
+        feeON = _feeon;
+
     }
     function lock(address _token,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount,uint256 _cliffPeriod ,string memory _titile , bool _Terminate) public payable  {
         require(block.number + _unlockCycle * _unlockRound * oneDayBlock > block.number,"ddl should be bigger than ddl current time");
@@ -129,6 +122,7 @@ contract FireLock {
                 TransferHelper.safeTransferFrom(weth,msg.sender,feeReceiver,fee);
 
             }else {
+                require(msg.value == fee ,'fee amount error');
                 IWETH(weth).deposit{value:fee}();
                 IWETH(weth).transfer(feeReceiver,fee);
             }
