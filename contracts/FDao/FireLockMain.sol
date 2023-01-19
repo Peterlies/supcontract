@@ -5,7 +5,7 @@ pragma solidity ^0.8.0;
 import "./interface/IERC20ForLock.sol";
 import "./lib/TransferHelper.sol";
 import "./interface/IWETH.sol";
-contract FireLock {
+contract FireLockMain {
     struct LockDetail{
         string LockTitle;
         bool isNotTerminate;
@@ -42,7 +42,7 @@ contract FireLock {
    uint256 public oneDayBlock = 7200;
     mapping(address => address[]) tokenAddress;
     mapping(address => LockDetail[]) public ownerLockDetail;
-    mapping(uint256 => address[]) public groupMumber;
+    mapping(uint256 => address[]) public groupMember;
     mapping(uint256 => address[]) groupTokenAddress;
     mapping(address => groupLockDetail[]) public adminGropLockDetail;
     mapping(address => address) adminAndOwner;
@@ -149,7 +149,9 @@ contract FireLock {
         groupTokenAddress[LockId].push(_token);
         UsergroupLockNum[msg.sender].push(LockId);
         adminGropLockDetail[msg.sender].push(_groupLockDetail);
-        groupMumber[LockId] = _to;
+        for(uint i = 0 ; i < _to.length ; i++){
+        groupMember[LockId].push(_to[i]);
+        }
         IERC20(_token).transferFrom(msg.sender,address(this),_amount);
         LockId++;
     }
