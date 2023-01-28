@@ -33,10 +33,6 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
     //0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3 pancake
     //0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D uniswap
     constructor() initializer {
-        //mainnet
-        // IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
-        // uniswapV2Router = _uniswapV2Router;
-        // setUerIntverTime(43200);
     }
     function initialize() public initializer {
         __UUPSUpgradeable_init();
