@@ -155,11 +155,11 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
         require(getWETHBalance() > 0, "the balance of WETH is error");
         if(_tokenNum == 1) {
         for(uint i = 0 ; i < AllocationFundAddress.length; i ++){
-        IERC20(uniswapV2Router.WETH()).transfer(AllocationFundAddress[i],IERC20(uniswapV2Router.WETH()).balanceOf(address(this))*rate*distributionRatio[i]/100);
+        IERC20(uniswapV2Router.WETH()).transfer(AllocationFundAddress[i],IERC20(uniswapV2Router.WETH()).balanceOf(address(this))*rate*distributionRatio[i]/10000);
         }
     }else{
         for(uint i = 0 ; i < AllocationFundAddress.length; i ++){
-        IERC20(tokenList[_tokenNum]).transfer(AllocationFundAddress[i],IERC20(tokenList[_tokenNum]).balanceOf(address(this))*rate*distributionRatio[i]/100);
+        IERC20(tokenList[_tokenNum]).transfer(AllocationFundAddress[i],IERC20(tokenList[_tokenNum]).balanceOf(address(this))*rate*distributionRatio[i]/10000);
     }
     }
         intervalTime = block.timestamp;
