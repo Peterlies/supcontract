@@ -2357,6 +2357,1754 @@
           }
         }
       }
+    },
+    "0x1FAB2C2dAC6733d764Eb01B761f46f5D7909Ec63": {
+      "date": "2023-01-28T06:15:29.094Z",
+      "contractName": "TreasuryDistributionContract",
+      "fork": "london",
+      "implementationAddress": "0xAD173Ca00198308eba8816B22C80b2c323958cc5",
+      "layout": {
+        "storage": [
+          {
+            "astId": 974,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8"
+          },
+          {
+            "astId": 977,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool"
+          },
+          {
+            "astId": 956,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 1271,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 1597,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 1876,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "151",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 184,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "_roles",
+            "offset": 0,
+            "slot": "201",
+            "type": "t_mapping(t_bytes32,t_struct(RoleData)179_storage)"
+          },
+          {
+            "astId": 479,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "202",
+            "type": "t_array(t_uint256)49_storage"
+          },
+          {
+            "astId": 33,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "_roleMembers",
+            "offset": 0,
+            "slot": "251",
+            "type": "t_mapping(t_bytes32,t_struct(AddressSet)3080_storage)"
+          },
+          {
+            "astId": 143,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "252",
+            "type": "t_array(t_uint256)49_storage"
+          },
+          {
+            "astId": 3461,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "intervalTime",
+            "offset": 0,
+            "slot": "301",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 3464,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "AllocationFundAddress",
+            "offset": 0,
+            "slot": "302",
+            "type": "t_array(t_address)dyn_storage"
+          },
+          {
+            "astId": 3467,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "distributionRatio",
+            "offset": 0,
+            "slot": "303",
+            "type": "t_array(t_uint256)dyn_storage"
+          },
+          {
+            "astId": 3469,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "rate",
+            "offset": 0,
+            "slot": "304",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 3471,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "userTime",
+            "offset": 0,
+            "slot": "305",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 3473,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "pause",
+            "offset": 0,
+            "slot": "306",
+            "type": "t_bool"
+          },
+          {
+            "astId": 3476,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "callSource",
+            "offset": 0,
+            "slot": "307",
+            "type": "t_array(t_address)dyn_storage"
+          },
+          {
+            "astId": 3478,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "opensea",
+            "offset": 0,
+            "slot": "308",
+            "type": "t_address"
+          },
+          {
+            "astId": 3480,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "fireLock",
+            "offset": 0,
+            "slot": "309",
+            "type": "t_address"
+          },
+          {
+            "astId": 3482,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "controlAddress",
+            "offset": 0,
+            "slot": "310",
+            "type": "t_address"
+          },
+          {
+            "astId": 3484,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "Reputation",
+            "offset": 0,
+            "slot": "311",
+            "type": "t_address"
+          },
+          {
+            "astId": 3486,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "ReputationAmount",
+            "offset": 0,
+            "slot": "312",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 3488,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "GovernanceAddress",
+            "offset": 0,
+            "slot": "313",
+            "type": "t_address"
+          },
+          {
+            "astId": 3490,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "firePassport",
+            "offset": 0,
+            "slot": "314",
+            "type": "t_address"
+          },
+          {
+            "astId": 3492,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "fireDaoToken",
+            "offset": 0,
+            "slot": "315",
+            "type": "t_address"
+          },
+          {
+            "astId": 3494,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "warp",
+            "offset": 0,
+            "slot": "316",
+            "type": "t_address"
+          },
+          {
+            "astId": 3496,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "owner",
+            "offset": 0,
+            "slot": "317",
+            "type": "t_address"
+          },
+          {
+            "astId": 3500,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "AllocationFundUserTime",
+            "offset": 0,
+            "slot": "318",
+            "type": "t_mapping(t_address,t_uint256)"
+          },
+          {
+            "astId": 3507,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "sourceOfIncome",
+            "offset": 0,
+            "slot": "319",
+            "type": "t_mapping(t_uint256,t_mapping(t_uint256,t_array(t_uint256)dyn_storage))"
+          },
+          {
+            "astId": 3511,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "tokenList",
+            "offset": 0,
+            "slot": "320",
+            "type": "t_mapping(t_uint256,t_address)"
+          },
+          {
+            "astId": 3514,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "uniswapV2Router",
+            "offset": 0,
+            "slot": "321",
+            "type": "t_contract(IUniswapV2Router02)4695"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "encoding": "inplace",
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_address)dyn_storage": {
+            "base": "t_address",
+            "encoding": "dynamic_array",
+            "label": "address[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_bytes32)dyn_storage": {
+            "base": "t_bytes32",
+            "encoding": "dynamic_array",
+            "label": "bytes32[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_uint256)49_storage": {
+            "base": "t_uint256",
+            "encoding": "inplace",
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "base": "t_uint256",
+            "encoding": "inplace",
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_array(t_uint256)dyn_storage": {
+            "base": "t_uint256",
+            "encoding": "dynamic_array",
+            "label": "uint256[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "encoding": "inplace",
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "encoding": "inplace",
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_contract(IUniswapV2Router02)4695": {
+            "encoding": "inplace",
+            "label": "contract IUniswapV2Router02",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "encoding": "mapping",
+            "key": "t_address",
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32",
+            "value": "t_bool"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "encoding": "mapping",
+            "key": "t_address",
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32",
+            "value": "t_uint256"
+          },
+          "t_mapping(t_bytes32,t_struct(AddressSet)3080_storage)": {
+            "encoding": "mapping",
+            "key": "t_bytes32",
+            "label": "mapping(bytes32 => struct EnumerableSetUpgradeable.AddressSet)",
+            "numberOfBytes": "32",
+            "value": "t_struct(AddressSet)3080_storage"
+          },
+          "t_mapping(t_bytes32,t_struct(RoleData)179_storage)": {
+            "encoding": "mapping",
+            "key": "t_bytes32",
+            "label": "mapping(bytes32 => struct AccessControlUpgradeable.RoleData)",
+            "numberOfBytes": "32",
+            "value": "t_struct(RoleData)179_storage"
+          },
+          "t_mapping(t_bytes32,t_uint256)": {
+            "encoding": "mapping",
+            "key": "t_bytes32",
+            "label": "mapping(bytes32 => uint256)",
+            "numberOfBytes": "32",
+            "value": "t_uint256"
+          },
+          "t_mapping(t_uint256,t_address)": {
+            "encoding": "mapping",
+            "key": "t_uint256",
+            "label": "mapping(uint256 => address)",
+            "numberOfBytes": "32",
+            "value": "t_address"
+          },
+          "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)": {
+            "encoding": "mapping",
+            "key": "t_uint256",
+            "label": "mapping(uint256 => uint256[])",
+            "numberOfBytes": "32",
+            "value": "t_array(t_uint256)dyn_storage"
+          },
+          "t_mapping(t_uint256,t_mapping(t_uint256,t_array(t_uint256)dyn_storage))": {
+            "encoding": "mapping",
+            "key": "t_uint256",
+            "label": "mapping(uint256 => mapping(uint256 => uint256[]))",
+            "numberOfBytes": "32",
+            "value": "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)"
+          },
+          "t_struct(AddressSet)3080_storage": {
+            "encoding": "inplace",
+            "label": "struct EnumerableSetUpgradeable.AddressSet",
+            "members": [
+              {
+                "astId": 3079,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "_inner",
+                "offset": 0,
+                "slot": "0",
+                "type": "t_struct(Set)2765_storage"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(RoleData)179_storage": {
+            "encoding": "inplace",
+            "label": "struct AccessControlUpgradeable.RoleData",
+            "members": [
+              {
+                "astId": 176,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "members",
+                "offset": 0,
+                "slot": "0",
+                "type": "t_mapping(t_address,t_bool)"
+              },
+              {
+                "astId": 178,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "adminRole",
+                "offset": 0,
+                "slot": "1",
+                "type": "t_bytes32"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(Set)2765_storage": {
+            "encoding": "inplace",
+            "label": "struct EnumerableSetUpgradeable.Set",
+            "members": [
+              {
+                "astId": 2760,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "_values",
+                "offset": 0,
+                "slot": "0",
+                "type": "t_array(t_bytes32)dyn_storage"
+              },
+              {
+                "astId": 2764,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "_indexes",
+                "offset": 0,
+                "slot": "1",
+                "type": "t_mapping(t_bytes32,t_uint256)"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_uint256": {
+            "encoding": "inplace",
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "encoding": "inplace",
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "0xdF8784b1a0d244d2f56C3DA2b7af228775d2E01b": {
+      "date": "2023-01-28T06:24:38.847Z",
+      "contractName": "TreasuryDistributionContract",
+      "fork": "london",
+      "implementationAddress": "0xa543859020e5D80e2998AF683a83C2a875F92a8e",
+      "layout": {
+        "storage": [
+          {
+            "astId": 974,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8"
+          },
+          {
+            "astId": 977,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool"
+          },
+          {
+            "astId": 956,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 1271,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 1597,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 1876,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "151",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 184,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "_roles",
+            "offset": 0,
+            "slot": "201",
+            "type": "t_mapping(t_bytes32,t_struct(RoleData)179_storage)"
+          },
+          {
+            "astId": 479,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "202",
+            "type": "t_array(t_uint256)49_storage"
+          },
+          {
+            "astId": 33,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "_roleMembers",
+            "offset": 0,
+            "slot": "251",
+            "type": "t_mapping(t_bytes32,t_struct(AddressSet)3080_storage)"
+          },
+          {
+            "astId": 143,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "252",
+            "type": "t_array(t_uint256)49_storage"
+          },
+          {
+            "astId": 3461,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "intervalTime",
+            "offset": 0,
+            "slot": "301",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 3464,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "AllocationFundAddress",
+            "offset": 0,
+            "slot": "302",
+            "type": "t_array(t_address)dyn_storage"
+          },
+          {
+            "astId": 3467,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "distributionRatio",
+            "offset": 0,
+            "slot": "303",
+            "type": "t_array(t_uint256)dyn_storage"
+          },
+          {
+            "astId": 3469,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "rate",
+            "offset": 0,
+            "slot": "304",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 3471,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "userTime",
+            "offset": 0,
+            "slot": "305",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 3473,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "pause",
+            "offset": 0,
+            "slot": "306",
+            "type": "t_bool"
+          },
+          {
+            "astId": 3476,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "callSource",
+            "offset": 0,
+            "slot": "307",
+            "type": "t_array(t_address)dyn_storage"
+          },
+          {
+            "astId": 3478,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "opensea",
+            "offset": 0,
+            "slot": "308",
+            "type": "t_address"
+          },
+          {
+            "astId": 3480,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "fireLock",
+            "offset": 0,
+            "slot": "309",
+            "type": "t_address"
+          },
+          {
+            "astId": 3482,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "controlAddress",
+            "offset": 0,
+            "slot": "310",
+            "type": "t_address"
+          },
+          {
+            "astId": 3484,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "Reputation",
+            "offset": 0,
+            "slot": "311",
+            "type": "t_address"
+          },
+          {
+            "astId": 3486,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "ReputationAmount",
+            "offset": 0,
+            "slot": "312",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 3488,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "GovernanceAddress",
+            "offset": 0,
+            "slot": "313",
+            "type": "t_address"
+          },
+          {
+            "astId": 3490,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "firePassport",
+            "offset": 0,
+            "slot": "314",
+            "type": "t_address"
+          },
+          {
+            "astId": 3492,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "fireDaoToken",
+            "offset": 0,
+            "slot": "315",
+            "type": "t_address"
+          },
+          {
+            "astId": 3494,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "warp",
+            "offset": 0,
+            "slot": "316",
+            "type": "t_address"
+          },
+          {
+            "astId": 3496,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "owner",
+            "offset": 0,
+            "slot": "317",
+            "type": "t_address"
+          },
+          {
+            "astId": 3500,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "AllocationFundUserTime",
+            "offset": 0,
+            "slot": "318",
+            "type": "t_mapping(t_address,t_uint256)"
+          },
+          {
+            "astId": 3507,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "sourceOfIncome",
+            "offset": 0,
+            "slot": "319",
+            "type": "t_mapping(t_uint256,t_mapping(t_uint256,t_array(t_uint256)dyn_storage))"
+          },
+          {
+            "astId": 3511,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "tokenList",
+            "offset": 0,
+            "slot": "320",
+            "type": "t_mapping(t_uint256,t_address)"
+          },
+          {
+            "astId": 3514,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "uniswapV2Router",
+            "offset": 0,
+            "slot": "321",
+            "type": "t_contract(IUniswapV2Router02)4695"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "encoding": "inplace",
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_address)dyn_storage": {
+            "base": "t_address",
+            "encoding": "dynamic_array",
+            "label": "address[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_bytes32)dyn_storage": {
+            "base": "t_bytes32",
+            "encoding": "dynamic_array",
+            "label": "bytes32[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_uint256)49_storage": {
+            "base": "t_uint256",
+            "encoding": "inplace",
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "base": "t_uint256",
+            "encoding": "inplace",
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_array(t_uint256)dyn_storage": {
+            "base": "t_uint256",
+            "encoding": "dynamic_array",
+            "label": "uint256[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "encoding": "inplace",
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "encoding": "inplace",
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_contract(IUniswapV2Router02)4695": {
+            "encoding": "inplace",
+            "label": "contract IUniswapV2Router02",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "encoding": "mapping",
+            "key": "t_address",
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32",
+            "value": "t_bool"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "encoding": "mapping",
+            "key": "t_address",
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32",
+            "value": "t_uint256"
+          },
+          "t_mapping(t_bytes32,t_struct(AddressSet)3080_storage)": {
+            "encoding": "mapping",
+            "key": "t_bytes32",
+            "label": "mapping(bytes32 => struct EnumerableSetUpgradeable.AddressSet)",
+            "numberOfBytes": "32",
+            "value": "t_struct(AddressSet)3080_storage"
+          },
+          "t_mapping(t_bytes32,t_struct(RoleData)179_storage)": {
+            "encoding": "mapping",
+            "key": "t_bytes32",
+            "label": "mapping(bytes32 => struct AccessControlUpgradeable.RoleData)",
+            "numberOfBytes": "32",
+            "value": "t_struct(RoleData)179_storage"
+          },
+          "t_mapping(t_bytes32,t_uint256)": {
+            "encoding": "mapping",
+            "key": "t_bytes32",
+            "label": "mapping(bytes32 => uint256)",
+            "numberOfBytes": "32",
+            "value": "t_uint256"
+          },
+          "t_mapping(t_uint256,t_address)": {
+            "encoding": "mapping",
+            "key": "t_uint256",
+            "label": "mapping(uint256 => address)",
+            "numberOfBytes": "32",
+            "value": "t_address"
+          },
+          "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)": {
+            "encoding": "mapping",
+            "key": "t_uint256",
+            "label": "mapping(uint256 => uint256[])",
+            "numberOfBytes": "32",
+            "value": "t_array(t_uint256)dyn_storage"
+          },
+          "t_mapping(t_uint256,t_mapping(t_uint256,t_array(t_uint256)dyn_storage))": {
+            "encoding": "mapping",
+            "key": "t_uint256",
+            "label": "mapping(uint256 => mapping(uint256 => uint256[]))",
+            "numberOfBytes": "32",
+            "value": "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)"
+          },
+          "t_struct(AddressSet)3080_storage": {
+            "encoding": "inplace",
+            "label": "struct EnumerableSetUpgradeable.AddressSet",
+            "members": [
+              {
+                "astId": 3079,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "_inner",
+                "offset": 0,
+                "slot": "0",
+                "type": "t_struct(Set)2765_storage"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(RoleData)179_storage": {
+            "encoding": "inplace",
+            "label": "struct AccessControlUpgradeable.RoleData",
+            "members": [
+              {
+                "astId": 176,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "members",
+                "offset": 0,
+                "slot": "0",
+                "type": "t_mapping(t_address,t_bool)"
+              },
+              {
+                "astId": 178,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "adminRole",
+                "offset": 0,
+                "slot": "1",
+                "type": "t_bytes32"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(Set)2765_storage": {
+            "encoding": "inplace",
+            "label": "struct EnumerableSetUpgradeable.Set",
+            "members": [
+              {
+                "astId": 2760,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "_values",
+                "offset": 0,
+                "slot": "0",
+                "type": "t_array(t_bytes32)dyn_storage"
+              },
+              {
+                "astId": 2764,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "_indexes",
+                "offset": 0,
+                "slot": "1",
+                "type": "t_mapping(t_bytes32,t_uint256)"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_uint256": {
+            "encoding": "inplace",
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "encoding": "inplace",
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "0x896448420c6aaC481e3453fcFbDf2C4eB12C3160": {
+      "date": "2023-01-28T06:29:51.287Z",
+      "contractName": "TreasuryDistributionContract",
+      "fork": "london",
+      "implementationAddress": "0xb03413885bccbcaE89B4D9830CfD74693794C11d",
+      "layout": {
+        "storage": [
+          {
+            "astId": 974,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8"
+          },
+          {
+            "astId": 977,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool"
+          },
+          {
+            "astId": 956,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 1271,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 1597,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 1876,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "151",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 184,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "_roles",
+            "offset": 0,
+            "slot": "201",
+            "type": "t_mapping(t_bytes32,t_struct(RoleData)179_storage)"
+          },
+          {
+            "astId": 479,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "202",
+            "type": "t_array(t_uint256)49_storage"
+          },
+          {
+            "astId": 33,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "_roleMembers",
+            "offset": 0,
+            "slot": "251",
+            "type": "t_mapping(t_bytes32,t_struct(AddressSet)3080_storage)"
+          },
+          {
+            "astId": 143,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "252",
+            "type": "t_array(t_uint256)49_storage"
+          },
+          {
+            "astId": 3461,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "intervalTime",
+            "offset": 0,
+            "slot": "301",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 3464,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "AllocationFundAddress",
+            "offset": 0,
+            "slot": "302",
+            "type": "t_array(t_address)dyn_storage"
+          },
+          {
+            "astId": 3467,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "distributionRatio",
+            "offset": 0,
+            "slot": "303",
+            "type": "t_array(t_uint256)dyn_storage"
+          },
+          {
+            "astId": 3469,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "rate",
+            "offset": 0,
+            "slot": "304",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 3471,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "userTime",
+            "offset": 0,
+            "slot": "305",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 3473,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "pause",
+            "offset": 0,
+            "slot": "306",
+            "type": "t_bool"
+          },
+          {
+            "astId": 3476,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "callSource",
+            "offset": 0,
+            "slot": "307",
+            "type": "t_array(t_address)dyn_storage"
+          },
+          {
+            "astId": 3478,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "opensea",
+            "offset": 0,
+            "slot": "308",
+            "type": "t_address"
+          },
+          {
+            "astId": 3480,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "fireLock",
+            "offset": 0,
+            "slot": "309",
+            "type": "t_address"
+          },
+          {
+            "astId": 3482,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "controlAddress",
+            "offset": 0,
+            "slot": "310",
+            "type": "t_address"
+          },
+          {
+            "astId": 3484,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "Reputation",
+            "offset": 0,
+            "slot": "311",
+            "type": "t_address"
+          },
+          {
+            "astId": 3486,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "ReputationAmount",
+            "offset": 0,
+            "slot": "312",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 3488,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "GovernanceAddress",
+            "offset": 0,
+            "slot": "313",
+            "type": "t_address"
+          },
+          {
+            "astId": 3490,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "firePassport",
+            "offset": 0,
+            "slot": "314",
+            "type": "t_address"
+          },
+          {
+            "astId": 3492,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "fireDaoToken",
+            "offset": 0,
+            "slot": "315",
+            "type": "t_address"
+          },
+          {
+            "astId": 3494,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "warp",
+            "offset": 0,
+            "slot": "316",
+            "type": "t_address"
+          },
+          {
+            "astId": 3496,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "owner",
+            "offset": 0,
+            "slot": "317",
+            "type": "t_address"
+          },
+          {
+            "astId": 3500,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "AllocationFundUserTime",
+            "offset": 0,
+            "slot": "318",
+            "type": "t_mapping(t_address,t_uint256)"
+          },
+          {
+            "astId": 3507,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "sourceOfIncome",
+            "offset": 0,
+            "slot": "319",
+            "type": "t_mapping(t_uint256,t_mapping(t_uint256,t_array(t_uint256)dyn_storage))"
+          },
+          {
+            "astId": 3511,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "tokenList",
+            "offset": 0,
+            "slot": "320",
+            "type": "t_mapping(t_uint256,t_address)"
+          },
+          {
+            "astId": 3514,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "uniswapV2Router",
+            "offset": 0,
+            "slot": "321",
+            "type": "t_contract(IUniswapV2Router02)4695"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "encoding": "inplace",
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_address)dyn_storage": {
+            "base": "t_address",
+            "encoding": "dynamic_array",
+            "label": "address[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_bytes32)dyn_storage": {
+            "base": "t_bytes32",
+            "encoding": "dynamic_array",
+            "label": "bytes32[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_uint256)49_storage": {
+            "base": "t_uint256",
+            "encoding": "inplace",
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "base": "t_uint256",
+            "encoding": "inplace",
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_array(t_uint256)dyn_storage": {
+            "base": "t_uint256",
+            "encoding": "dynamic_array",
+            "label": "uint256[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "encoding": "inplace",
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "encoding": "inplace",
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_contract(IUniswapV2Router02)4695": {
+            "encoding": "inplace",
+            "label": "contract IUniswapV2Router02",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "encoding": "mapping",
+            "key": "t_address",
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32",
+            "value": "t_bool"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "encoding": "mapping",
+            "key": "t_address",
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32",
+            "value": "t_uint256"
+          },
+          "t_mapping(t_bytes32,t_struct(AddressSet)3080_storage)": {
+            "encoding": "mapping",
+            "key": "t_bytes32",
+            "label": "mapping(bytes32 => struct EnumerableSetUpgradeable.AddressSet)",
+            "numberOfBytes": "32",
+            "value": "t_struct(AddressSet)3080_storage"
+          },
+          "t_mapping(t_bytes32,t_struct(RoleData)179_storage)": {
+            "encoding": "mapping",
+            "key": "t_bytes32",
+            "label": "mapping(bytes32 => struct AccessControlUpgradeable.RoleData)",
+            "numberOfBytes": "32",
+            "value": "t_struct(RoleData)179_storage"
+          },
+          "t_mapping(t_bytes32,t_uint256)": {
+            "encoding": "mapping",
+            "key": "t_bytes32",
+            "label": "mapping(bytes32 => uint256)",
+            "numberOfBytes": "32",
+            "value": "t_uint256"
+          },
+          "t_mapping(t_uint256,t_address)": {
+            "encoding": "mapping",
+            "key": "t_uint256",
+            "label": "mapping(uint256 => address)",
+            "numberOfBytes": "32",
+            "value": "t_address"
+          },
+          "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)": {
+            "encoding": "mapping",
+            "key": "t_uint256",
+            "label": "mapping(uint256 => uint256[])",
+            "numberOfBytes": "32",
+            "value": "t_array(t_uint256)dyn_storage"
+          },
+          "t_mapping(t_uint256,t_mapping(t_uint256,t_array(t_uint256)dyn_storage))": {
+            "encoding": "mapping",
+            "key": "t_uint256",
+            "label": "mapping(uint256 => mapping(uint256 => uint256[]))",
+            "numberOfBytes": "32",
+            "value": "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)"
+          },
+          "t_struct(AddressSet)3080_storage": {
+            "encoding": "inplace",
+            "label": "struct EnumerableSetUpgradeable.AddressSet",
+            "members": [
+              {
+                "astId": 3079,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "_inner",
+                "offset": 0,
+                "slot": "0",
+                "type": "t_struct(Set)2765_storage"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(RoleData)179_storage": {
+            "encoding": "inplace",
+            "label": "struct AccessControlUpgradeable.RoleData",
+            "members": [
+              {
+                "astId": 176,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "members",
+                "offset": 0,
+                "slot": "0",
+                "type": "t_mapping(t_address,t_bool)"
+              },
+              {
+                "astId": 178,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "adminRole",
+                "offset": 0,
+                "slot": "1",
+                "type": "t_bytes32"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(Set)2765_storage": {
+            "encoding": "inplace",
+            "label": "struct EnumerableSetUpgradeable.Set",
+            "members": [
+              {
+                "astId": 2760,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "_values",
+                "offset": 0,
+                "slot": "0",
+                "type": "t_array(t_bytes32)dyn_storage"
+              },
+              {
+                "astId": 2764,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "_indexes",
+                "offset": 0,
+                "slot": "1",
+                "type": "t_mapping(t_bytes32,t_uint256)"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_uint256": {
+            "encoding": "inplace",
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "encoding": "inplace",
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
+    },
+    "0x1b37c9a98bD99140e6c06Dccf27DbDD1A77c08ed": {
+      "date": "2023-01-28T06:34:27.481Z",
+      "contractName": "TreasuryDistributionContract",
+      "fork": "london",
+      "implementationAddress": "0x5387B4de7B1646641dBa82c79ff42435dF7D7e1a",
+      "layout": {
+        "storage": [
+          {
+            "astId": 974,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "_initialized",
+            "offset": 0,
+            "slot": "0",
+            "type": "t_uint8"
+          },
+          {
+            "astId": 977,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "_initializing",
+            "offset": 1,
+            "slot": "0",
+            "type": "t_bool"
+          },
+          {
+            "astId": 956,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "1",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 1271,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "51",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 1597,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "101",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 1876,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "151",
+            "type": "t_array(t_uint256)50_storage"
+          },
+          {
+            "astId": 184,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "_roles",
+            "offset": 0,
+            "slot": "201",
+            "type": "t_mapping(t_bytes32,t_struct(RoleData)179_storage)"
+          },
+          {
+            "astId": 479,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "202",
+            "type": "t_array(t_uint256)49_storage"
+          },
+          {
+            "astId": 33,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "_roleMembers",
+            "offset": 0,
+            "slot": "251",
+            "type": "t_mapping(t_bytes32,t_struct(AddressSet)3080_storage)"
+          },
+          {
+            "astId": 143,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "__gap",
+            "offset": 0,
+            "slot": "252",
+            "type": "t_array(t_uint256)49_storage"
+          },
+          {
+            "astId": 3461,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "intervalTime",
+            "offset": 0,
+            "slot": "301",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 3464,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "AllocationFundAddress",
+            "offset": 0,
+            "slot": "302",
+            "type": "t_array(t_address)dyn_storage"
+          },
+          {
+            "astId": 3467,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "distributionRatio",
+            "offset": 0,
+            "slot": "303",
+            "type": "t_array(t_uint256)dyn_storage"
+          },
+          {
+            "astId": 3469,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "rate",
+            "offset": 0,
+            "slot": "304",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 3471,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "userTime",
+            "offset": 0,
+            "slot": "305",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 3473,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "pause",
+            "offset": 0,
+            "slot": "306",
+            "type": "t_bool"
+          },
+          {
+            "astId": 3476,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "callSource",
+            "offset": 0,
+            "slot": "307",
+            "type": "t_array(t_address)dyn_storage"
+          },
+          {
+            "astId": 3478,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "opensea",
+            "offset": 0,
+            "slot": "308",
+            "type": "t_address"
+          },
+          {
+            "astId": 3480,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "fireLock",
+            "offset": 0,
+            "slot": "309",
+            "type": "t_address"
+          },
+          {
+            "astId": 3482,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "controlAddress",
+            "offset": 0,
+            "slot": "310",
+            "type": "t_address"
+          },
+          {
+            "astId": 3484,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "Reputation",
+            "offset": 0,
+            "slot": "311",
+            "type": "t_address"
+          },
+          {
+            "astId": 3486,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "ReputationAmount",
+            "offset": 0,
+            "slot": "312",
+            "type": "t_uint256"
+          },
+          {
+            "astId": 3488,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "GovernanceAddress",
+            "offset": 0,
+            "slot": "313",
+            "type": "t_address"
+          },
+          {
+            "astId": 3490,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "firePassport",
+            "offset": 0,
+            "slot": "314",
+            "type": "t_address"
+          },
+          {
+            "astId": 3492,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "fireDaoToken",
+            "offset": 0,
+            "slot": "315",
+            "type": "t_address"
+          },
+          {
+            "astId": 3494,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "warp",
+            "offset": 0,
+            "slot": "316",
+            "type": "t_address"
+          },
+          {
+            "astId": 3496,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "owner",
+            "offset": 0,
+            "slot": "317",
+            "type": "t_address"
+          },
+          {
+            "astId": 3500,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "AllocationFundUserTime",
+            "offset": 0,
+            "slot": "318",
+            "type": "t_mapping(t_address,t_uint256)"
+          },
+          {
+            "astId": 3507,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "sourceOfIncome",
+            "offset": 0,
+            "slot": "319",
+            "type": "t_mapping(t_uint256,t_mapping(t_uint256,t_array(t_uint256)dyn_storage))"
+          },
+          {
+            "astId": 3511,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "tokenList",
+            "offset": 0,
+            "slot": "320",
+            "type": "t_mapping(t_uint256,t_address)"
+          },
+          {
+            "astId": 3514,
+            "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+            "label": "uniswapV2Router",
+            "offset": 0,
+            "slot": "321",
+            "type": "t_contract(IUniswapV2Router02)4695"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "encoding": "inplace",
+            "label": "address",
+            "numberOfBytes": "20"
+          },
+          "t_array(t_address)dyn_storage": {
+            "base": "t_address",
+            "encoding": "dynamic_array",
+            "label": "address[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_bytes32)dyn_storage": {
+            "base": "t_bytes32",
+            "encoding": "dynamic_array",
+            "label": "bytes32[]",
+            "numberOfBytes": "32"
+          },
+          "t_array(t_uint256)49_storage": {
+            "base": "t_uint256",
+            "encoding": "inplace",
+            "label": "uint256[49]",
+            "numberOfBytes": "1568"
+          },
+          "t_array(t_uint256)50_storage": {
+            "base": "t_uint256",
+            "encoding": "inplace",
+            "label": "uint256[50]",
+            "numberOfBytes": "1600"
+          },
+          "t_array(t_uint256)dyn_storage": {
+            "base": "t_uint256",
+            "encoding": "dynamic_array",
+            "label": "uint256[]",
+            "numberOfBytes": "32"
+          },
+          "t_bool": {
+            "encoding": "inplace",
+            "label": "bool",
+            "numberOfBytes": "1"
+          },
+          "t_bytes32": {
+            "encoding": "inplace",
+            "label": "bytes32",
+            "numberOfBytes": "32"
+          },
+          "t_contract(IUniswapV2Router02)4695": {
+            "encoding": "inplace",
+            "label": "contract IUniswapV2Router02",
+            "numberOfBytes": "20"
+          },
+          "t_mapping(t_address,t_bool)": {
+            "encoding": "mapping",
+            "key": "t_address",
+            "label": "mapping(address => bool)",
+            "numberOfBytes": "32",
+            "value": "t_bool"
+          },
+          "t_mapping(t_address,t_uint256)": {
+            "encoding": "mapping",
+            "key": "t_address",
+            "label": "mapping(address => uint256)",
+            "numberOfBytes": "32",
+            "value": "t_uint256"
+          },
+          "t_mapping(t_bytes32,t_struct(AddressSet)3080_storage)": {
+            "encoding": "mapping",
+            "key": "t_bytes32",
+            "label": "mapping(bytes32 => struct EnumerableSetUpgradeable.AddressSet)",
+            "numberOfBytes": "32",
+            "value": "t_struct(AddressSet)3080_storage"
+          },
+          "t_mapping(t_bytes32,t_struct(RoleData)179_storage)": {
+            "encoding": "mapping",
+            "key": "t_bytes32",
+            "label": "mapping(bytes32 => struct AccessControlUpgradeable.RoleData)",
+            "numberOfBytes": "32",
+            "value": "t_struct(RoleData)179_storage"
+          },
+          "t_mapping(t_bytes32,t_uint256)": {
+            "encoding": "mapping",
+            "key": "t_bytes32",
+            "label": "mapping(bytes32 => uint256)",
+            "numberOfBytes": "32",
+            "value": "t_uint256"
+          },
+          "t_mapping(t_uint256,t_address)": {
+            "encoding": "mapping",
+            "key": "t_uint256",
+            "label": "mapping(uint256 => address)",
+            "numberOfBytes": "32",
+            "value": "t_address"
+          },
+          "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)": {
+            "encoding": "mapping",
+            "key": "t_uint256",
+            "label": "mapping(uint256 => uint256[])",
+            "numberOfBytes": "32",
+            "value": "t_array(t_uint256)dyn_storage"
+          },
+          "t_mapping(t_uint256,t_mapping(t_uint256,t_array(t_uint256)dyn_storage))": {
+            "encoding": "mapping",
+            "key": "t_uint256",
+            "label": "mapping(uint256 => mapping(uint256 => uint256[]))",
+            "numberOfBytes": "32",
+            "value": "t_mapping(t_uint256,t_array(t_uint256)dyn_storage)"
+          },
+          "t_struct(AddressSet)3080_storage": {
+            "encoding": "inplace",
+            "label": "struct EnumerableSetUpgradeable.AddressSet",
+            "members": [
+              {
+                "astId": 3079,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "_inner",
+                "offset": 0,
+                "slot": "0",
+                "type": "t_struct(Set)2765_storage"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(RoleData)179_storage": {
+            "encoding": "inplace",
+            "label": "struct AccessControlUpgradeable.RoleData",
+            "members": [
+              {
+                "astId": 176,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "members",
+                "offset": 0,
+                "slot": "0",
+                "type": "t_mapping(t_address,t_bool)"
+              },
+              {
+                "astId": 178,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "adminRole",
+                "offset": 0,
+                "slot": "1",
+                "type": "t_bytes32"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_struct(Set)2765_storage": {
+            "encoding": "inplace",
+            "label": "struct EnumerableSetUpgradeable.Set",
+            "members": [
+              {
+                "astId": 2760,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "_values",
+                "offset": 0,
+                "slot": "0",
+                "type": "t_array(t_bytes32)dyn_storage"
+              },
+              {
+                "astId": 2764,
+                "contract": "contracts/FDao/TreasuryDistributionContract.sol:TreasuryDistributionContract",
+                "label": "_indexes",
+                "offset": 0,
+                "slot": "1",
+                "type": "t_mapping(t_bytes32,t_uint256)"
+              }
+            ],
+            "numberOfBytes": "64"
+          },
+          "t_uint256": {
+            "encoding": "inplace",
+            "label": "uint256",
+            "numberOfBytes": "32"
+          },
+          "t_uint8": {
+            "encoding": "inplace",
+            "label": "uint8",
+            "numberOfBytes": "1"
+          }
+        }
+      }
     }
   }
 }

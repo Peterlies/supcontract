@@ -99,8 +99,8 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
     }
     
     function addAllocationFundAddress(address[] memory assigned) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        for(uint i = 0 ; i<AllocationFundAddress.length ; i++){
-            AllocationFundAddress[i] = assigned[i];
+        for(uint i = 0 ; i < assigned.length ; i++){
+            AllocationFundAddress.push(assigned[i]);
         }
     }
     function withdraw() public onlyRole(DEFAULT_ADMIN_ROLE) {
@@ -134,6 +134,9 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
     function addAllocationFundAddressExternal(address assigned) external {
         require(msg.sender == GovernanceAddress || msg.sender == owner, "callback Address is error");
         AllocationFundAddress.push(assigned);
+    }
+    function reviseAllocationFundAddress(uint i, address _revise) public onlyRole(DEFAULT_ADMIN_ROLE) {
+        AllocationFundAddress[i] = _revise;
     }
     function setStatus() external {
         require(msg.sender == controlAddress || msg.sender == owner,"the callback address is error");
