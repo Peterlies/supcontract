@@ -4,6 +4,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "./interface/IUniswapV2Router02.sol";
 import "./interface/IReputation.sol";
 
@@ -158,11 +159,11 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
         require(getWETHBalance() > 0, "the balance of WETH is error");
         if(_tokenNum == 1) {
         for(uint i = 0 ; i < AllocationFundAddress.length; i ++){
-        IERC20(uniswapV2Router.WETH()).transfer(AllocationFundAddress[i],IERC20(uniswapV2Router.WETH()).balanceOf(address(this))*rate*distributionRatio[i]/10000);
+        ERC20(uniswapV2Router.WETH()).transfer(AllocationFundAddress[i],IERC20(uniswapV2Router.WETH()).balanceOf(address(this))*rate*distributionRatio[i]/10000);
         }
-    }else{
+        }else{
         for(uint i = 0 ; i < AllocationFundAddress.length; i ++){
-        IERC20(tokenList[_tokenNum]).transfer(AllocationFundAddress[i],IERC20(tokenList[_tokenNum]).balanceOf(address(this))*rate*distributionRatio[i]/10000);
+        ERC20(tokenList[_tokenNum]).transfer(AllocationFundAddress[i],IERC20(tokenList[_tokenNum]).balanceOf(address(this))*rate*distributionRatio[i]/10000);
     }
     }
         intervalTime = block.timestamp;
