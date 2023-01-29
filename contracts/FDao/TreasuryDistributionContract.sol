@@ -157,14 +157,9 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
         require( block.timestamp > intervalTime + 3600,"AllocationFund need interval 30 minute");
         require( block.timestamp >  AllocationFundUserTime[msg.sender] + userTime ,"wallet need 12 hours to callback that");
         require(getWETHBalance() > 0, "the balance of WETH is error");
-        if(_tokenNum == 1) {
+        uint256 totalBalance = getTokenBalance(_tokenNum);
         for(uint i = 0 ; i < AllocationFundAddress.length; i ++){
-        ERC20(uniswapV2Router.WETH()).transfer(AllocationFundAddress[i],IERC20(uniswapV2Router.WETH()).balanceOf(address(this))*rate*distributionRatio[i]/10000);
-        }
-        }else{
-        for(uint i = 0 ; i < AllocationFundAddress.length; i ++){
-        ERC20(tokenList[_tokenNum]).transfer(AllocationFundAddress[i],IERC20(tokenList[_tokenNum]).balanceOf(address(this))*rate*distributionRatio[i]/10000);
-    }
+        ERC20(tokenList[_tokenNum]).transfer(AllocationFundAddress[i], totalBalance*rate*distributionRatio[i]/10000);
     }
         intervalTime = block.timestamp;
         AllocationFundUserTime[msg.sender] = block.timestamp;
