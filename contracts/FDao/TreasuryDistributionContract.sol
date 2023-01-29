@@ -87,7 +87,10 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
     function setReputation(address _Reputation) public onlyRole(DEFAULT_ADMIN_ROLE) {
         Reputation = _Reputation;
     }
-    function setDistributionRatio(uint i, uint _rate) public onlyRole(DEFAULT_ADMIN_ROLE){
+    function setDistributionRatio(uint _rate) public onlyRole(DEFAULT_ADMIN_ROLE){
+        distributionRatio.push(_rate);
+    }
+    function reSetDistributionRatio(uint i, uint _rate) public onlyRole(DEFAULT_ADMIN_ROLE){
         distributionRatio[i] = _rate;
     }
     function setControlAddress(address _controlAddress) public onlyRole(DEFAULT_ADMIN_ROLE){
