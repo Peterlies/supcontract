@@ -4,3 +4,4 @@
  - 0 : FirePassport
  - 1 : FireDaoToken
  - 2 : 
+ - test ubuntu
