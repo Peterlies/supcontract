@@ -28,7 +28,7 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
     address public warp;
     address public owner;
     mapping(address => uint256) public AllocationFundUserTime;
-    mapping(uint =>mapping(uint => uint256[])) sourceOfIncome;
+    mapping(uint =>mapping(uint => uint256[])) public sourceOfIncome;
     mapping(uint => address) public tokenList;
     IUniswapV2Router02 public uniswapV2Router;
     //0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3 pancake
@@ -130,7 +130,6 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
         return IERC20(uniswapV2Router.WETH()).balanceOf(address(this));
     }
     //main
-  
     function setDistributionRatioExternal(uint i, uint _rate) external {
         require(msg.sender == GovernanceAddress || msg.sender == owner,"callback Address is error");
         distributionRatio[i] = _rate;
@@ -153,7 +152,7 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
     function AllocationFund(uint _tokenNum) public {
         require(!pause, "contract is pause");
         require(checkRate() == 100,'rate error');
-        require(IReputation(Reputation).checkReputation(msg.sender) > ReputationAmount*10*18 || msg.sender ==owner ,"Reputation Points is not enough");
+        require(IReputation(Reputation).checkReputation(msg.sender) > ReputationAmount*10*18 || msg.sender == owner ,"Reputation Points is not enough");
         require( block.timestamp > intervalTime + 3600,"AllocationFund need interval 30 minute");
         require( block.timestamp >  AllocationFundUserTime[msg.sender] + userTime ,"wallet need 12 hours to callback that");
         require(getWETHBalance() > 0, "the balance of WETH is error");
