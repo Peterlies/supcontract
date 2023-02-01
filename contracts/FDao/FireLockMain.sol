@@ -175,7 +175,7 @@ contract FireLockMain {
     }
 
     function groupUnLock(uint256 _index ,address _token) public {
-     
+        require(checkRate(msg.sender, _index) == 100 ,"rate is error");
         require(block.number >= adminGropLockDetail[msg.sender][_index].ddl,"current time should be bigger than deadlineTime");
         uint amountOfUser = adminGropLockDetail[msg.sender][_index].amount;
         uint amount = IERC20(_token).balanceOf(address(this));
@@ -185,15 +185,33 @@ contract FireLockMain {
             }
         }else{revert();}
     }
+    function checkRate(address _user, uint256 _index) public view returns(uint) {
+        uint totalRate;
+        for(uint i =0; i < adminGropLockDetail[_user][_index].rate.length; i++ ){
+            totalRate += adminGropLockDetail[_user][_index].rate[i];
+        }
+        return totalRate;
+    }
     function changeLockAdmin(address  _to, uint _index) public {
         require(msg.sender == adminGropLockDetail[msg.sender][_index].admin,"you are not admin");
         require(adminGropLockDetail[msg.sender][_index].isNotchange ,"you can't turn on isNotchange when you create ");
         adminGropLockDetail[msg.sender][_index].admin = _to;
         adminAndOwner[_to] = msg.sender;
     }
-    function addLockMember(address _to, uint _index) public {
+    function addLockMember(address _to, uint _index, uint _rate) public {
         require(msg.sender == adminGropLockDetail[msg.sender][_index].admin);
         adminGropLockDetail[msg.sender][_index].member.push(_to);
+        adminGropLockDetail[msg.sender][_index].rate.push(_rate);
+        if(adminGropLockDetail[msg.sender][_index].rate[0]-_rate > 0){
+        adminGropLockDetail[msg.sender][_index].rate[0]-_rate;
+        }else{
+            revert();
+        }
+    }
+    function setGroupMemberRate(uint _index, uint _num, uint _rate) public {
+        require(msg.sender == adminGropLockDetail[msg.sender][_index].admin);
+        require(_num < adminGropLockDetail[msg.sender][_index].rate.length,"num is bigger than length");
+        adminGropLockDetail[msg.sender][_index].rate[_num] = _rate;
     }
     function removeLockMember(address _to, uint _index) public {
         require(msg.sender == adminGropLockDetail[msg.sender][_index].admin,'no access');
