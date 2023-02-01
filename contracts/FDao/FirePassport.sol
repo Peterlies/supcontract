@@ -14,64 +14,68 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
    string public baseExtension = ".json";
    User[] public users;
    address public owner;
-   event Register(uint  pid,string  username, address  account,string email,uint joinTime);
+   event Register(uint  pid,string  username, address  account,string email,uint joinTime,string information);
    bool public feeOn;
    uint public fee;
    uint public minUsernameLength = 4;
    uint public maxUsernameLength = 30;
-   address public admin = 0x161E76814E44072798E658B5F3cd25f1f000Ab61;
+   address public firekun = 0x161E76814E44072798E658B5F3cd25f1f000Ab61;
    address public weth;
    address public feeReceiver;
    address public treasuryDistributionContract;
    bool public useTreasuryDistributionContract;
-   constructor(address  _feeReceiver,address _weth,string memory baseURI_) ERC721("Fire Passport", "Fire Passport") {
+   constructor(address  _feeReceiver,address _weth,string memory baseURI_) ERC721("Fire Passport", "FIREPP") {
       owner = msg.sender;
       feeReceiver = _feeReceiver;
       weth = _weth;
-      User memory user = User({PID:1,account:admin,username:"FireKun",information:"",joinTime:block.timestamp});
+      User memory user = User({PID:1,account:firekun,username:"FireKun",information:"",joinTime:block.timestamp});
       users.push(user);
-      userInfo[admin] = user;
+      userInfo[firekun] = user;
       usernameExists["firekun"] = true;
       baseURI = baseURI_;
-      _mint(admin, 1);
+      _mint(firekun, 1);
    }
  
    modifier checkUsername(string memory username) {
-       bytes memory bStr = bytes(username);
-        for (uint i = 0; i < bStr.length; i++) {
-            require(((uint8(bStr[i]) >= 65) && (uint8(bStr[i]) <= 90)) || ((uint8(bStr[i]) >= 48) && (uint8(bStr[i]) <= 57)) || ((uint8(bStr[i]) >= 97) && (uint8(bStr[i]) <= 122)) ||(uint8(bStr[i]) == 95),'Username does not match');
-        }
-       _;
+      bytes memory bStr = bytes(username);
+      require(bStr.length >=minUsernameLength && bStr.length < maxUsernameLength ,"Username length exceeds limit");
+      require(((uint8(bStr[0]) >= 97) && (uint8(bStr[0]) <= 122)) || ((uint8(bStr[0]) >= 65) && (uint8(bStr[0]) <= 90)),"Username begins with a letter"); 
+         for (uint i = 0; i < bStr.length; i++) {
+            require(((uint8(bStr[i]) >= 65) && (uint8(bStr[i]) <= 90)) || ((uint8(bStr[i]) >= 48) && (uint8(bStr[i]) <= 57)) || ((uint8(bStr[i]) >= 97) && (uint8(bStr[i]) <= 122)) ||(uint8(bStr[i]) == 95),"The username contains illegal characters");
+         }
+    
+      _;
+   }
+   modifier isOwner() {
+      require(msg.sender == owner,"access denied");
+      _;
    }
    function register(string memory username,string memory email,string memory information) payable external checkUsername(username) {
       string memory trueUsername = username;
       username = _toLower(username);
-      require(_existsLetter(username) == true ,'Please enter at least one letter');
-      require(usernameExists[username] == false,'already this user');
-      require(userInfo[msg.sender].joinTime == 0,'already this user');
-      require(bytes(username).length >=minUsernameLength && bytes(username).length < maxUsernameLength ,'Username length error');
+      require(usernameExists[username] == false,"This username has already been taken");
+      require(userInfo[msg.sender].joinTime == 0,"This username has already been taken");
       if(feeOn){
           if(msg.value == 0) {
               TransferHelper.safeTransferFrom(weth,msg.sender,feeReceiver,fee);
           } else {
-              require(msg.value == fee,'Please send the correct number of ETH');
+              require(msg.value == fee,"provide the error number on ETH");
               IWETH(weth).deposit{value: fee}();
               IWETH(weth).transfer(feeReceiver,fee);
           }
       }
-      uint pid = users.length + 1;
-      User memory user = User({PID:pid,account:msg.sender,username:username,information:information,joinTime:block.timestamp});
+      uint id = users.length + 1;
+      User memory user = User({PID:id,account:msg.sender,username:username,information:information,joinTime:block.timestamp});
       users.push(user);
       userInfo[msg.sender] = user;
       usernameExists[username] = true;
-      _mint(msg.sender, pid);
+      _mint(msg.sender, id);
       if(useTreasuryDistributionContract) {
          ITreasuryDistributionContract(treasuryDistributionContract).setSourceOfIncome(1,1,fee);
       }
-      emit Register(pid,trueUsername,msg.sender,email,block.timestamp);
+      emit Register(id,trueUsername,msg.sender,email,block.timestamp,information);
    }
-   function setBaseURI(string memory baseURI_) external {
-      require(msg.sender == owner,'no access');
+   function setBaseURI(string memory baseURI_) isOwner external {
       baseURI = baseURI_;
    }
    function _baseURI() internal view virtual override returns (string memory) {
@@ -106,8 +110,7 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
     function hasPID(address user) external override view returns(bool){
         return userInfo[user].PID !=0;
     }
-   function setFee(uint fees) public {
-      require(msg.sender == owner ,'no access');
+   function setFee(uint fees) isOwner public {
       require(fees <= 100000000000000000,'The maximum fee is 0.1ETH');
       fee = fees;
    }
@@ -124,34 +127,30 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
         return string(bLower);
     }
 
-   function setFeeOn(bool set) public {
-     require(msg.sender == owner ,'no access');
+   function setFeeOn(bool set) isOwner public {
      feeOn = set;
    }
 
-   function setTreasuryDistributionContractOn(bool set) external {
-      require(msg.sender == owner ,'no access');
+   function setTreasuryDistributionContractOn(bool set) isOwner external {
       useTreasuryDistributionContract = set;
    }
 
-   function setUsernameLimitLength(uint min,uint max) public {
-      require(msg.sender == owner ,'no access');
+   function setUsernameLimitLength(uint min,uint max)  isOwner public {
       minUsernameLength = min;
       maxUsernameLength = max;
    }
 
-   function changeFeeReceiver(address  receiver) external {
-      require(msg.sender == owner ,'no access');
+   function changeFeeReceiver(address  receiver) isOwner external {
       feeReceiver = receiver;
    }
 
-   function setTreasuryDistributionContract(address _treasuryDistributionContract) external {
-      require(msg.sender == owner ,'no access');
+   function setTreasuryDistributionContract(address _treasuryDistributionContract) isOwner external {
+      require(_treasuryDistributionContract != address(0),"contract is the zero address");
       treasuryDistributionContract = _treasuryDistributionContract;
    }
 
-   function changeOwner(address account) public {
-      require(msg.sender == owner ,'no access');
+   function changeOwner(address account) isOwner public {
+      require(account != address(0),"account is the zero address");
       owner = account;
    }
 
@@ -163,15 +162,7 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
        from;
        to;
        tokenId;
-       revert("ERC721:No transfer allowed");
+       revert("ERC721:transfer declined");
     }
-
-   function _existsLetter(string memory username) internal pure  returns(bool)  {
-       bytes memory bStr = bytes(username);
-        if ((uint8(bStr[0]) >= 97) && (uint8(bStr[0]) <= 122)) {
-           return true;
-        }
-        return false;
-   }
      receive() external payable {}
 }
