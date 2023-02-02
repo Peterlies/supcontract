@@ -166,24 +166,30 @@ contract FireLockMain {
     }
 
     function unlock(uint _index, address _token) public  {
-        require(block.number >= ownerLockDetail[msg.sender][_index].cliffPeriod,"current time should be bigger than cliffPeriod");
+        // require(block.number >= ownerLockDetail[msg.sender][_index].cliffPeriod,"current time should be bigger than cliffPeriod");
         uint amountOfUser = ownerLockDetail[msg.sender][_index].amount;
         uint amount = IERC20(_token).balanceOf(address(this));
         if(amount > amountOfUser){
-        IERC20(_token).transfer(msg.sender, (amountOfUser/(ownerLockDetail[msg.sender][_index].unlockCycle*ownerLockDetail[msg.sender][_index].unlockRound))*(block.number - ownerLockDetail[msg.sender][_index].startTime)/oneDayBlock);
+        IERC20(_token).transfer(
+            msg.sender,
+            (amountOfUser/(ownerLockDetail[msg.sender][_index].unlockCycle*ownerLockDetail[msg.sender][_index].unlockRound))*(block.number - ownerLockDetail[msg.sender][_index].startTime)/oneDayBlock);
         }else{revert();}
     }
 
     function groupUnLock(uint256 _index ,address _token) public {
-        require(checkRate(msg.sender, _index) == 100 ,"rate is error");
-        require(block.number >= adminGropLockDetail[msg.sender][_index].ddl,"current time should be bigger than deadlineTime");
+        // require(checkRate(msg.sender, _index) == 100 ,"rate is error");
+        // require(block.number >= adminGropLockDetail[msg.sender][_index].ddl,"current time should be bigger than deadlineTime");
         uint amountOfUser = adminGropLockDetail[msg.sender][_index].amount;
         uint amount = IERC20(_token).balanceOf(address(this));
         if(amount > amountOfUser){
             for(uint i = 0 ; i < adminGropLockDetail[msg.sender][_index].member.length;i++){
-            IERC20(_token).transfer(adminGropLockDetail[msg.sender][_index].member[i], (amountOfUser*adminGropLockDetail[msg.sender][_index].rate[i]/100)/(adminGropLockDetail[msg.sender][_index].unlockRound*adminGropLockDetail[msg.sender][_index].unlockRound)*(block.number - adminGropLockDetail[msg.sender][_index].startTime)/oneDayBlock);
+            IERC20(_token).transfer(
+                adminGropLockDetail[msg.sender][_index].member[i],
+                (amountOfUser*adminGropLockDetail[msg.sender][_index].rate[i]/100)/(adminGropLockDetail[msg.sender][_index].unlockRound*adminGropLockDetail[msg.sender][_index].unlockRound)*(block.number - adminGropLockDetail[msg.sender][_index].startTime)/oneDayBlock);
             }
-        }else{revert();}
+        }else{
+            revert();
+            }
     }
     function checkRate(address _user, uint256 _index) public view returns(uint) {
         uint totalRate;

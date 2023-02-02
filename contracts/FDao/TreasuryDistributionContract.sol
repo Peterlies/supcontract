@@ -114,7 +114,7 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
     function setSourceOfIncome(uint num,uint tokenNum,uint256 amount) external {
         require(msg.sender == warp ||
         msg.sender == firePassport ||
-        msg.sender == fireDaoToken || 
+        msg.sender == fireDaoToken ||
         msg.sender == fireLock||
         msg.sender == opensea);
         sourceOfIncome[num][tokenNum].push(amount);

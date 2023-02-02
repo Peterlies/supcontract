@@ -51,12 +51,11 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
     mapping(address => uint256[]) public ownerOfId; 
     mapping(address => accountInfo) public _accountAirdrop;
 //set SBT007,amountOf007, fireSoulAddress, Fee, feeReceiver
-constructor(address _Sbt007,address _fireSoul,address  _feeReceiver, address _weth) ERC1155("https://bafybeiblhsbd5x7rw5ezzr6xoe6u2jpyqexbfbovdao2vj5i3c25vmm7d4.ipfs.nftstorage.link/0.json") {
+constructor(address _Sbt007,address  _feeReceiver, address _weth) ERC1155("https://bafybeiblhsbd5x7rw5ezzr6xoe6u2jpyqexbfbovdao2vj5i3c25vmm7d4.ipfs.nftstorage.link/0.json") {
     _mint(msg.sender, _idTracker.current(), 1, "");
     _idTracker.increment();
     setSbt007(_Sbt007);
     setAmountOfSbt007(10);
-    setFireSoul(_fireSoul);
     feeReceiver = _feeReceiver;
     weth = _weth;
 }

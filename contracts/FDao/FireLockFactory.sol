@@ -10,7 +10,7 @@ contract FireLockFactory is Ownable{
     address[] public lockList;
     address public weth;
     uint256 fee;
-    bool feeon;
+    bool public feeon;
     mapping(address => address )  currentLockAddress;
     mapping(address => address[]) public ownerLock; 
     constructor(address _weth){
