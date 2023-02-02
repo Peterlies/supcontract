@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 import "./interface/IERC20ForLock.sol";
 import "./interface/IWETH.sol";
 import "./lib/TransferHelper.sol";
+
 contract FireLock {
     struct LockDetail{
         string LockTitle;
@@ -31,8 +32,6 @@ contract FireLock {
         bool isNotTerminate;
 
     }
-    bool public feeON;
-    address public feeTo;
     uint256 public fee;
     address public feeReceiver;
     address public admin;
@@ -47,20 +46,16 @@ contract FireLock {
     mapping(address => address) adminAndOwner;
     bool alreadyChange;
     mapping(address => uint256[]) public UsergroupLockNum;
- 
-
-    constructor(address _weth,uint256 _fee, bool _feeon) {
+    constructor(address _weth,uint256 _fee,address _feeReceiver) {
         admin = msg.sender;
         weth = _weth;
         fee = _fee;
-        feeON = _feeon;
-
+        feeReceiver = _feeReceiver;
     }
     function lock(address _token,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount,uint256 _cliffPeriod ,string memory _titile , bool _Terminate) public payable  {
         require(block.number + _unlockCycle * _unlockRound * oneDayBlock > block.number,"ddl should be bigger than ddl current time");
         require(_amount > 0 ,"token amount should be bigger than zero");
         address owner = msg.sender;
-        if(feeON) {
             if(msg.value == 0){
                 TransferHelper.safeTransferFrom(weth, msg.sender,feeReceiver,fee);
             }else{
@@ -68,7 +63,6 @@ contract FireLock {
                 IWETH(weth).deposit{value:fee}();
                 IWETH(weth).transfer(feeReceiver, fee);
             }
-        }
         LockDetail memory lockinfo = LockDetail({
             LockTitle:_titile,
             ddl:block.number+ _unlockCycle * _unlockRound * oneDayBlock + _cliffPeriod *oneDayBlock,
@@ -89,7 +83,6 @@ contract FireLock {
         require(block.number + _unlockCycle * _unlockRound * oneDayBlock > block.number,"ddl should be bigger than ddl current time");
         require(_amount > 0 ,"token amount should be bigger than zero");
         address owner = msg.sender;
-        if(feeON) {
             if(msg.value == 0 ) {
                 TransferHelper.safeTransferFrom(weth,msg.sender,feeReceiver,fee);
             }else{
@@ -97,7 +90,6 @@ contract FireLock {
                 IWETH(weth).deposit{value:fee};
                 IWETH(weth).transfer(feeReceiver, fee);
             }
-        }
         LockDetail memory lockinfo = LockDetail({
             LockTitle:_titile,
             ddl:block.number+ _unlockCycle * _unlockRound * oneDayBlock + _cliffPeriod *oneDayBlock,
@@ -117,7 +109,6 @@ contract FireLock {
       function groupLock(bool _isNotchange,address _token, uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount , address[] memory _to, uint256[] memory _rate,string memory _titile,uint256 _cliffPeriod,bool _isNotTerminate) public payable {
       require(block.number + _unlockCycle * _unlockRound * oneDayBlock > block.number,"ddl should be bigger than ddl current time");
         require(_amount > 0 ,"token amount should be bigger than zero");
-        if(feeON){
             if(msg.value == 0) {
                 TransferHelper.safeTransferFrom(weth,msg.sender,feeReceiver,fee);
 
@@ -126,7 +117,6 @@ contract FireLock {
                 IWETH(weth).deposit{value:fee}();
                 IWETH(weth).transfer(feeReceiver,fee);
             }
-        }
         uint LockId; 
         groupLockDetail memory _groupLockDetail = groupLockDetail({
         LockTitle:_titile,
