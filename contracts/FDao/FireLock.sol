@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 import "./interface/IERC20ForLock.sol";
 import "./interface/IWETH.sol";
 import "./lib/TransferHelper.sol";
+import "./interface/IFireLockFeeTransfer.sol";
 
 contract FireLock {
     struct LockDetail{
@@ -34,7 +35,6 @@ contract FireLock {
     }
     uint256 public fee;
     address public feeReceiver;
-    address public admin;
     address public weth;
     address public treasuryDistributionContract;
    uint256 public oneDayBlock = 7200;
@@ -47,7 +47,6 @@ contract FireLock {
     bool alreadyChange;
     mapping(address => uint256[]) public UsergroupLockNum;
     constructor(address _weth,uint256 _fee,address _feeReceiver) {
-        admin = msg.sender;
         weth = _weth;
         fee = _fee;
         feeReceiver = _feeReceiver;
@@ -57,11 +56,11 @@ contract FireLock {
         require(_amount > 0 ,"token amount should be bigger than zero");
         address owner = msg.sender;
             if(msg.value == 0){
-                TransferHelper.safeTransferFrom(weth, msg.sender,feeReceiver,fee);
+                TransferHelper.safeTransferFrom(weth, msg.sender,IFireLockFeeTransfer(feeReceiver).getAddress(),fee);
             }else{
                 require(msg.value ==fee,'amount error');
                 IWETH(weth).deposit{value:fee}();
-                IWETH(weth).transfer(feeReceiver, fee);
+                IWETH(weth).transfer(IFireLockFeeTransfer(feeReceiver).getAddress(), fee);
             }
         LockDetail memory lockinfo = LockDetail({
             LockTitle:_titile,
@@ -84,11 +83,11 @@ contract FireLock {
         require(_amount > 0 ,"token amount should be bigger than zero");
         address owner = msg.sender;
             if(msg.value == 0 ) {
-                TransferHelper.safeTransferFrom(weth,msg.sender,feeReceiver,fee);
+                TransferHelper.safeTransferFrom(weth,msg.sender,IFireLockFeeTransfer(feeReceiver).getAddress(),fee);
             }else{
                 require(msg.value ==fee,'amount error');
                 IWETH(weth).deposit{value:fee};
-                IWETH(weth).transfer(feeReceiver, fee);
+                IWETH(weth).transfer(IFireLockFeeTransfer(feeReceiver).getAddress(), fee);
             }
         LockDetail memory lockinfo = LockDetail({
             LockTitle:_titile,
@@ -110,12 +109,12 @@ contract FireLock {
       require(block.number + _unlockCycle * _unlockRound * oneDayBlock > block.number,"ddl should be bigger than ddl current time");
         require(_amount > 0 ,"token amount should be bigger than zero");
             if(msg.value == 0) {
-                TransferHelper.safeTransferFrom(weth,msg.sender,feeReceiver,fee);
+                TransferHelper.safeTransferFrom(weth,msg.sender,IFireLockFeeTransfer(feeReceiver).getAddress(),fee);
 
             }else {
                 require(msg.value == fee ,'fee amount error');
                 IWETH(weth).deposit{value:fee}();
-                IWETH(weth).transfer(feeReceiver,fee);
+                IWETH(weth).transfer(IFireLockFeeTransfer(feeReceiver).getAddress(),fee);
             }
         uint LockId; 
         groupLockDetail memory _groupLockDetail = groupLockDetail({
@@ -154,6 +153,8 @@ contract FireLock {
         uint amount = IERC20(_token).balanceOf(address(this));
         if(amount > amountOfUser){
         IERC20(_token).transfer(msg.sender, (amountOfUser/(ownerLockDetail[msg.sender][_index].unlockCycle*ownerLockDetail[msg.sender][_index].unlockRound))*(block.number - ownerLockDetail[msg.sender][_index].startTime)/oneDayBlock);
+        ownerLockDetail[msg.sender][_index].amount -= (amountOfUser/(ownerLockDetail[msg.sender][_index].unlockCycle*ownerLockDetail[msg.sender][_index].unlockRound))*(block.number - ownerLockDetail[msg.sender][_index].startTime)/oneDayBlock;
+        ownerLockDetail[msg.sender][_index].startTime = block.number;
         }else{revert();}
     }
 
@@ -164,9 +165,12 @@ contract FireLock {
         if(amount > amountOfUser){
             for(uint i = 0 ; i < adminGropLockDetail[msg.sender][_index].member.length;i++){
             IERC20(_token).transfer(adminGropLockDetail[msg.sender][_index].member[i], (amountOfUser*adminGropLockDetail[msg.sender][_index].rate[i]/100)/(adminGropLockDetail[msg.sender][_index].unlockRound*adminGropLockDetail[msg.sender][_index].unlockRound)*(block.number - adminGropLockDetail[msg.sender][_index].startTime)/oneDayBlock);
+            adminGropLockDetail[msg.sender][_index].amount -= (amountOfUser*adminGropLockDetail[msg.sender][_index].rate[i]/100)/(adminGropLockDetail[msg.sender][_index].unlockRound*adminGropLockDetail[msg.sender][_index].unlockRound)*(block.number - adminGropLockDetail[msg.sender][_index].startTime)/oneDayBlock;
             }
+            adminGropLockDetail[msg.sender][_index].startTime =block.number;
         }else{revert();}
     }
+
     function changeLockAdmin(address  _to, uint _index) public {
         require(msg.sender == adminGropLockDetail[msg.sender][_index].admin,"you are not admin");
         require(adminGropLockDetail[msg.sender][_index].isNotchange ,"you can't turn on isNotchange when you create ");

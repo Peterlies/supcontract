@@ -33,7 +33,6 @@ contract FireLockMain {
 
     }
     address public treasuryDistributionContract;
-    address public feeTo;
     uint256 public fee;
     bool public feeON;
     address public owner;
@@ -51,9 +50,10 @@ contract FireLockMain {
         require(msg.sender == owner ,"you are not the lock owner");
         _;
     }
-    constructor(address _weth) {
+    constructor(address _weth ,address _feeReceiver) {
     owner = msg.sender;
     weth = _weth;
+    feeReceiver = _feeReceiver;
     }
 
      function setFee(uint fees) public  onlyOwner{
@@ -173,7 +173,11 @@ contract FireLockMain {
         IERC20(_token).transfer(
             msg.sender,
             (amountOfUser/(ownerLockDetail[msg.sender][_index].unlockCycle*ownerLockDetail[msg.sender][_index].unlockRound))*(block.number - ownerLockDetail[msg.sender][_index].startTime)/oneDayBlock);
-        }else{revert();}
+            ownerLockDetail[msg.sender][_index].amount -=(amountOfUser/(ownerLockDetail[msg.sender][_index].unlockCycle*ownerLockDetail[msg.sender][_index].unlockRound))*(block.number - ownerLockDetail[msg.sender][_index].startTime)/oneDayBlock;
+            ownerLockDetail[msg.sender][_index].startTime = block.number;
+        }else{
+            revert();
+            }
     }
 
     function groupUnLock(uint256 _index ,address _token) public {
@@ -186,7 +190,9 @@ contract FireLockMain {
             IERC20(_token).transfer(
                 adminGropLockDetail[msg.sender][_index].member[i],
                 (amountOfUser*adminGropLockDetail[msg.sender][_index].rate[i]/100)/(adminGropLockDetail[msg.sender][_index].unlockRound*adminGropLockDetail[msg.sender][_index].unlockRound)*(block.number - adminGropLockDetail[msg.sender][_index].startTime)/oneDayBlock);
+                adminGropLockDetail[msg.sender][_index].amount -= (amountOfUser*adminGropLockDetail[msg.sender][_index].rate[i]/100)/(adminGropLockDetail[msg.sender][_index].unlockRound*adminGropLockDetail[msg.sender][_index].unlockRound)*(block.number - adminGropLockDetail[msg.sender][_index].startTime)/oneDayBlock;
             }
+            adminGropLockDetail[msg.sender][_index].startTime = block.number;
         }else{
             revert();
             }
