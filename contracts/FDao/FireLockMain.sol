@@ -33,18 +33,21 @@ contract FireLockMain {
 
     }
     address public treasuryDistributionContract;
+    uint256 public index;
     uint256 public fee;
     bool public feeON;
     address public owner;
     address public feeReceiver;
     address public weth;
    uint256 public oneDayBlock = 7200;
-    mapping(address => address[]) tokenAddress;
+    mapping(address => address[]) public tokenAddress;
     mapping(address => LockDetail[]) public ownerLockDetail;
+    mapping(uint256 => LockDetail[]) public ListOwnerLockDetail;
     mapping(uint256 => address[]) public groupMember;
-    mapping(uint256 => address[]) groupTokenAddress;
+    mapping(uint256 => address[]) public groupTokenAddress;
+    mapping(uint256 => groupLockDetail[]) public ListGropLockDetail;
     mapping(address => groupLockDetail[]) public adminGropLockDetail;
-    mapping(address => address) adminAndOwner;
+    mapping(address => address) public adminAndOwner;
     mapping(address => uint256[]) public UsergroupLockNum;
     modifier onlyOwner{
         require(msg.sender == owner ,"you are not the lock owner");
@@ -54,6 +57,7 @@ contract FireLockMain {
     owner = msg.sender;
     weth = _weth;
     feeReceiver = _feeReceiver;
+    fee = 8000000000000000;
     }
 
      function setFee(uint fees) public  onlyOwner{
@@ -63,35 +67,36 @@ contract FireLockMain {
     function setFeeOn() public onlyOwner{
         feeON = !feeON;
     }
-    function lock(address _token,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount,uint256 _cliffPeriod ,string memory _titile , bool _Terminate) public payable  {
-        require(block.number + _unlockCycle * _unlockRound * oneDayBlock > block.number,"ddl should be bigger than ddl current time");
-        require(_amount > 0 ,"token amount should be bigger than zero");
-        if(feeON){
-              if(msg.value == 0) {
-              TransferHelper.safeTransferFrom(weth,msg.sender,feeReceiver,fee);
-          } else {
-              require(msg.value == fee,'Please send the correct number of ETH');
-              IWETH(weth).deposit{value: fee}();
-              IWETH(weth).transfer(feeReceiver,fee);
-          }
-        }
-        LockDetail memory lockinfo = LockDetail({
-            LockTitle:_titile,
-            ddl:block.number+ _unlockCycle * _unlockRound * oneDayBlock + _cliffPeriod *oneDayBlock,
-            startTime : block.number,
-            amount:_amount,
-            unlockCycle: _unlockCycle,
-            unlockRound:_unlockRound,
-            token:_token,
-            cliffPeriod:block.number +_cliffPeriod *oneDayBlock,
-            isNotTerminate:_Terminate
-        });
-        tokenAddress[msg.sender].push(_token);
-        ownerLockDetail[msg.sender].push(lockinfo);
-        IERC20(_token).transferFrom(msg.sender,address(this),_amount);
-    }
+    // function lock(address _token,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount,uint256 _cliffPeriod ,string memory _titile , bool _Terminate) public payable  {
+    //     require(block.number + _unlockCycle * _unlockRound * oneDayBlock > block.number,"ddl should be bigger than ddl current time");
+    //     require(_amount > 0 ,"token amount should be bigger than zero");
+    //     if(feeON){
+    //           if(msg.value == 0) {
+    //           TransferHelper.safeTransferFrom(weth,msg.sender,feeReceiver,fee);
+    //       } else {
+    //           require(msg.value == fee,'Please send the correct number of ETH');
+    //           IWETH(weth).deposit{value: fee}();
+    //           IWETH(weth).transfer(feeReceiver,fee);
+    //       }
+    //     }
+    //     LockDetail memory lockinfo = LockDetail({
+    //         LockTitle:_titile,
+    //         ddl:block.number+ _unlockCycle * _unlockRound * oneDayBlock + _cliffPeriod *oneDayBlock,
+    //         startTime : block.number,
+    //         amount:_amount,
+    //         unlockCycle: _unlockCycle,
+    //         unlockRound:_unlockRound,
+    //         token:_token,
+    //         cliffPeriod:block.number +_cliffPeriod *oneDayBlock,
+    //         isNotTerminate:_Terminate
+    //     });
+    //     tokenAddress[msg.sender].push(_token);
+    //     ownerLockDetail[msg.sender].push(lockinfo);
+    //     IERC20(_token).transferFrom(msg.sender,address(this),_amount);
+    //     index ++;
+    // }
 
-    function lockOthers(address _token,address _to,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount,uint256 _cliffPeriod ,string memory _titile , bool _Terminate) public  payable{
+    function lock(address _token,address _to,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount,uint256 _cliffPeriod ,string memory _titile , bool _Terminate) public  payable{
         require(block.number + _unlockCycle * _unlockRound * oneDayBlock > block.number,"ddl should be bigger than ddl current time");
         require(_amount > 0 ,"token amount should be bigger than zero");
              if(feeON){
@@ -117,9 +122,11 @@ contract FireLockMain {
 
         tokenAddress[_to].push(_token);
         ownerLockDetail[_to].push(lockinfo);
+        ListOwnerLockDetail[index].push(lockinfo);
         IERC20(_token).transferFrom(msg.sender,address(this),_amount);
+        index ++;
     }
-      function groupLock(address _token, uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount , address[] memory _to, uint256[] memory _rate,string memory _titile,uint256 _cliffPeriod,bool _isNotTerminate,bool _isNotChange) public payable{
+    function groupLock(address _token, uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount , address[] memory _to, uint256[] memory _rate,string memory _titile,uint256 _cliffPeriod,bool _isNotTerminate,bool _isNotChange) public payable{
       require(block.number + _unlockCycle * _unlockRound * oneDayBlock > block.number,"ddl should be bigger than ddl current time");
         require(_amount > 0 ,"token amount should be bigger than zero");
         uint LockId; 
@@ -147,6 +154,7 @@ contract FireLockMain {
         isNotTerminate:_isNotTerminate
         });
         groupTokenAddress[LockId].push(_token);
+        ListGropLockDetail[LockId].push(_groupLockDetail);
         UsergroupLockNum[msg.sender].push(LockId);
         adminGropLockDetail[msg.sender].push(_groupLockDetail);
         for(uint i = 0 ; i < _to.length ; i++){
@@ -166,10 +174,10 @@ contract FireLockMain {
     }
 
     function unlock(uint _index, address _token) public  {
-        // require(block.number >= ownerLockDetail[msg.sender][_index].cliffPeriod,"current time should be bigger than cliffPeriod");
+        require(block.number >= ownerLockDetail[msg.sender][_index].cliffPeriod,"current time should be bigger than cliffPeriod");
         uint amountOfUser = ownerLockDetail[msg.sender][_index].amount;
         uint amount = IERC20(_token).balanceOf(address(this));
-        if(amount > amountOfUser){
+        if(amount > amountOfUser || amount == amountOfUser){
         IERC20(_token).transfer(
             msg.sender,
             (amountOfUser/(ownerLockDetail[msg.sender][_index].unlockCycle*ownerLockDetail[msg.sender][_index].unlockRound))*(block.number - ownerLockDetail[msg.sender][_index].startTime)/oneDayBlock);
@@ -181,11 +189,11 @@ contract FireLockMain {
     }
 
     function groupUnLock(uint256 _index ,address _token) public {
-        // require(checkRate(msg.sender, _index) == 100 ,"rate is error");
-        // require(block.number >= adminGropLockDetail[msg.sender][_index].ddl,"current time should be bigger than deadlineTime");
+        require(checkRate(msg.sender, _index) == 100 ,"rate is error");
+        require(block.number >= adminGropLockDetail[msg.sender][_index].ddl,"current time should be bigger than deadlineTime");
         uint amountOfUser = adminGropLockDetail[msg.sender][_index].amount;
         uint amount = IERC20(_token).balanceOf(address(this));
-        if(amount > amountOfUser){
+        if(amount > amountOfUser || amount == amountOfUser){
             for(uint i = 0 ; i < adminGropLockDetail[msg.sender][_index].member.length;i++){
             IERC20(_token).transfer(
                 adminGropLockDetail[msg.sender][_index].member[i],
@@ -211,19 +219,26 @@ contract FireLockMain {
         adminAndOwner[_to] = msg.sender;
     }
     function addLockMember(address _to, uint _index, uint _rate) public {
+
         require(msg.sender == adminGropLockDetail[msg.sender][_index].admin);
-        adminGropLockDetail[msg.sender][_index].member.push(_to);
-        adminGropLockDetail[msg.sender][_index].rate.push(_rate);
         if(adminGropLockDetail[msg.sender][_index].rate[0]-_rate > 0){
         adminGropLockDetail[msg.sender][_index].rate[0]-_rate;
         }else{
             revert();
         }
+        adminGropLockDetail[msg.sender][_index].member.push(_to);
+        adminGropLockDetail[msg.sender][_index].rate.push(_rate);
+        groupMember[_index].push(_to);
+  
     }
-    function setGroupMemberRate(uint _index, uint _num, uint _rate) public {
+    function checkGroupMember(address admin, uint _index) public view returns(address[] memory){
+        return adminGropLockDetail[admin][_index].member;
+    }
+    function setGroupMemberRate(uint _index, uint[] memory _rate) public {
         require(msg.sender == adminGropLockDetail[msg.sender][_index].admin);
-        require(_num < adminGropLockDetail[msg.sender][_index].rate.length,"num is bigger than length");
-        adminGropLockDetail[msg.sender][_index].rate[_num] = _rate;
+        for(uint i =0; i< adminGropLockDetail[msg.sender][_index].rate.length ;i++){
+        adminGropLockDetail[msg.sender][_index].rate[i] = _rate[i];
+        }
     }
     function removeLockMember(address _to, uint _index) public {
         require(msg.sender == adminGropLockDetail[msg.sender][_index].admin,'no access');
