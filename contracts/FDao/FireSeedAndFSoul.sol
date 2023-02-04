@@ -31,6 +31,8 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
     }
     event passFireSeed(address  from, address  to, uint256  tokenId, uint256  amount, uint256  transferTime);
     bool public FeeStatus;
+    string public baseURI;
+
     bool public useITreasuryDistributionContract;
     address  public feeReceiver;
     address public treasuryDistributionContract;
@@ -50,14 +52,14 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
     mapping(address => bool) public WhiteList;
     mapping(address => uint256[]) public ownerOfId; 
     mapping(address => accountInfo) public _accountAirdrop;
-//set SBT007,amountOf007, fireSoulAddress, Fee, feeReceiver
+//set SBT007,amountOf007, fireSoulAddress, Fee
 constructor(address _Sbt007,address  _feeReceiver, address _weth) ERC1155("https://bafybeiblhsbd5x7rw5ezzr6xoe6u2jpyqexbfbovdao2vj5i3c25vmm7d4.ipfs.nftstorage.link/0.json") {
-    _mint(msg.sender, _idTracker.current(), 1, "");
     _idTracker.increment();
     setSbt007(_Sbt007);
     setAmountOfSbt007(10);
     feeReceiver = _feeReceiver;
     weth = _weth;
+    baseURI = "https://bafybeiblhsbd5x7rw5ezzr6xoe6u2jpyqexbfbovdao2vj5i3c25vmm7d4.ipfs.nftstorage.link/";
 }
 
     //onlyOwner
@@ -148,10 +150,13 @@ function mintWithETH(
     function upclass(address usr) external view returns(address) {
         return recommender[usr];
     }
+    function setBaseURI(string memory baseURI_) external onlyOwner {
+        baseURI = baseURI_;
+    }
     function uri(uint256 _tokenId) override public view  returns(string memory) {
         return string(
             abi.encodePacked(
-                "https://bafybeiblhsbd5x7rw5ezzr6xoe6u2jpyqexbfbovdao2vj5i3c25vmm7d4.ipfs.nftstorage.link/",
+                baseURI,
                 Strings.toString(_tokenId),
                 ".json"
             )
@@ -263,7 +268,7 @@ contract FireSoul is ERC721,Ownable{
     uint256 public FID;
     address[] public sbtAddress;
     FireSeed fireseed;
-    address public userContract;
+    address public firePassport;
     bool public status;
     address public pauseControlAddress;
     address[] public sbt;
@@ -276,10 +281,11 @@ contract FireSoul is ERC721,Ownable{
     mapping(address => uint256[]) public sbtTokenAmount; 
     mapping(address => address) public UserToSoul;
        //set fireSeed, BaseUri, sbt003
-    constructor(FireSeed _fireseed, address _userContract,address _sbt003) ERC721("FireSoul", "FireSoul"){
+    constructor(FireSeed _fireseed, address _firePassport,address _sbt003) ERC721("FireSoul", "FireSoul"){
     fireseed = _fireseed;
-    userContract = _userContract;
+    firePassport = _firePassport;
 	sbt003 = _sbt003;
+    baseURI = "https://bafybeib3vsuxwnz53m3n7msi5fwbbeu2iqvz7srgmuf7zedmadppg6evx4.ipfs.nftstorage.link/";
 }
     //onlyOwner
     function setSbt003Address(address _sbt003) public onlyOwner{
@@ -333,7 +339,7 @@ contract FireSoul is ERC721,Ownable{
     function burnToMint(uint256 _tokenId) external {
         require(!status, "status is error");
         require(super.balanceOf(msg.sender) == 0 , "you already have FID");
-        require(IERC721(userContract).balanceOf(msg.sender) != 0 ,"you haven't passport");
+        require(IERC721(firePassport).balanceOf(msg.sender) != 0 ,"you haven't passport");
         fireseed.burnFireSeed(msg.sender,_tokenId ,1);
         _mint(msg.sender, FID);
         UserHaveFID.push(msg.sender);
