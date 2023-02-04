@@ -9,20 +9,22 @@ contract FireLockFactory is Ownable{
     address public currentLock;
     address[] public lockList;
     address public weth;
-    uint256 public fee;
-    address public feeReceiver;
+    address public fireLockFeeAddress;
     mapping(address => address )  currentLockAddress;
     mapping(address => address[]) public ownerLock; 
-    constructor(address _weth,address _feeReceiver){
+    constructor(address _weth,address _fireLockFeeAddress){
     weth = _weth;
-    feeReceiver = _feeReceiver;
+    fireLockFeeAddress = _fireLockFeeAddress;
     }
  
     function createLock() public { 
-        currentLock = address(new FireLock(weth,fee,feeReceiver));
+        currentLock = address(new FireLock(weth,fireLockFeeAddress));
         ownerLock[msg.sender].push(currentLock);
         currentLockAddress[msg.sender] = currentLock;
         lockList.push(currentLock);
+    }
+    function setfireLockFeeAddress(address _addr) public onlyOwner{
+        fireLockFeeAddress = _addr;
     }
 
     function getUserCurrentLock() public view returns(address) {
