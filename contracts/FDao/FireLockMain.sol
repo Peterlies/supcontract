@@ -191,10 +191,19 @@ contract FireLockMain {
         adminGropLockDetail[msg.sender][_index].admin = _to;
         adminAndOwner[_to] = msg.sender;
         }else{
+        require(msg.sender == adminGropLockDetail[adminAndOwner[msg.sender]][_index].admin,"you are not admin");
+        require(adminGropLockDetail[adminAndOwner[msg.sender]][_index].isNotchange ,"you can't turn on isNotchange when you create ");
+        adminGropLockDetail[adminAndOwner[msg.sender]][_index].admin = _to;
+        adminAndOwner[_to] = adminAndOwner[msg.sender];
+        }
+    }
+    function setIsNotChange(uint _index) public {
+        if(adminAndOwner[msg.sender] == address(0)){
         require(msg.sender == adminGropLockDetail[msg.sender][_index].admin,"you are not admin");
-        require(adminGropLockDetail[msg.sender][_index].isNotchange ,"you can't turn on isNotchange when you create ");
-        adminGropLockDetail[msg.sender][_index].admin = _to;
-        adminAndOwner[_to] = msg.sender;
+        adminGropLockDetail[msg.sender][_index].isNotchange = !adminGropLockDetail[msg.sender][_index].isNotchange;
+        }else{
+        require(msg.sender == adminGropLockDetail[adminAndOwner[msg.sender]][_index].admin,"you are not admin");
+        adminGropLockDetail[adminAndOwner[msg.sender]][_index].isNotchange = !adminGropLockDetail[adminAndOwner[msg.sender]][_index].isNotchange;
         }
     }
     function addLockMember(address _to, uint _index, uint _rate) public {
