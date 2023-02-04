@@ -73,7 +73,6 @@ constructor(address _Sbt007,address  _feeReceiver, address _weth) ERC1155("https
       feeReceiver = receiver;
     }
     function setFee(uint fees) public onlyOwner{
-      require(fees <= 100000000000000000,'The maximum fee is 0.1ETH');
       fee = fees;
    }
     function setFeeStatus() public onlyOwner{
