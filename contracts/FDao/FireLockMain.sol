@@ -67,34 +67,6 @@ contract FireLockMain {
     function setFeeOn() public onlyOwner{
         feeON = !feeON;
     }
-    // function lock(address _token,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount,uint256 _cliffPeriod ,string memory _titile , bool _Terminate) public payable  {
-    //     require(block.number + _unlockCycle * _unlockRound * oneDayBlock > block.number,"ddl should be bigger than ddl current time");
-    //     require(_amount > 0 ,"token amount should be bigger than zero");
-    //     if(feeON){
-    //           if(msg.value == 0) {
-    //           TransferHelper.safeTransferFrom(weth,msg.sender,feeReceiver,fee);
-    //       } else {
-    //           require(msg.value == fee,'Please send the correct number of ETH');
-    //           IWETH(weth).deposit{value: fee}();
-    //           IWETH(weth).transfer(feeReceiver,fee);
-    //       }
-    //     }
-    //     LockDetail memory lockinfo = LockDetail({
-    //         LockTitle:_titile,
-    //         ddl:block.number+ _unlockCycle * _unlockRound * oneDayBlock + _cliffPeriod *oneDayBlock,
-    //         startTime : block.number,
-    //         amount:_amount,
-    //         unlockCycle: _unlockCycle,
-    //         unlockRound:_unlockRound,
-    //         token:_token,
-    //         cliffPeriod:block.number +_cliffPeriod *oneDayBlock,
-    //         isNotTerminate:_Terminate
-    //     });
-    //     tokenAddress[msg.sender].push(_token);
-    //     ownerLockDetail[msg.sender].push(lockinfo);
-    //     IERC20(_token).transferFrom(msg.sender,address(this),_amount);
-    //     index ++;
-    // }
 
     function lock(address _token,address _to,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount,uint256 _cliffPeriod ,string memory _titile , bool _Terminate) public  payable{
         require(block.number + _unlockCycle * _unlockRound * oneDayBlock > block.number,"ddl should be bigger than ddl current time");
@@ -168,7 +140,7 @@ contract FireLockMain {
         require(ownerLockDetail[msg.sender][_lockId].isNotTerminate,"!isNotTerminate");
         IERC20(token).transfer(msg.sender , ownerLockDetail[msg.sender][_lockId].amount);
     }
-  function TerminateLockForGroupLock(uint256 _lockId,address token) public {
+    function TerminateLockForGroupLock(uint256 _lockId,address token) public {
         require(adminGropLockDetail[msg.sender][_lockId].isNotTerminate,"!isNotTerminate");
         IERC20(token).transfer(msg.sender , adminGropLockDetail[msg.sender][_lockId].amount);
     }
@@ -185,7 +157,7 @@ contract FireLockMain {
             ownerLockDetail[msg.sender][_index].startTime = block.number;
         }else{
             revert();
-            }
+        }
     }
 
     function groupUnLock(uint256 _index ,address _token) public {
@@ -213,10 +185,17 @@ contract FireLockMain {
         return totalRate;
     }
     function changeLockAdmin(address  _to, uint _index) public {
+        if(adminAndOwner[msg.sender] == address(0)){
         require(msg.sender == adminGropLockDetail[msg.sender][_index].admin,"you are not admin");
         require(adminGropLockDetail[msg.sender][_index].isNotchange ,"you can't turn on isNotchange when you create ");
         adminGropLockDetail[msg.sender][_index].admin = _to;
         adminAndOwner[_to] = msg.sender;
+        }else{
+        require(msg.sender == adminGropLockDetail[msg.sender][_index].admin,"you are not admin");
+        require(adminGropLockDetail[msg.sender][_index].isNotchange ,"you can't turn on isNotchange when you create ");
+        adminGropLockDetail[msg.sender][_index].admin = _to;
+        adminAndOwner[_to] = msg.sender;
+        }
     }
     function addLockMember(address _to, uint _index, uint _rate) public {
 
