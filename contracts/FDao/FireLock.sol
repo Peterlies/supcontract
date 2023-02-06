@@ -40,9 +40,7 @@ contract FireLock {
    uint256 public index;
     address[] public ListTokenAddress;
     mapping(address => address) adminAndOwner;
-    mapping(address => address[]) tokenAddress;
-    mapping(uint256 => address[]) public groupMumber;
-    mapping(uint256 => address[]) public groupMember;
+    mapping(address => address[]) public tokenAddress;
     mapping(address => LockDetail[]) public ownerLockDetail;
     mapping(address => groupLockDetail[]) public adminGropLockDetail;
     LockDetail[] public ListOwnerLockDetail;
@@ -90,7 +88,6 @@ contract FireLock {
                 IWETH(weth).deposit{value:feeAmount()}();
                 IWETH(weth).transfer(feeReceiver(), feeAmount());
             }
-        uint LockId; 
         groupLockDetail memory _groupLockDetail = groupLockDetail({
         LockTitle:_titile,
         ddl:block.number+ _unlockCycle * _unlockRound * oneDayBlock + _cliffPeriod *oneDayBlock,
@@ -108,7 +105,6 @@ contract FireLock {
         ListTokenAddress.push(_token);
         ListGropLockDetail.push(_groupLockDetail);
         adminGropLockDetail[msg.sender].push(_groupLockDetail);
-        groupMumber[LockId] = _to;
         IERC20(_token).transferFrom(msg.sender,address(this),_amount);
     }
     function TerminateLock(uint256 _lockId,address token) public {
@@ -188,7 +184,6 @@ contract FireLock {
         }
         adminGropLockDetail[msg.sender][_index].member.push(_to);
         adminGropLockDetail[msg.sender][_index].rate.push(_rate);
-        groupMember[_index].push(_to);
     }
     function removeLockMember(uint _index, address _to) public {
         require(msg.sender == adminGropLockDetail[msg.sender][_index].admin);
@@ -245,5 +240,14 @@ contract FireLock {
     }
     function feeReceiver() public view returns(address) {
         return IFireLockFeeTransfer(fireLockFeeTransfer).getAddress();
+    }
+    function ListOwnerLockDetailLength() public view returns(uint256){
+        return ListOwnerLockDetail.length;
+    }
+    function ListGropLockDetailLength() public view returns(uint256) {
+        return ListGropLockDetail.length;
+    }
+    function getGroupMember(uint _index) public view returns(address[] memory) {
+    return ListGropLockDetail[_index].member;
     }
 }

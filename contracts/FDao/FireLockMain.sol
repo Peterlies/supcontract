@@ -38,11 +38,10 @@ contract FireLockMain {
     address public owner;
     address public feeReceiver;
     address public weth;
-   uint256 public oneDayBlock = 7200;
+    uint256 public oneDayBlock = 7200;
     address[] public ListTokenAddress;
+    mapping(address => address)  adminAndOwner;
     mapping(address => address[]) public tokenAddress;
-    mapping(uint256 => address[]) public groupMember;
-    mapping(address => address) public adminAndOwner;
     mapping(address => LockDetail[]) public ownerLockDetail;
     mapping(address => groupLockDetail[]) public adminGropLockDetail;
     LockDetail[] public ListOwnerLockDetail;
@@ -98,7 +97,6 @@ contract FireLockMain {
     function groupLock(address _token, uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount , address[] memory _to, uint256[] memory _rate,string memory _titile,uint256 _cliffPeriod,bool _isNotTerminate,bool _isNotChange) public payable{
       require(block.number + _unlockCycle * _unlockRound * oneDayBlock > block.number,"ddl should be bigger than ddl current time");
         require(_amount > 0 ,"token amount should be bigger than zero");
-        uint LockId; 
         if(feeON){
             if(msg.value == 0) {
                 TransferHelper.safeTransferFrom(weth,msg.sender,feeReceiver,fee);
@@ -125,9 +123,6 @@ contract FireLockMain {
         ListTokenAddress.push(_token);
         ListGropLockDetail.push(_groupLockDetail);
         adminGropLockDetail[msg.sender].push(_groupLockDetail);
-        for(uint i = 0 ; i < _to.length ; i++){
-        groupMember[LockId].push(_to[i]);
-        }
         IERC20(_token).transferFrom(msg.sender,address(this),_amount);
     }
      
@@ -215,7 +210,6 @@ contract FireLockMain {
         }
         adminGropLockDetail[msg.sender][_index].member.push(_to);
         adminGropLockDetail[msg.sender][_index].rate.push(_rate);
-        groupMember[_index].push(_to);
   
     }
     function checkGroupMember(address admin, uint _index) public view returns(address[] memory){
@@ -274,5 +268,8 @@ contract FireLockMain {
     }
     function ListGropLockDetailLength() public view returns(uint256) {
         return ListGropLockDetail.length;
+    }
+    function getGroupMember(uint _index) public view returns(address[] memory) {
+    return ListGropLockDetail[_index].member;
     }
 }
