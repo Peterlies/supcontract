@@ -38,17 +38,15 @@ contract FireLock {
     address public fireLockFeeTransfer;
    uint256 public oneDayBlock = 7200;
    uint256 public index;
-    mapping(address => address[]) tokenAddress;
-    mapping(address => LockDetail[]) public ownerLockDetail;
-    mapping(uint256 => LockDetail[]) public ListOwnerLockDetail;
-    mapping(uint256 => address[]) public groupMumber;
-    mapping(uint256 => address[]) groupTokenAddress;
-    mapping(uint256 => address[]) public groupMember;
-    mapping(address => groupLockDetail[]) public adminGropLockDetail;
-    mapping(uint256 => groupLockDetail[]) public ListGropLockDetail;
+    address[] public ListTokenAddress;
     mapping(address => address) adminAndOwner;
-    bool alreadyChange;
-    mapping(address => uint256[]) public UsergroupLockNum;
+    mapping(address => address[]) tokenAddress;
+    mapping(uint256 => address[]) public groupMumber;
+    mapping(uint256 => address[]) public groupMember;
+    mapping(address => LockDetail[]) public ownerLockDetail;
+    mapping(address => groupLockDetail[]) public adminGropLockDetail;
+    LockDetail[] public ListOwnerLockDetail;
+    groupLockDetail[] public ListGropLockDetail;
     constructor(address _weth,address _fireLockFeeTransfer) {
         weth = _weth;
         fireLockFeeTransfer = _fireLockFeeTransfer;
@@ -76,7 +74,8 @@ contract FireLock {
             cliffPeriod:block.number +_cliffPeriod *oneDayBlock,
             isNotTerminate:_Terminate
         });
-        ListOwnerLockDetail[index].push(lockinfo);
+        ListTokenAddress.push(_token);
+        ListOwnerLockDetail.push(lockinfo);
         tokenAddress[_to].push(_token);
         ownerLockDetail[_to].push(lockinfo);
         IERC20(_token).transferFrom(owner,address(this),_amount);
@@ -106,21 +105,24 @@ contract FireLock {
         isNotchange:_isNotchange,
         isNotTerminate:_isNotTerminate
         });
-        groupTokenAddress[LockId].push(_token);
-        ListGropLockDetail[LockId].push(_groupLockDetail);
-        UsergroupLockNum[msg.sender].push(LockId);
+        ListTokenAddress.push(_token);
+        ListGropLockDetail.push(_groupLockDetail);
         adminGropLockDetail[msg.sender].push(_groupLockDetail);
         groupMumber[LockId] = _to;
         IERC20(_token).transferFrom(msg.sender,address(this),_amount);
-        LockId++;
     }
     function TerminateLock(uint256 _lockId,address token) public {
+        require(ownerLockDetail[msg.sender][_lockId].amount > 0,"you aren't have balance for lock");
         require(ownerLockDetail[msg.sender][_lockId].isNotTerminate,"!isNotTerminate");
         IERC20(token).transfer(msg.sender , ownerLockDetail[msg.sender][_lockId].amount);
+        ownerLockDetail[msg.sender][_lockId].amount = 0;
     }
   function TerminateLockForGroupLock(uint256 _lockId,address token) public {
+        require(msg.sender == adminGropLockDetail[msg.sender][_lockId].admin,"no access");
         require(adminGropLockDetail[msg.sender][_lockId].isNotTerminate,"!isNotTerminate");
+        require(adminGropLockDetail[msg.sender][_lockId].amount > 0,"you aren't have balance for lock");
         IERC20(token).transfer(msg.sender , adminGropLockDetail[msg.sender][_lockId].amount);
+        adminGropLockDetail[msg.sender][_lockId].amount = 0;
     }
 
     function unlock(uint _index,address _token) public  {
@@ -232,8 +234,11 @@ contract FireLock {
         return IERC20(ownerLockDetail[msg.sender][_index].token).decimals();
     }
 
-    function getToken() public view returns(address[] memory) {
+    function getOwnerTokenList() public view returns(address[] memory) {
         return tokenAddress[msg.sender];
+    }
+    function getTokenList() public view returns(address[] memory) {
+        return ListTokenAddress;
     }
     function feeAmount() public view returns(uint) {
         return IFireLockFeeTransfer(fireLockFeeTransfer).getFee();

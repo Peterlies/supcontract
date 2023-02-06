@@ -33,22 +33,20 @@ contract FireLockMain {
 
     }
     address public treasuryDistributionContract;
-    uint256 public index;
     uint256 public fee;
     bool public feeON;
     address public owner;
     address public feeReceiver;
     address public weth;
    uint256 public oneDayBlock = 7200;
+    address[] public ListTokenAddress;
     mapping(address => address[]) public tokenAddress;
-    mapping(address => LockDetail[]) public ownerLockDetail;
-    mapping(uint256 => LockDetail[]) public ListOwnerLockDetail;
     mapping(uint256 => address[]) public groupMember;
-    mapping(uint256 => address[]) public groupTokenAddress;
-    mapping(uint256 => groupLockDetail[]) public ListGropLockDetail;
-    mapping(address => groupLockDetail[]) public adminGropLockDetail;
     mapping(address => address) public adminAndOwner;
-    mapping(address => uint256[]) public UsergroupLockNum;
+    mapping(address => LockDetail[]) public ownerLockDetail;
+    mapping(address => groupLockDetail[]) public adminGropLockDetail;
+    LockDetail[] public ListOwnerLockDetail;
+    groupLockDetail[] public ListGropLockDetail;
     modifier onlyOwner{
         require(msg.sender == owner ,"you are not the lock owner");
         _;
@@ -91,12 +89,11 @@ contract FireLockMain {
             cliffPeriod:block.number +_cliffPeriod *oneDayBlock,
             isNotTerminate:_Terminate
         });
-
+        ListTokenAddress.push(_token);
         tokenAddress[_to].push(_token);
         ownerLockDetail[_to].push(lockinfo);
-        ListOwnerLockDetail[index].push(lockinfo);
+        ListOwnerLockDetail.push(lockinfo);
         IERC20(_token).transferFrom(msg.sender,address(this),_amount);
-        index ++;
     }
     function groupLock(address _token, uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount , address[] memory _to, uint256[] memory _rate,string memory _titile,uint256 _cliffPeriod,bool _isNotTerminate,bool _isNotChange) public payable{
       require(block.number + _unlockCycle * _unlockRound * oneDayBlock > block.number,"ddl should be bigger than ddl current time");
@@ -125,23 +122,25 @@ contract FireLockMain {
         isNotchange:_isNotChange,
         isNotTerminate:_isNotTerminate
         });
-        groupTokenAddress[LockId].push(_token);
-        ListGropLockDetail[LockId].push(_groupLockDetail);
-        UsergroupLockNum[msg.sender].push(LockId);
+        ListTokenAddress.push(_token);
+        ListGropLockDetail.push(_groupLockDetail);
         adminGropLockDetail[msg.sender].push(_groupLockDetail);
         for(uint i = 0 ; i < _to.length ; i++){
         groupMember[LockId].push(_to[i]);
         }
         IERC20(_token).transferFrom(msg.sender,address(this),_amount);
-        LockId++;
     }
      
     function TerminateLock(uint256 _lockId,address token) public {
+        require(ownerLockDetail[msg.sender][_lockId].amount > 0,"you aren't have balance for lock");
         require(ownerLockDetail[msg.sender][_lockId].isNotTerminate,"!isNotTerminate");
         IERC20(token).transfer(msg.sender , ownerLockDetail[msg.sender][_lockId].amount);
+        ownerLockDetail[msg.sender][_lockId].amount = 0;
     }
     function TerminateLockForGroupLock(uint256 _lockId,address token) public {
+        require(msg.sender == adminGropLockDetail[msg.sender][_lockId].admin, "no access");
         require(adminGropLockDetail[msg.sender][_lockId].isNotTerminate,"!isNotTerminate");
+        require(adminGropLockDetail[msg.sender][_lockId].amount > 0,"you aren't have balance for lock");
         IERC20(token).transfer(msg.sender , adminGropLockDetail[msg.sender][_lockId].amount);
     }
 
@@ -268,5 +267,12 @@ contract FireLockMain {
 
     function getToken() public view returns(address[] memory) {
         return tokenAddress[msg.sender];
+    }
+
+    function ListOwnerLockDetailLength() public view returns(uint256){
+        return ListOwnerLockDetail.length;
+    }
+    function ListGropLockDetailLength() public view returns(uint256) {
+        return ListGropLockDetail.length;
     }
 }
