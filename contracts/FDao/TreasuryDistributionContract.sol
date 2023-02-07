@@ -115,7 +115,7 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
         require(msg.sender == warp ||
         msg.sender == firePassport ||
         msg.sender == fireDaoToken ||
-        msg.sender == fireLock||
+        msg.sender == fireLock     ||
         msg.sender == opensea);
         sourceOfIncome[num][tokenNum].push(amount);
     }
