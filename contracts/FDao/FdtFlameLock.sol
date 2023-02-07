@@ -12,7 +12,6 @@ contract FdtFlameLock is Ownable{
     mapping(address => uint256) public FDTtransferTime;
     mapping(address => uint256) public FDTlocked;
     mapping(address => uint256) public FDTUserAmount;
-
     mapping(address => uint256) public FLAMEtransferTime;
     mapping(address => uint256) public FLAMElocked;
     mapping(address => uint256) public FLAMEUserAmount;
