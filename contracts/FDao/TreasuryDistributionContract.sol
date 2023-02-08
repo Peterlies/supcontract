@@ -17,20 +17,16 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
     uint private userTime;
     bool public pause;
     address[] public callSource;
-    address public opensea;
-    address public fireLock;
     address public controlAddress;
     address public Reputation;
     uint256 public ReputationAmount;
     address public GovernanceAddress;
-    address public firePassport;
-    address public fireDaoToken;
-    address public warp;
     address public owner;
+    address public weth;
     mapping(address => uint256) public AllocationFundUserTime;
     mapping(uint =>mapping(uint => uint256[])) public sourceOfIncome;
     mapping(uint => address) public tokenList;
-    IUniswapV2Router02 public uniswapV2Router;
+    mapping(address => bool) public allowAddr;
     //0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3 pancake
     //0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D uniswap
     constructor() initializer {
@@ -38,8 +34,6 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
     function initialize() public initializer {
         __UUPSUpgradeable_init();
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        IUniswapV2Router02 _uniswapV2Router = IUniswapV2Router02(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
-        uniswapV2Router = _uniswapV2Router;
         userTime = 43200;
         owner = msg.sender;
     }
@@ -50,6 +44,12 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
     {}
 
     //onlyOwner
+    function setAllowAddr(address _addr, bool _status) public onlyRole(DEFAULT_ADMIN_ROLE){
+        allowAddr[_addr] = _status;
+    }
+    function setWeth(address _weth) public onlyRole(DEFAULT_ADMIN_ROLE){
+        weth = _weth;
+    }
     function setUerIntverTime(uint256 _time) public onlyRole(DEFAULT_ADMIN_ROLE){
         userTime = _time;
     }
@@ -69,21 +69,6 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
     function setTokenList(uint tokenNum, address tokenAddr)public onlyRole(DEFAULT_ADMIN_ROLE) {
         require(tokenNum < 10,"input error");
         tokenList[tokenNum] = tokenAddr;
-    }
-    function setWarp(address _warp) public onlyRole(DEFAULT_ADMIN_ROLE){
-        warp = _warp;
-    }
-    function setopensea(address _opensea) public onlyRole(DEFAULT_ADMIN_ROLE){
-        opensea = _opensea;
-    }
-    function setFireLock(address _fireLock) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        fireLock = _fireLock;
-    }
-    function setFireDaoToken(address _fireDaoToken) public onlyRole(DEFAULT_ADMIN_ROLE){
-        fireDaoToken = _fireDaoToken;
-    }
-    function setFirePassport(address _firePassport) public onlyRole(DEFAULT_ADMIN_ROLE) {
-        firePassport = _firePassport;
     }
     function setReputation(address _Reputation) public onlyRole(DEFAULT_ADMIN_ROLE) {
         Reputation = _Reputation;
@@ -108,18 +93,13 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
         }
     }
     function withdraw() public onlyRole(DEFAULT_ADMIN_ROLE) {
-        IERC20(uniswapV2Router.WETH()).transfer(msg.sender , getWETHBalance());
+        IERC20(weth).transfer(msg.sender, getWETHBalance());
     }
     //getSource
     function setSourceOfIncome(uint num,uint tokenNum,uint256 amount) external {
-        require(msg.sender == warp ||
-        msg.sender == firePassport ||
-        msg.sender == fireDaoToken ||
-        msg.sender == fireLock     ||
-        msg.sender == opensea);
+        require(allowAddr[msg.sender],"no access");
         sourceOfIncome[num][tokenNum].push(amount);
     }
-
     function getSourceOfIncomeLength(uint num,uint tokenNum) public view returns(uint256){
         return sourceOfIncome[num][tokenNum].length;
     }
@@ -127,7 +107,7 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
         return sourceOfIncome[num][tokenNum];
     }
     function getWETHBalance() public view returns(uint256){
-        return IERC20(uniswapV2Router.WETH()).balanceOf(address(this));
+        return IERC20(weth).balanceOf(address(this));
     }
     //main
     function setDistributionRatioExternal(uint i, uint _rate) external {
@@ -162,7 +142,7 @@ contract TreasuryDistributionContract is Initializable,UUPSUpgradeable,AccessCon
     }
         intervalTime = block.timestamp;
         AllocationFundUserTime[msg.sender] = block.timestamp;
-        IERC20(uniswapV2Router.WETH()).transfer(msg.sender, 5 * 10**16);
+        IERC20(weth).transfer(msg.sender, 5 * 10**16);
     }
     function checkRate() public view returns(uint256){
         uint256 num;
