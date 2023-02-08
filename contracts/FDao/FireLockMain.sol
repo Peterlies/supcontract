@@ -73,7 +73,7 @@ contract FireLockMain {
     }
 
     function lock(address _token,address _to,uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount,uint256 _cliffPeriod ,string memory _titile , bool _Terminate) public  payable{
-        require(block.number + _unlockCycle * _unlockRound * oneDayBlock > block.number,"ddl should be bigger than ddl current time");
+        require(_unlockCycle * _unlockRound * oneDayBlock > 0,"ddl should be bigger than ddl current time");
         require(_amount > 0 ,"token amount should be bigger than zero");
              if(feeON){
               if(msg.value == 0) {
@@ -102,7 +102,7 @@ contract FireLockMain {
         IERC20(_token).transferFrom(msg.sender,address(this),_amount);
     }
     function groupLock(address _token, uint256 _unlockCycle,uint256 _unlockRound ,uint256 _amount , address[] memory _to, uint256[] memory _rate,string memory _titile,uint256 _cliffPeriod,bool _isNotTerminate,bool _isNotChange) public payable{
-      require(block.number + _unlockCycle * _unlockRound * oneDayBlock > block.number,"ddl should be bigger than ddl current time");
+      require(_unlockCycle * _unlockRound * oneDayBlock > 0,"The lock time is wrong");
         require(_amount > 0 ,"token amount should be bigger than zero");
         if(feeON){
             if(msg.value == 0) {
@@ -134,7 +134,7 @@ contract FireLockMain {
     }
      
     function TerminateLock(uint256 _lockId,address token) public {
-        require(ownerLockDetail[msg.sender][_lockId].amount > 0,"you aren't have balance for lock");
+        require(ownerLockDetail[msg.sender][_lockId].amount > 0,"Insufficient balance for lock");
         require(ownerLockDetail[msg.sender][_lockId].isNotTerminate,"!isNotTerminate");
         IERC20(token).transfer(msg.sender , ownerLockDetail[msg.sender][_lockId].amount);
         ownerLockDetail[msg.sender][_lockId].amount = 0;
@@ -143,7 +143,7 @@ contract FireLockMain {
     function TerminateLockForGroupLock(uint256 _lockId,address token) public {
         require(msg.sender == adminGropLockDetail[msg.sender][_lockId].admin, "no access");
         require(adminGropLockDetail[msg.sender][_lockId].isNotTerminate,"!isNotTerminate");
-        require(adminGropLockDetail[msg.sender][_lockId].amount > 0,"you aren't have balance for lock");
+        require(adminGropLockDetail[msg.sender][_lockId].amount > 0,"Insufficient balance for lock");
         IERC20(token).transfer(msg.sender , adminGropLockDetail[msg.sender][_lockId].amount);
         adminGropLockDetail[msg.sender][_lockId].amount = 0;
     }
