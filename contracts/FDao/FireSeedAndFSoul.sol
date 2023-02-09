@@ -105,17 +105,17 @@ function mintWithETH(
         _mint(msg.sender, _idTracker.current(), amount, '');
         }else{
         if(amount > 50 && amount <=100) {
-             _fee = fee/2;
+             _fee = amount*fee/2;
         }else if(amount < 50 && amount > 40){
-            _fee = fee*6/10;
+            _fee = amount*fee*6/10;
         }else if(amount>30 && amount <40){
-            _fee = fee*7/10;
+            _fee = amount*fee*7/10;
         }else if(amount >20 && amount < 30) {
-            _fee = fee*8/10;
+            _fee = amount*fee*8/10;
         }else if(amount > 10 && amount <20 ) {
-            _fee = fee*9/10;
+            _fee = amount*fee*9/10;
         }else{
-            _fee = fee;
+            _fee = amount*fee;
         }
         if(msg.value == 0){
                  TransferHelper.safeTransferFrom(weth,msg.sender,feeReceiver,_fee);
