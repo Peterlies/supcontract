@@ -9,6 +9,7 @@ contract AirdropERC1155 {
     address public passport;
     address public admin;
     uint256 public id;
+    uint256 public endTime;
     uint public num;
     constructor(IERC1155 _token, address _passport, address _admin){
         token = _token;
@@ -29,8 +30,12 @@ contract AirdropERC1155 {
     function addNum(uint _num) public onlyAdmin{
         num = _num;
     }
+    function addTime(uint256 _time) public onlyAdmin {
+        endTime = _time;
+    }
     function Claim() public {
         require(IERC721(passport).balanceOf(msg.sender) !=0 ,"Insufficient balance for lock");
+        require(block.timestamp > endTime , "Insufficient time");
         if(getPid(msg.sender) > 0 &&  getPid(msg.sender) < 101){
             if(get1155Balance(id) < 10 && get1155Balance(id) > 0) {
             token.safeTransferFrom(address(this), msg.sender,id,get1155Balance(id),"fire");
