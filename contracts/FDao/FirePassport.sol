@@ -19,11 +19,12 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
    uint public fee;
    uint public minUsernameLength = 4;
    uint public maxUsernameLength = 30;
-   address public firekun = 0x161E76814E44072798E658B5F3cd25f1f000Ab61;
+   address public firekun = 0x59af07FC784261c6c17790aB8FcEB15d52C8fBF0;
    address public weth;
    address public feeReceiver;
    address public treasuryDistributionContract;
    bool public useTreasuryDistributionContract;
+   bool public pause;
    constructor(address  _feeReceiver,address _weth,string memory baseURI_) ERC721("Fire Passport", "FIREPP") {
       owner = msg.sender;
       feeReceiver = _feeReceiver;
@@ -50,7 +51,11 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
       require(msg.sender == owner,"access denied");
       _;
    }
-   function register(string memory username,string memory email,string memory information) payable external checkUsername(username) {
+   modifier allowRegister() {
+      require(pause == false,"Registration has been suspended");
+      _;
+   }
+   function register(string memory username,string memory email,string memory information) payable external allowRegister checkUsername(username) {
       string memory trueUsername = username;
       username = _toLower(username);
       require(usernameExists[username] == false,"This username has already been taken");
@@ -110,9 +115,15 @@ contract FirePassport is IFirePassport,ERC721URIStorage {
     function hasPID(address user) external override view returns(bool){
         return userInfo[user].PID !=0;
     }
+    function getUserInfo(address user) external override view returns(User memory){
+        return userInfo[user];
+    }
    function setFee(uint fees) isOwner public {
       require(fees <= 100000000000000000,'The maximum fee is 0.1ETH');
       fee = fees;
+   }
+   function pauseRegister(bool set) isOwner external {
+      pause = set;
    }
    function _toLower(string memory str) internal pure returns (string memory) {
         bytes memory bStr = bytes(str);
