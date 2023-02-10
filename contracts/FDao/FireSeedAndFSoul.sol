@@ -98,7 +98,7 @@ function mintWithETH(
         uint256 amount
     ) external payable {
         uint256 _fee;
-        if(FeeStatus == false){
+        if(!FeeStatus){
         _mint(msg.sender, _idTracker.current(), amount, '');
         }else{
         if(WhiteList[msg.sender] && amount <= 1000) {
