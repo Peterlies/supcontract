@@ -3,11 +3,14 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./interface/IFirePassport.sol";
 import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 
 contract AirdropERC1155 is ERC1155Holder{
     IERC1155 public token;
+    IERC20 public tokenERC20;
+    IERC721 public tokenERC721;
     address public passport;
     address public admin;
     uint256 public id;
@@ -53,7 +56,7 @@ contract AirdropERC1155 is ERC1155Holder{
         require(!Claimed[msg.sender],"Insufficient balance for Claim");
         require(block.timestamp < endTime , "Insufficient time");
         require(block.timestamp > startTime, "Airdrop not started");
-        
+
         if(getPid(msg.sender) > 0 &&  getPid(msg.sender) < 101){
             if(get1155Balance(id) < 10 && get1155Balance(id + num) > 0) {
             uint amount = get1155Balance(id);
