@@ -13,4 +13,5 @@ contract AirdropFactory is Ownable {
         address airdrop = address(new AirdropERC1155(token,tokenId, passport, owner(),startTime,endTime));
         airdrop1155List.push(airdrop);
     }
+    function getListLength() public view 
 }
