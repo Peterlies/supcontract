@@ -53,6 +53,7 @@ contract AirdropERC1155 is ERC1155Holder{
         require(!Claimed[msg.sender],"Insufficient balance for Claim");
         require(block.timestamp < endTime , "Insufficient time");
         require(block.timestamp > startTime, "Airdrop not started");
+        
         if(getPid(msg.sender) > 0 &&  getPid(msg.sender) < 101){
             if(get1155Balance(id) < 10 && get1155Balance(id + num) > 0) {
             uint amount = get1155Balance(id);
