@@ -13,6 +13,8 @@ contract AirdropERC1155 is ERC1155Holder{
     IERC721 public tokenERC721;
     address public passport;
     address public admin;
+    uint256 public totalReceive;
+    uint256 public numberOfIntervals;
     uint256 public id;
     uint256 public oneday = 86400;
     uint256 public endTime;
@@ -58,79 +60,79 @@ contract AirdropERC1155 is ERC1155Holder{
         require(block.timestamp > startTime, "Airdrop not started");
 
         if(getPid(msg.sender) > 0 &&  getPid(msg.sender) < 101){
-            if(get1155Balance(id) < 10 && get1155Balance(id + num) > 0) {
+            if(get1155Balance(id) < totalReceive && get1155Balance(id + num) > 0) {
             uint amount = get1155Balance(id);
             token.safeTransferFrom(address(this), msg.sender,id,amount,"fire");
-            token.safeTransferFrom(address(this), msg.sender,id + num ,10 - amount,"fire");
+            token.safeTransferFrom(address(this), msg.sender,id + num ,totalReceive - amount,"fire");
             }else{
-            token.safeTransferFrom(address(this), msg.sender,id,10,"fire");
+            token.safeTransferFrom(address(this), msg.sender,id,totalReceive,"fire");
             }
         }else if(getPid(msg.sender) > 100 && getPid(msg.sender) <201){
-            if(get1155Balance(id) < 9 && get1155Balance(id) > 0) {
+            if(get1155Balance(id) < totalReceive - numberOfIntervals && get1155Balance(id) > 0) {
             uint amount = get1155Balance(id);
             token.safeTransferFrom(address(this), msg.sender,id,amount,"fire");
-            token.safeTransferFrom(address(this), msg.sender,id + num ,9 - amount,"fire");
+            token.safeTransferFrom(address(this), msg.sender,id + num ,totalReceive - numberOfIntervals - amount,"fire");
             }else{
-            token.safeTransferFrom(address(this), msg.sender,id,9,"fire");
+            token.safeTransferFrom(address(this), msg.sender,id,totalReceive - numberOfIntervals,"fire");
             }
         }else if(getPid(msg.sender) > 200 && getPid(msg.sender) <301){
-            if(get1155Balance(id) < 8 && get1155Balance(id) > 0) {
+            if(get1155Balance(id) < totalReceive - 2*numberOfIntervals && get1155Balance(id) > 0) {
             uint amount = get1155Balance(id);
             token.safeTransferFrom(address(this), msg.sender,id,amount,"fire");
-            token.safeTransferFrom(address(this), msg.sender,id + num ,8 - amount,"fire");
+            token.safeTransferFrom(address(this), msg.sender,id + num ,totalReceive - 2*numberOfIntervals - amount,"fire");
             }else{
-            token.safeTransferFrom(address(this), msg.sender,id,8,"fire");
+            token.safeTransferFrom(address(this), msg.sender,id,totalReceive - 2*numberOfIntervals,"fire");
             }
         }else if(getPid(msg.sender) > 300 && getPid(msg.sender) < 401){
-            if(get1155Balance(id) < 7 && get1155Balance(id) > 0) {
+            if(get1155Balance(id) < totalReceive - 3*numberOfIntervals && get1155Balance(id) > 0) {
             uint amount = get1155Balance(id);
             token.safeTransferFrom(address(this), msg.sender,id,amount,"fire");
-            token.safeTransferFrom(address(this), msg.sender,id + num ,7 - amount,"fire");
+            token.safeTransferFrom(address(this), msg.sender,id + num ,totalReceive - 3*numberOfIntervals - amount,"fire");
             }else{
-            token.safeTransferFrom(address(this), msg.sender,id,7,"fire");
+            token.safeTransferFrom(address(this), msg.sender,id,totalReceive - 3*numberOfIntervals,"fire");
             }
         }else if(getPid(msg.sender) > 400 && getPid(msg.sender) <501) {
-           if(get1155Balance(id) < 6 && get1155Balance(id) > 0) {
+           if(get1155Balance(id) < totalReceive - 4*numberOfIntervals && get1155Balance(id) > 0) {
             uint amount = get1155Balance(id);
             token.safeTransferFrom(address(this), msg.sender,id,amount,"fire");
-            token.safeTransferFrom(address(this), msg.sender,id + num ,6 - amount,"fire");
+            token.safeTransferFrom(address(this), msg.sender,id + num ,totalReceive - 4*numberOfIntervals - amount,"fire");
             }else{           
-            token.safeTransferFrom(address(this), msg.sender,id,6,"fire");
+            token.safeTransferFrom(address(this), msg.sender,id,totalReceive - 4*numberOfIntervals,"fire");
             }
         }else if(getPid(msg.sender) > 500 && getPid(msg.sender) <601) {
-            if(get1155Balance(id) < 5 && get1155Balance(id) > 0) {
+            if(get1155Balance(id) < totalReceive - 5*numberOfIntervals && get1155Balance(id) > 0) {
             uint amount = get1155Balance(id);
             token.safeTransferFrom(address(this), msg.sender,id,amount,"fire");
-            token.safeTransferFrom(address(this), msg.sender,id + num ,5 - amount,"fire");
+            token.safeTransferFrom(address(this), msg.sender,id + num ,totalReceive - 5*numberOfIntervals - amount,"fire");
             }else{           
-            token.safeTransferFrom(address(this), msg.sender,id,5,"fire");
+            token.safeTransferFrom(address(this), msg.sender,id,totalReceive - 5*numberOfIntervals,"fire");
             }
         } else if(getPid(msg.sender) > 600 && getPid(msg.sender) < 701 ){
-            if(get1155Balance(id) < 4 && get1155Balance(id) > 0) {
+            if(get1155Balance(id) < totalReceive - 6*numberOfIntervals && get1155Balance(id) > 0) {
             uint amount = get1155Balance(id);
             token.safeTransferFrom(address(this), msg.sender,id,amount,"fire");
-            token.safeTransferFrom(address(this), msg.sender,id + num ,4 - amount,"fire");
+            token.safeTransferFrom(address(this), msg.sender,id + num ,totalReceive - 6*numberOfIntervals - amount,"fire");
             }else{           
-            token.safeTransferFrom(address(this), msg.sender,id,7,"fire");
+            token.safeTransferFrom(address(this), msg.sender,id,totalReceive - 6*numberOfIntervals,"fire");
             }
         }else if(getPid(msg.sender) > 700 && getPid(msg.sender) < 801){
-            if(get1155Balance(id) < 3 && get1155Balance(id) > 0) {
+            if(get1155Balance(id) < totalReceive - 7*numberOfIntervals && get1155Balance(id) > 0) {
             uint amount = get1155Balance(id);
             token.safeTransferFrom(address(this), msg.sender,id,amount,"fire");
-            token.safeTransferFrom(address(this), msg.sender,id + num ,3 - amount,"fire");
+            token.safeTransferFrom(address(this), msg.sender,id + num ,totalReceive - 7*numberOfIntervals - amount,"fire");
             }else{
-            token.safeTransferFrom(address(this), msg.sender,id,3,"fire");
+            token.safeTransferFrom(address(this), msg.sender,id,totalReceive - 7*numberOfIntervals,"fire");
             }   
         }else if(getPid(msg.sender) > 800 && getPid (msg.sender) < 901){
-            if(get1155Balance(id) < 2 && get1155Balance(id) > 0) {
+            if(get1155Balance(id) < totalReceive - 8*numberOfIntervals && get1155Balance(id) > 0) {
             uint amount = get1155Balance(id);
             token.safeTransferFrom(address(this), msg.sender,id,amount,"fire");
-            token.safeTransferFrom(address(this), msg.sender,id + num ,2 - amount,"fire");
+            token.safeTransferFrom(address(this), msg.sender,id + num ,totalReceive - 8*numberOfIntervals - amount,"fire");
             }else{
-            token.safeTransferFrom(address(this), msg.sender,id,2,"fire");
+            token.safeTransferFrom(address(this), msg.sender,id,totalReceive - 8*numberOfIntervals,"fire");
             }
         }else if(getPid(msg.sender) > 900 && getPid(msg.sender) < 1001){
-            token.safeTransferFrom(address(this), msg.sender,id,1,"fire");
+            token.safeTransferFrom(address(this), msg.sender,id,totalReceive - 9*numberOfIntervals,"fire");
         }else{
            return; 
         }
