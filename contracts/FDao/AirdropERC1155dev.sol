@@ -3,15 +3,14 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
 import "./interface/IFirePassport.sol";
+import "./FirePassport.sol";
 
 
-contract AirdropERC1155 is ERC1155Holder{
+contract AirdropERC1155dev is ERC1155Holder{
     IERC1155 public token;
-    IERC20 public tokenERC20;
-    IERC721 public tokenERC721;
+    FirePassport fp;
     address public passport;
     address public admin;
     uint256 public id;
@@ -45,20 +44,26 @@ contract AirdropERC1155 is ERC1155Holder{
     function addNum(uint _num) public onlyAdmin{
         num = _num;
     }
-    function addDayTime(uint256 _time) public onlyAdmin {
-        endTime += _time*oneday;
+    function setStartTime(uint256 _time) public onlyAdmin {
+        startTime =_time;
+    }
+    function setEndTime(uint256 _time) public onlyAdmin {
+        endTime = _time;
     }
     function getCurrentTimeStamp() public view returns(uint256) {
         return block.timestamp;
     }
+    function setPassportAddr(address payable _addr) public onlyAdmin{
+        fp = FirePassport(_addr);
+    }
 
-    function Claim() public {
+
+    function Claim(uint _pid) public {
         require(IERC721(passport).balanceOf(msg.sender) !=0 ,"Insufficient balance for lock");
         require(!Claimed[msg.sender],"Insufficient balance for Claim");
         require(block.timestamp < endTime , "Insufficient time");
         require(block.timestamp > startTime, "Airdrop not started");
-
-        if(getPid(msg.sender) > 0 &&  getPid(msg.sender) < 101){
+        if(_pid > 0 &&  _pid < 101){
             if(get1155Balance(id) < 10 && get1155Balance(id + num) > 0) {
             uint amount = get1155Balance(id);
             token.safeTransferFrom(address(this), msg.sender,id,amount,"fire");
@@ -66,7 +71,7 @@ contract AirdropERC1155 is ERC1155Holder{
             }else{
             token.safeTransferFrom(address(this), msg.sender,id,10,"fire");
             }
-        }else if(getPid(msg.sender) > 100 && getPid(msg.sender) < 201){
+        }else if(_pid > 100 && _pid < 201){
             if(get1155Balance(id) < 9 && get1155Balance(id) > 0) {
             uint amount = get1155Balance(id);
             token.safeTransferFrom(address(this), msg.sender,id,amount,"fire");
@@ -74,7 +79,7 @@ contract AirdropERC1155 is ERC1155Holder{
             }else{
             token.safeTransferFrom(address(this), msg.sender,id,9,"fire");
             }
-        }else if(getPid(msg.sender) > 200 && getPid(msg.sender) <301){
+        }else if(_pid > 200 && _pid <301){
             if(get1155Balance(id) < 8 && get1155Balance(id) > 0) {
             uint amount = get1155Balance(id);
             token.safeTransferFrom(address(this), msg.sender,id,amount,"fire");
@@ -82,7 +87,7 @@ contract AirdropERC1155 is ERC1155Holder{
             }else{
             token.safeTransferFrom(address(this), msg.sender,id,8,"fire");
             }
-        }else if(getPid(msg.sender) > 300 && getPid(msg.sender) < 401){
+        }else if(_pid > 300 && _pid < 401){
             if(get1155Balance(id) < 7 && get1155Balance(id) > 0) {
             uint amount = get1155Balance(id);
             token.safeTransferFrom(address(this), msg.sender,id,amount,"fire");
@@ -90,7 +95,7 @@ contract AirdropERC1155 is ERC1155Holder{
             }else{
             token.safeTransferFrom(address(this), msg.sender,id,7,"fire");
             }
-        }else if(getPid(msg.sender) > 400 && getPid(msg.sender) <501) {
+        }else if(_pid > 400 && _pid <501) {
            if(get1155Balance(id) < 6 && get1155Balance(id) > 0) {
             uint amount = get1155Balance(id);
             token.safeTransferFrom(address(this), msg.sender,id,amount,"fire");
@@ -98,7 +103,7 @@ contract AirdropERC1155 is ERC1155Holder{
             }else{           
             token.safeTransferFrom(address(this), msg.sender,id,6,"fire");
             }
-        }else if(getPid(msg.sender) > 500 && getPid(msg.sender) <601) {
+        }else if(_pid > 500 && _pid <601) {
             if(get1155Balance(id) < 5 && get1155Balance(id) > 0) {
             uint amount = get1155Balance(id);
             token.safeTransferFrom(address(this), msg.sender,id,amount,"fire");
@@ -106,7 +111,7 @@ contract AirdropERC1155 is ERC1155Holder{
             }else{           
             token.safeTransferFrom(address(this), msg.sender,id,5,"fire");
             }
-        } else if(getPid(msg.sender) > 600 && getPid(msg.sender) < 701 ){
+        } else if(_pid > 600 && _pid < 701 ){
             if(get1155Balance(id) < 4 && get1155Balance(id) > 0) {
             uint amount = get1155Balance(id);
             token.safeTransferFrom(address(this), msg.sender,id,amount,"fire");
@@ -114,7 +119,7 @@ contract AirdropERC1155 is ERC1155Holder{
             }else{           
             token.safeTransferFrom(address(this), msg.sender,id,4,"fire");
             }
-        }else if(getPid(msg.sender) > 700 && getPid(msg.sender) < 801){
+        }else if(_pid > 700 && _pid < 801){
             if(get1155Balance(id) < 3 && get1155Balance(id) > 0) {
             uint amount = get1155Balance(id);
             token.safeTransferFrom(address(this), msg.sender,id,amount,"fire");
@@ -122,7 +127,7 @@ contract AirdropERC1155 is ERC1155Holder{
             }else{
             token.safeTransferFrom(address(this), msg.sender,id,3,"fire");
             }   
-        }else if(getPid(msg.sender) > 800 && getPid (msg.sender) < 901){
+        }else if(_pid > 800 && _pid < 901){
             if(get1155Balance(id) < 2 && get1155Balance(id) > 0) {
             uint amount = get1155Balance(id);
             token.safeTransferFrom(address(this), msg.sender,id,amount,"fire");
@@ -130,7 +135,7 @@ contract AirdropERC1155 is ERC1155Holder{
             }else{
             token.safeTransferFrom(address(this), msg.sender,id,2,"fire");
             }
-        }else if(getPid(msg.sender) > 900 && getPid(msg.sender) < 1001){
+        }else if(_pid > 900 && _pid < 1001){
             if(get1155Balance(id) == 0){
             token.safeTransferFrom(address(this), msg.sender,id + num ,1,"fire");
             }else{
@@ -145,7 +150,7 @@ contract AirdropERC1155 is ERC1155Holder{
     function get1155Balance(uint256 _id) public view returns(uint256) {
         return token.balanceOf(address(this),_id);
     }
-    function getPid(address _user) public view returns(uint){
-        return IFirePassport(passport).getUserInfo(_user).PID;
+    function getPid(address _user) public view returns(uint256,address,string memory,string memory,uint256){
+        return fp.userInfo(_user);
     }
 }

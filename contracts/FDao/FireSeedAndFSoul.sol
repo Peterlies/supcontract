@@ -21,18 +21,9 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
 
     using Counters for Counters.Counter;
     Counters.Counter private _idTracker;
-
-    struct accountInfo {
-        bool isAccount;
-        uint256 settleTime;
-        uint256 incomeTime;
-        uint256 incomeAmount;
-        uint256 cacheAmount;
-    }
     event passFireSeed(address  from, address  to, uint256  tokenId, uint256  amount, uint256  transferTime);
     bool public FeeStatus;
     string public baseURI;
-
     bool public useITreasuryDistributionContract;
     address  public feeReceiver;
     address public treasuryDistributionContract;
@@ -51,7 +42,7 @@ contract FireSeed is ERC1155 ,DefaultOperatorFilterer, Ownable{
     mapping(address => address[]) public recommenderInfo;
     mapping(address => bool) public WhiteList;
     mapping(address => uint256[]) public ownerOfId; 
-    mapping(address => accountInfo) public _accountAirdrop;
+    mapping(address => bool) public _accountAirdrop;
 //set SBT007,amountOf007, fireSoulAddress, Fee
 constructor(address _Sbt007,address  _feeReceiver, address _weth) ERC1155("https://bafybeiblhsbd5x7rw5ezzr6xoe6u2jpyqexbfbovdao2vj5i3c25vmm7d4.ipfs.nftstorage.link/0.json") {
     _idTracker.increment();
@@ -63,6 +54,10 @@ constructor(address _Sbt007,address  _feeReceiver, address _weth) ERC1155("https
 }
 
     //onlyOwner
+    function cancelAddressInvitation(address _addr) public onlyOwner{
+        isRecommender[_addr] = true;
+        _accountAirdrop[_addr] = true;
+    }
     function setSbt007(address _Sbt007) public onlyOwner{
         Sbt007 = _Sbt007;
     }
@@ -211,10 +206,9 @@ function mintWithETH(
              isRecommender[to] = true;
              emit passFireSeed(from, to, tokenId, amount, block.timestamp);
          }
-         accountInfo storage info = _accountAirdrop[to];
-         if (!info.isAccount) {
+         if (!_accountAirdrop[to]) {
              _accountList.push(to);
-             info.isAccount = true;
+             _accountAirdrop[to] = true;
          }
        for(uint i = 0; i < ownerOfId[from].length; i ++ ){
 	       if(tokenId == ownerOfId[from][i] && amount == super.balanceOf(msg.sender, tokenId)){
@@ -243,10 +237,9 @@ function mintWithETH(
              recommenderInfo[from].push(to);
              isRecommender[to] = true;
          }
-         accountInfo storage info = _accountAirdrop[to];
-         if (!info.isAccount) {
+         if (!_accountAirdrop[to]) {
              _accountList.push(to);
-             info.isAccount = true;
+             _accountAirdrop[to] = true;
          }
 
         super.safeBatchTransferFrom(from, to, ids, amounts, data);
