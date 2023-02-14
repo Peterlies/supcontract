@@ -68,6 +68,9 @@ contract TeamFundingAllocation is Initializable, UUPSUpgradeable, AccessControlE
             totalAmount[secondary[i]] += amount*rate[secondary[i]]/100;
             }
         }
+        if(billingCycle<block.timestamp){
+            status = false;
+        }
     }
     function getSecondaryLength() public view returns(uint256){
         return secondary.length;
