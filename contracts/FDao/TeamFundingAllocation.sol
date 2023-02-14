@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract TeamFundingAllocation is Initializable, UUPSUpgradeable, AccessControlEnumerableUpgradeable {
     
+    IERC20 weth;
     address public mainAddr;
     address[] public secondary;
     uint256[] public allocationCycle;
@@ -26,5 +27,9 @@ contract TeamFundingAllocation is Initializable, UUPSUpgradeable, AccessControlE
     function setMainAddr(address _addr) public onlyRole(DEFAULT_ADMIN_ROLE) {
         mainAddr = _addr;
     }
+    function setWeth(IERC20 _addr) public onlyRole(DEFAULT_ADMIN_ROLE){
+        weth = _addr;
+    }
+    function add
     
 }
