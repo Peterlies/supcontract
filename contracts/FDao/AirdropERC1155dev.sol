@@ -4,14 +4,12 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC1155/utils/ERC1155Holder.sol";
-import "./interface/IFirePassport.sol";
 import "./FirePassport.sol";
 
 
 contract AirdropERC1155dev is ERC1155Holder{
     IERC1155 public token;
     FirePassport fp;
-    address public passport;
     address public admin;
     uint256 public id;
     uint256 public oneday = 86400;
@@ -20,10 +18,9 @@ contract AirdropERC1155dev is ERC1155Holder{
     uint public num;
     mapping(address => bool) public Claimed;
     address[] public ClaimedList;
-    constructor(IERC1155 _token,uint256 _tokenId, address _passport, address _admin, uint256 _startTime,uint _endTime){
+    constructor(IERC1155 _token,uint256 _tokenId, address _admin, uint256 _startTime,uint _endTime){
         token = _token;
         id = _tokenId;
-        passport = _passport;
         admin = _admin;
         startTime = _startTime;
         endTime = _endTime;
